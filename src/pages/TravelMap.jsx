@@ -1,87 +1,47 @@
-import React, { useState } from "react";
-import koreaMap from "../assets/korea-map.svg";
-import pinImg from "../assets/pin.png";
+import React from "react";
+import mapImg from "../assets/map.png";
+import markerImg from "../assets/marker.png";
 import "./TravelMap.css";
-import RandomImage from "../RandomImage";
 
-// 지도 원본 크기(px)로 맞춰주세요! (SVG 또는 png 실제 크기)
-const MAP_WIDTH = 800; // SVG viewBox width
-const MAP_HEIGHT = 600; // SVG viewBox height
-
-const regions = [
-  { id: "changwon", name: "창원", x: 260, y: 380 },
-  { id: "goryeong", name: "고령", x: 240, y: 290 },
-  { id: "namhae", name: "남해", x: 240, y: 460 },
-  { id: "goseong", name: "고성", x: 270, y: 460 },
-  { id: "yeosu", name: "여수", x: 300, y: 440 },
-  { id: "suncheon", name: "순천", x: 285, y: 410 },
-  { id: "namwon", name: "남원", x: 245, y: 360 },
-  { id: "gurye", name: "구례", x: 270, y: 375 },
-  { id: "haman", name: "함안", x: 235, y: 370 },
-  { id: "busan", name: "부산", x: 305, y: 470 },
-  { id: "daegu", name: "대구", x: 270, y: 270 }
+// 반드시 사용자 제공 좌표만 사용
+const markers = [
+  { region: "창원", desc: "베이커리", top: 68, left: 37 },
+  { region: "고령", desc: "카페, 호수", top: 52, left: 34 },
+  // ...추가 마커 좌표는 직접 입력
 ];
 
-const visited = regions.map(r => r.id);
-
-const regionMemo = {
-  changwon: { label: "창원", memo: "베이커리" },
-  goryeong: { label: "고령", memo: "카페, 호수" },
-  namhae: { label: "남해", memo: "캠핑" },
-  goseong: { label: "고성", memo: "캠핑" },
-  yeosu: { label: "여수", memo: "첫 여행" },
-  suncheon: { label: "순천", memo: "100일여행, 국가정원, 순천만" },
-  namwon: { label: "남원", memo: "100일여행" },
-  gurye: { label: "구례", memo: "100일여행" },
-  haman: { label: "함안", memo: "짜장면" },
-  busan: { label: "부산", memo: "광안리, 서면" },
-  daegu: { label: "대구", memo: "이월드" }
-};
-
-// x, y를 %로 변환
-const getPercent = (x, y) => ({
-  left: `${(x / MAP_WIDTH) * 100}%`,
-  top: `${(y / MAP_HEIGHT) * 100}%`,
-  position: "absolute"
-});
-
 const TravelMap = () => {
-  const [modal, setModal] = useState(null);
-  const [mapHover, setMapHover] = useState(false);
-
   return (
     <div className="travel-map-wrap">
-      <RandomImage />
       <div
-        className={`travel-map-svg travel-map-zoomable${mapHover ? " zoom" : ""}`}
-        onMouseEnter={() => setMapHover(true)}
-        onMouseLeave={() => setMapHover(false)}
-        style={{ position: "relative" }}
+        className="travel-map-img-wrap"
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: 800,
+          margin: "0 auto"
+        }}
       >
-        <img src={koreaMap} alt="대한민국 지도" className="travel-map-img" />
-        {regions.map(r => (
-          <button
-            key={r.id}
-            className={`travel-pin-img ${visited.includes(r.id) ? "visited" : ""}`}
-            style={getPercent(r.x, r.y)}
-            onClick={() => setModal(r.id)}
-            title={r.name}
-          >
-            <img src={pinImg} alt="여행 핀" className="travel-pin-icon" />
-          </button>
+        <img src={mapImg} alt="대한민국 지도" className="travel-map-img" />
+        {markers.map((marker, idx) => (
+          <img
+  key={marker.region + idx}
+  src={markerImg}
+  alt={marker.region}
+  className="travel-marker-img"
+  style={{
+    position: "absolute",
+    top: `${marker.top}%`,
+    left: `${marker.left}%`,
+    transform: "translate(-50%, -100%)",
+    cursor: "pointer",
+    zIndex: 10,
+    width: "24px",
+    height: "auto"
+  }}
+/>
         ))}
       </div>
-
-      {modal && (
-        <div className="travel-modal-bg" onClick={() => setModal(null)}>
-          <div className="travel-modal-card" onClick={e => e.stopPropagation()}>
-            <h3>{regionMemo[modal]?.label || modal}</h3>
-            <div className="travel-modal-memo">
-              {regionMemo[modal]?.memo || "기억이 없습니다."}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
