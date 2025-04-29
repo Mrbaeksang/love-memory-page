@@ -1,6 +1,7 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 import "./Home.css";
+import RandomImage from "../RandomImage";
 
 // D-Day 계산 함수
 function getDDay() {
@@ -43,6 +44,7 @@ const Home = () => {
           {/* 사진 파일은 public/1.jpg 또는 public/images/1.jpg로 넣어주세요 */}
           <img src="/1.jpg" alt="커플 메인" className="hero-photo" />
         </div>
+        <RandomImage />
         <div className="home-d-day-info">
           <span className="home-d-date">2025년 1월 1일 ~</span>
           <span className="home-d-count">함께한 지 <b>D+{getDDay()}</b></span>

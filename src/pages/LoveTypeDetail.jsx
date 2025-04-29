@@ -1,5 +1,6 @@
 import React from "react";
 import "./LoveType.css";
+import RandomImage from "../RandomImage";
 
 const QA = ({q, a}) => (
   <div className="lovetype-qa"><span className="lovetype-q">Q.</span> {q}<br/><span className="lovetype-a"> {a}</span></div>
@@ -14,199 +15,138 @@ const Table = ({rows, head}) => (
   </table>
 );
 
-const sanghyunDetail = (
-  <div className="lovetype-detail-content vertical">
-    <section className="lovetype-section">
-      <h3> 단어 연상 검사 (Word Association Tests)</h3>
-      <div className="lovetype-q">Q1. 상대방을 생각할 때 떠오르는 단어 (○/△/X 표시)</div>
-      <Table rows={[
-        ["○", "연인, 순애, 매력적이다"],
-        ["△", "돈에 밝다, 강인한, 쿨하다, 듬직한"],
-        ["X", "계산적, 무뚝뚝하다"],
-        ["○", "섹시한, 모던하다, 매너있다, 여유있다"],
-        ["△", "부유한, 다정한, 성숙한"],
-        ["X", "배려심없다, 둔감하다"],
-        ["○", "여유로움, 사랑스러움, 낭만적이다"],
-      ]} />
-      <QA q="이 중에서 나를 가장 잘 표현하는 단어는?" a="눈에 띄는" />
-      <QA q="왜 그 단어가 나를 잘 표현한다고 생각하나요?" a={<>"다른 사람과는 확연히 방식이나 감정 솔직함이 돋보인다고 생각<br/>눈에 띄다보니 주의를 끌기도 함"</>} />
-      <QA q="상대를 표현할 단어 중 어울리지 않는 단어는?" a="강인한" />
-      <QA q="이 중에서 연인을 가장 잘 표현하는 단어는?" a="배려심있는" />
-      <QA q="왜 그 단어가 연인을 잘 표현한다고 생각하나요?" a={<>"서로 부족한 부분을 배려하며 맞춰가는 것<br/>혼자 두지 않고 같이 하는 느낌<br/>나와 성향, 생활이 다르더라도 배려하면 조율할 수 있다는 믿음"</>} />
-    </section>
-    <section className="lovetype-section">
-      <h3> 내가 선호하는 데이트 스타일은? (My Date Style)</h3>
-      <QA q="선호하는 데이트 (O) / 선호하지 않는 데이트 (X)" a={<><b>O:</b> 맛집탐방, 카페, 산책, 드라이브, 소소한 하루 보내기, 쇼핑, 독서, 영화, 공연, 자연, 일상 공유<br/><b>X:</b> 클럽, 게임방, 운동, 술자리, 수영장, 사교모임, 호캉스, 기타</>} />
-      <QA q="선호하는 음식 (O) / 선호하지 않는 음식 (X)" a={<><b>O:</b> 디저트, 빵, 고기, 일식, 한식<br/><b>X:</b> 매운 음식, 해산물</>} />
-      <QA q="데이트할 때 가장 신경 쓰는 요소 (우선순위)" a={<>
-        <ol style={{marginLeft:'1.2em'}}>
-          <li>데이트 코스</li>
-          <li>데이트 비용</li>
-          <li>교통편</li>
-          <li>이동시간</li>
-          <li>식사 맛</li>
-        </ol></>} />
-      <QA q="내가 생각하는 데이트의 의미 (3개 선택)" a={<>
-        ① 서로를 더 잘 알아갈 수 있는 시간<br/>② 편안하게 쉴 수 있는 시간<br/>⑥ 서로 간의 다름을 이해해가는 시간
-      </>} />
-    </section>
-    <section className="lovetype-section">
-      <h3> 마음 구조</h3>
-      <b> 내가 생각하는 "나"의 마음 구조</b><br/>
-      <ul>
-        <li>중심: 배려</li>
-        <li>오른쪽 상단: 생각과 계획하기</li>
-        <li>오른쪽: 사랑</li>
-        <li>오른쪽 하단: 감정의 기복</li>
-        <li>아래쪽: 감정 조절 실패할 때 스트레스</li>
-        <li>왼쪽 하단: 우울감</li>
-        <li>왼쪽: 공허함</li>
-      </ul>
-      <b> 내가 생각하는 "상대방"의 마음 구조</b><br/>
-      <ul>
-        <li>중심: 자신감</li>
-        <li>오른쪽 상단: 긍정적임</li>
-        <li>오른쪽: 공감 능력</li>
-        <li>오른쪽 하단: 다정함</li>
-        <li>아래쪽: 장난기</li>
-        <li>왼쪽 하단: 자기애</li>
-        <li>왼쪽: 쿨함</li>
-      </ul>
-    </section>
-    <section className="lovetype-section">
-      <h3> 가치관 테스트 (Tendency Test)</h3>
-      <b> O (동의)한 항목</b>
-      <ul>
-        <li>상대가 나에게 마음이 없는 것 같으면 먼저 마음을 접는 편이다.</li>
-        <li>연애할 때 상대와 나의 일상에 대해 자주 공유하는 것이 좋다.</li>
-        <li>상대가 외롭지 않도록 노력하는 편이다.</li>
-        <li>상대가 바빠도 연락이 잘 되지 않으면 불안하다.</li>
-        <li>연애할 때 감정적으로 많이 기복이 생긴다.</li>
-        <li>연애를 시작하면 상대에게 맞추는 편이다.</li>
-        <li>서로의 생각 차이를 좁히기 위해 노력하는 것이 중요하다고 생각한다.</li>
-        <li>사소한 갈등이라도 바로 대화를 통해 푸는 게 좋다.</li>
-        <li>연인과 함께 보내는 시간이 많을수록 애정이 깊어진다.</li>
-        <li>연인의 과거 연애 경험이 신경 쓰일 수 있다.</li>
-        <li>연인 사이에 적당한 거리감이 필요하다고 생각한다.</li>
-        <li>상대가 먼저 나에게 다가와주는 걸 좋아한다.</li>
-      </ul>
-      <b> X (비동의)한 항목</b>
-      <ul>
-        <li>연애는 각자의 시간을 존중하며 독립적으로 하는 것이 가장 좋다.</li>
-        <li>연애는 운명보다 타이밍이라고 생각한다.</li>
-        <li>연애할 때 현실적인 조건이 중요하다.</li>
-        <li>마음이 변하면 솔직히 말해주는 것이 예의다.</li>
-        <li>연애는 오래 만나기보다 강렬한 감정이 더 중요하다.</li>
-        <li>연애는 서로 자유로울 때 더 잘 된다고 생각한다.</li>
-        <li>연인끼리는 자주 만나지 않아도 상관없다.</li>
-      </ul>
-      <div className="lovetype-quote">
-        감정 공유와 시간 함께 보내기를 매우 중요시함<br/>
-        거리감보다 밀착된 관계를 선호함<br/>
-        맞추려는 노력, 다정함, 공감 성향 강함<br/>
-        독립적 연애관에는 동의하지 않음
-      </div>
-    </section>
-    <section className="lovetype-section">
-      <h3> 기억에 남는 연애의 순간들</h3>
-      <Table head={["번호", "기억에 남는 순간", "감정 요약"]} rows={[
-        ["1", "장거리 연애 중 커져가는 마음", "충만함, 채워짐"],
-        ["2", "매일 일기 공유", "사랑으로 발전"],
-        ["3", "깊어진 감정 속 갈등", "벅참, 눈물, 처음 겪는 아픔"],
-      ]} />
-    </section>
-    <section className="lovetype-section">
-      <h3> 연애 감정의 1단계 – 설렘</h3>
-      <QA q="처음 마음이 움직였던 순간은 언제였나요?" a="상대의 사소한 배려나 나를 먼저 챙겨주는 모습에서 '나를 좋아하나?' 생각이 들었을 때" />
-      <QA q="마음을 표현하고 싶다는 생각이 들었던 순간은 언제인가요?" a="그 사람의 하루를 궁금해하고, 내 얘기를 하고 싶은 생각이 들 때 마음을 표현하고 싶다고 느꼈다" />
-      <QA q="그 사람에게 설렜던 행동이나 말은 무엇인가요?" a="문득 날 생각한 티가 날 때, 내 말투나 말 습관을 따라할 때, 그냥 보고 싶다고 말해줄 때" />
-      <QA q="그 사람과 함께 있을 때 어떤 감정이 들었나요?" a="말하지 않아도 편한 느낌, 쉴 수 있는 공간이 되어주는 느낌, 나를 이해해주는 사람이라는 생각" />
-    </section>
-    <section className="lovetype-section">
-      <h3> 연애 감정의 2단계 – 헷갈림</h3>
-      <QA q="관계에서 혼란을 느꼈던 순간은 언제인가요?" a="상대가 내 마음을 알면서도 일부러 무심한 척하거나 벽을 세우는 듯한 태도를 보일 때" />
-      <QA q="관계에 대한 고민이 많아졌을 때, 어떤 생각이 들었나요?" a="내가 너무 애쓰고 있는 게 아닐까? 왜 나만 이렇게 아플까?" />
-      <QA q="관계 속에서 외롭다고 느꼈던 적이 있었나요? 언제였나요?" a="대화를 피하려는 태도, 혼자 있고 싶다는 말, 내 감정을 가볍게 여기는 듯한 반응" />
-      <QA q="그럴 때 당신은 어떻게 반응하나요?" a="처음엔 참다가 감정이 터지고, 감정이 커진 후에야 말을 하게 됨. 그래서 오해가 생기기도 한다" />
-      <div className="lovetype-checklist">
-        <b> 체크리스트</b>
-        <ul>
-          <li>내가 애쓰는 것 같다고 느낄 때가 많다 </li>
-          <li>상대가 나에게 솔직하지 않은 것 같아 불안할 때가 있다 </li>
-          <li>함께 있어도 혼자라는 느낌이 들 때가 있다 </li>
-          <li>이런 감정을 표현하면 상대가 부담스러워할까 걱정된다 </li>
-          <li>나 혼자 사랑하는 건 아닐까 하는 생각이 든다 </li>
-          <li>이 관계가 나를 더 외롭게 만든다고 느낄 때가 있다 </li>
-          <li>괜히 예민한 내가 문제일지도 모른다고 느낀다 </li>
-        </ul>
-      </div>
-    </section>
-    <section className="lovetype-section">
-      <h3> 연애 감정의 3단계 – 불안</h3>
-      <QA q="불안감을 크게 느꼈던 순간은 언제인가요?" a="내가 먼저 연락하지 않으면 연락이 오지 않거나, 내가 말을 꺼내기 전까진 중요한 대화를 피할 때" />
-      <QA q="그럴 때 당신은 어떤 생각이 드나요?" a="나는 어떤 존재일까? 나만 간절한 걸까?" />
-      <QA q="그럴 때 보이는 당신의 행동은 무엇인가요?" a="표현을 줄이게 되고, 나도 무심한 척하게 된다. 혼자 감정을 소화하며 거리두기를 하게 된다" />
-      <QA q="그럴 때 상대에게 바라는 것은 무엇인가요?" a="말하지 않아도 느낄 수 있는 작은 신호라도 좋으니 먼저 다가와주고 표현해주길 바란다" />
-      <QA q="그럴 때 내 마음을 가장 정확하게 표현하는 단어는?" a="불안" />
-      <div className="lovetype-quote">감정 곡선 위치: 중간 (3번 위치 – 쌓여가는 불안)<br/>“조금씩 불안감이 쌓이는 중간 지점”</div>
-    </section>
-    <section className="lovetype-section">
-      <h3> 연애 감정의 4단계 – 거리감</h3>
-      <QA q="마음의 거리감을 느꼈던 순간은 언제였나요?" a="내가 무슨 말을 해도 상대는 그냥 듣기만 하거나, 대화를 피하려는 모습이 반복될 때" />
-      <QA q="그럴 때 당신은 어떤 감정을 느꼈나요?" a="실망과 외로움, 노력해도 더 멀어지는 느낌" />
-      <QA q="그럴 때 당신은 어떤 행동을 했나요?" a="혼자 있는 시간을 늘리려고 하고, 나도 점점 무심해진다. 기대를 거두게 된다" />
-      <QA q="그럴 때 상대에게 바라는 것은 무엇이었나요?" a="내가 무너져가고 있다는 걸 알아봐주고 진심으로 걱정해주는 것" />
-      <QA q="그럴 때 내 마음을 가장 정확하게 표현하는 단어는?" a="단념" />
-      <div className="lovetype-quote">감정 곡선 위치: 5번 (끝에 가까운 거리감 상태)<br/>“감정이 거의 다 식거나, 포기 직전의 상태”</div>
-      <div className="lovetype-checklist">
-        <b> 체크리스트</b>
-        <ul>
-          <li>함께 있어도 어색한 침묵이 많아졌다 </li>
-          <li>내가 말하지 않으면 아무 대화도 없을 것 같다 </li>
-          <li>대화를 해도 서로의 말이 닿지 않는 느낌이 든다 </li>
-          <li>함께 있어도 혼자라는 생각이 든다 </li>
-          <li>이대로 끝일지도 모르겠다는 생각이 든다 </li>
-        </ul>
-      </div>
-    </section>
-    <section className="lovetype-section">
-      <h3> 나의 연애 패턴 돌아보기</h3>
-      <QA q="가장 많이 반복되는 감정은 무엇인가요?" a="불안" />
-      <QA q="그 감정이 반복되는 원인은 무엇이라고 생각하나요?" a="표현받지 못한 감정이 쌓이면서 스스로 내 감정을 축소하거나 참게 되고, 결국 상처가 커져서 불안이 반복되는 것 같다" />
-      <QA q="그 감정이 쌓였을 때 당신은 어떤 방식으로 표현하나요?" a="참다가 혼자서 울고, 괜찮은 척하게 되고, 거리를 두며 내 마음을 단절시킨다" />
-      <QA q="그 감정을 건강하게 풀기 위해 필요한 것은 무엇인가요?" a="상대의 표현, 진심이 느껴지는 신호" />
-      <QA q="당신은 어떤 변화를 바라고 있나요?" a="나만 애쓰지 않아도 되는 관계, 있는 그대로 사랑받을 수 있는 관계" />
-      <div className="lovetype-quote">감정 흐름: 초반 고조 → 후반 단절형 곡선<br/>(초반에는 사랑이 크지만, 후반으로 갈수록 감정이 소진되고 고립되는 형태)</div>
-    </section>
-    <section className="lovetype-section">
-      <h3> 사랑 유형 분석 – 결과 종합</h3>
-      <Table head={["항목", "결과"]} rows={[
-        ["주요 사랑 유형", "마니아형 (집착형)"],
-        ["핵심 감정", "불안, 몰입, 집착, 의심"],
-        ["감정 경향", "중심이 상대에게 쏠림, 확신 요구"],
-        ["통찰 요약", "불안정 애착, 감정 좌우됨, 감정의존도 높음"],
-      ]} />
-      <div className="lovetype-quote">상대의 행동에 따라 감정이 좌우되고<br/>불안정한 애착을 형성하는 경향이 있음.<br/>감정적으로 쉽게 몰입하고,<br/>상대로부터 확신을 계속 확인받고 싶어함.</div>
-    </section>
-  </div>
+const SectionBadge = ({icon, label}) => (
+  <span className="lovetype-section-badge">{icon} {label}</span>
 );
 
+const getSectionsWithImages = (sections) => {
+  // 2~4곳에만 랜덤 이미지 삽입
+  const insertPositions = [1, 3, 5]; // 예시: 2,4,6번째 섹션 뒤
+  let result = [];
+  let imgIdx = 0;
+  sections.forEach((sec, idx) => {
+    result.push(sec);
+    if (insertPositions.includes(idx)) {
+      result.push(<RandomImage key={`img-${imgIdx++}`} />);
+    }
+  });
+  return result;
+};
+
+const sanghyunSections = [
+  (<section className="lovetype-section" key="sec1">
+    <SectionBadge icon="💎" label="키워드" />
+    <h3>1. 나를 정의하는 키워드</h3>
+    <b>◼ 단어 연상 테스트</b>
+    <Table head={["구분", "선택한 단어"]} rows={[
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>나를 표현하는 단어</span>, "눈에 띄는, 섹시한, 매너 있다"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>연인에게 바라는 단어</span>, "배려심 있는, 사랑스러운"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>어울리지 않는 단어</span>, "무뚝뚝하다, 계산적"],
+    ]} />
+    <div style={{marginTop: "0.7em", marginBottom: "0.7em", color: "#6b6b6b"}}>
+      "다른 사람과는 달리 감정 표현이 솔직한 편이에요. 연인과는 서로 배려하며 채워가는 관계를 원해요."
+    </div>
+  </section>),
+  (<section className="lovetype-section" key="sec2">
+    <SectionBadge icon="🌱" label="마음구조" />
+    <h3>2. 마음 구조 분석</h3>
+    <b>◼ 내 마음의 지도</b>
+    <Table head={["영역", "특징"]} rows={[
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>중심</span>, "배려 💝"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>강점</span>, "계획적·감정 공유"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>약점</span>, "우울감·감정 조절 실패"],
+    ]} />
+    <b style={{marginTop: "1.2em", display: "block"}}>◼ 연인에게 바라는 마음</b>
+    <Table head={["영역", "바라는 점"]} rows={[
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>중심</span>, "자신감 ✨"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>강점</span>, "공감 능력, 다정함"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>걱정</span>, "과도한 쿨함"],
+    ]} />
+  </section>),
+  (<section className="lovetype-section" key="sec3">
+    <SectionBadge icon="🍃" label="감정흐름" />
+    <h3>3. 연애 감정의 흐름</h3>
+    <b>◼ 1단계: 설렘</b>
+    <ul>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>첫 마음</span>: "상대가 작은 배려를 보일 때 (ex. 먼저 연락오기)"</li>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>함께 있을 때</span>: "편안함 + 이해받는 느낌" 🤗</li>
+    </ul>
+    <b>◼ 2단계: 헷갈림</b>
+    <ul>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>불안 요소</span>: "상대가 무심한 척하거나 벽을 세울 때"</li>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>내 반응</span>: 참다가 → 갑작스런 감정 폭발 💥</li>
+    </ul>
+    <b>◼ 3단계: 불안</b>
+    <ul>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>대표 감정</span>: "불안" (연락이 뜸할 때)</li>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>행동</span>: 표현을 줄이고 거리둠 → "나도 무심한 척하게 돼요"</li>
+    </ul>
+    <b>◼ 4단계: 거리감</b>
+    <ul>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>상태</span>: "포기 직전의 단념" 😔</li>
+      <li><span style={{fontWeight:'bold',color:'#4caf50'}}>원인</span>: 대화 단절, 반응 없음</li>
+    </ul>
+  </section>),
+  (<section className="lovetype-section" key="sec4">
+    <SectionBadge icon="📅" label="기억" />
+    <h3>4. 기억에 남는 순간</h3>
+    <Table head={["순간", "감정"]} rows={[
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>장거리 연애 중 마음이 커진 때</span>, "서로를 채워간다는 느낌 💌"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>매일 일기 공유</span>, "사랑이 쌓이는 걸 느꼈어요"],
+      [<span style={{fontWeight:'bold',color:'#4caf50'}}>첫 갈등</span>, "좋아서 힘든 것도 처음이었어요"],
+    ]} />
+  </section>),
+  (<section className="lovetype-section" key="sec5">
+    <SectionBadge icon="💡" label="패턴" />
+    <h3>5. 연애 패턴 총정리</h3>
+    <b>◼ 반복되는 감정: <span style={{color:'#4caf50'}}>불안</span></b>
+    <div style={{marginBottom: "0.5em"}}>
+      "감정을 표현하지 않고 참다가 쌓이면 불안해져요."
+    </div>
+    <b>◼ 바라는 변화:</b>
+    <ul>
+      <li><span style={{color:'#4caf50'}}>나만 애쓰지 않는 관계</span></li>
+      <li><span style={{color:'#4caf50'}}>있는 그대로 받아줄 수 있는 사랑</span></li>
+    </ul>
+    <b>◼ 사랑 유형: <span style={{color:'#4caf50'}}>마니아형 (집착형)</span></b>
+    <ul>
+      <li>특징: 질투·의심·애착 강함 😅</li>
+      <li>"한번 빠지면 헤어나오기 어려워요."</li>
+    </ul>
+  </section>),
+  (<section className="lovetype-section" key="sec6">
+    <SectionBadge icon="✉️" label="마무리" />
+    <h3>✉️ 마무리</h3>
+    <div className="lovetype-quote" style={{fontSize: "1.08em", lineHeight: "2.1", color: "#7a4b8a"}}>
+      "이 리포트는 내 진심을 전달하기 위해 정리했어요.<br/>
+      가끔은 불안해도, 너를 생각하는 마음은 변하지 않을 거예요.<br/>
+      함께 성장하는 연애를 만들어가고 싶어요. 💖"
+    </div>
+  </section>),
+];
+
+const hyeeunSections = [
+  (<section className="lovetype-section" key="sec-empty">
+    <div style={{color:'#b0b0b0',fontSize:'1.1rem'}}>페이지 내용은 곧 추가될 예정입니다 :)</div>
+  </section>),
+];
+
 const LoveTypeDetail = ({ who }) => {
-  let name, type, detail;
+  let name, type, sections;
   if (who === "sanghyun") {
     name = "상현";
     type = "ENTP";
-    detail = sanghyunDetail;
+    sections = sanghyunSections;
   } else {
     name = "혜은";
     type = "ENFJ";
-    detail = <div style={{color:'#b0b0b0',fontSize:'1.1rem'}}>페이지 내용은 곧 추가될 예정입니다 :)</div>;
+    sections = hyeeunSections;
   }
   return (
     <div className="lovetype-container vertical">
       <h2>{name}의 연애 심리 리포트</h2>
       <div style={{color:'#6abf7a',fontSize:'1.1rem',marginBottom:'1.2rem'}}>({type})</div>
-      {detail}
+      {getSectionsWithImages(sections)}
     </div>
   );
 };

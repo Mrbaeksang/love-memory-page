@@ -95,9 +95,28 @@
   z-index: 1;
 }
 @media (max-width: 600px) {
-  .travel-map-wrap { max-width: 98vw; padding: 0.7rem 0 2.2rem 0; }
-  .travel-map-svg { min-height: 280px; }
-  .travel-map-img { border-radius: 10px; }
+.travel-map-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2.5rem auto;
+  position: relative;
+  padding: 1.5rem 0 3rem 0;
+}
+.travel-map-svg {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 600px;
+}
+.travel-map-img {
+  width: 800px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 22px;
+  box-shadow: 0 4px 28px 0 rgba(150,150,180,0.07);
+  transition: transform 0.22s cubic-bezier(.4,1.4,.6,1), box-shadow 0.22s;
+}
   .travel-pin-icon { width: 22px; height: 22px; }
   .travel-modal-card { padding: 1.2rem 0.5rem 1.1rem 0.5rem; }
   .travel-modal-photo { width: 110px; }

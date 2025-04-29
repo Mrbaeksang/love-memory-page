@@ -2,6 +2,7 @@ import React from "react";
 import "./Memories.css";
 import { galleryFileMap } from "./galleryFileMap";
 import { useNavigate } from "react-router-dom";
+import RandomImage from "../RandomImage";
 
 // 연/월 데이터 동적 생성
 const years = Object.keys(galleryFileMap).sort((a, b) => b - a);
@@ -10,6 +11,7 @@ const Memories = () => {
   const navigate = useNavigate();
   return (
     <div className="memories-container">
+      <RandomImage />
       <div className="memories-thumbnail-grid">
         {years.map(year =>
           Object.keys(galleryFileMap[year] || {})

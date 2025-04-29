@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoveType.css";
+import RandomImage from "../RandomImage";
 
 // 예시 설문 결과 데이터
 const myType = {
@@ -22,6 +23,7 @@ const LoveType = () => {
   return (
     <div className="lovetype-container">
       <h2>우리의 연애 타입</h2>
+      <RandomImage />
       <div className="type-cards-horizontal">
         <div className="type-card type-card-flex">
           <h3>{myType.name}</h3>

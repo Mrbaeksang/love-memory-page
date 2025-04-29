@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import koreaMap from "../assets/korea-map.svg";
 import pinImg from "../assets/pin.png";
 import "./TravelMap.css";
+import RandomImage from "../RandomImage";
+
+// 지도 원본 크기(px)로 맞춰주세요! (SVG 또는 png 실제 크기)
+const MAP_WIDTH = 800; // SVG viewBox width
+const MAP_HEIGHT = 600; // SVG viewBox height
 
 const regions = [
   { id: "changwon", name: "창원", x: 260, y: 380 },
@@ -33,23 +38,32 @@ const regionMemo = {
   daegu: { label: "대구", memo: "이월드" }
 };
 
+// x, y를 %로 변환
+const getPercent = (x, y) => ({
+  left: `${(x / MAP_WIDTH) * 100}%`,
+  top: `${(y / MAP_HEIGHT) * 100}%`,
+  position: "absolute"
+});
+
 const TravelMap = () => {
   const [modal, setModal] = useState(null);
   const [mapHover, setMapHover] = useState(false);
 
   return (
     <div className="travel-map-wrap">
+      <RandomImage />
       <div
         className={`travel-map-svg travel-map-zoomable${mapHover ? " zoom" : ""}`}
         onMouseEnter={() => setMapHover(true)}
         onMouseLeave={() => setMapHover(false)}
+        style={{ position: "relative" }}
       >
         <img src={koreaMap} alt="대한민국 지도" className="travel-map-img" />
         {regions.map(r => (
           <button
             key={r.id}
             className={`travel-pin-img ${visited.includes(r.id) ? "visited" : ""}`}
-            style={{ left: r.x, top: r.y }}
+            style={getPercent(r.x, r.y)}
             onClick={() => setModal(r.id)}
             title={r.name}
           >
