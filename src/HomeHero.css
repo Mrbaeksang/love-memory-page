@@ -1,0 +1,83 @@
+.home-hero-modern {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 12px #ffe4ec99;
+  padding: 2.2em 1.2em 1.5em 1.2em;
+  margin: 1.5em auto 1em auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 380px;
+  min-width: 180px;
+  width: 92vw;
+  transition: box-shadow 0.2s;
+  font-family: 'Gowun Batang', serif;
+}
+
+.home-hero-modern:hover {
+  box-shadow: 0 4px 24px #ffe4eccc;
+}
+
+.hero-icon {
+  font-size: 2.5rem;
+  color: #222;
+  margin-bottom: 0.7rem;
+  animation: none;
+}
+
+.hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.01em;
+  font-family: 'Gowun Batang', serif;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.hero-heart {
+  color: #e57373;
+  animation: fadein-heart 1.4s;
+}
+
+@keyframes fadein-heart {
+  0% { opacity: 0; transform: scale(0.7); }
+  70% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.hero-date {
+  font-size: 1rem;
+  color: #666;
+  background: #fff7fa;
+  padding: 0.18rem 1.1rem;
+  border-radius: 0.9rem;
+  margin-top: 0.3rem;
+  font-family: 'Gowun Batang', serif;
+}
+
+.hero-message {
+  color: #b388ff;
+  font-size: 1.15rem;
+  font-family: 'Gowun Batang', serif;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .hero-title {
+    font-size: 1.13rem;
+  }
+  .home-hero-modern {
+    min-width: 74vw;
+    max-width: 98vw;
+    padding: 1.4em 0.5em 1.1em 0.5em;
+  }
+}

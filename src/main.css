@@ -1,0 +1,25 @@
+@import url("./assets/fonts.css");
+
+body {
+  margin: 0;
+  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  background: linear-gradient(135deg, #fcb69f 0%, #ffdde1 100%);
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #ffe3e3;
+}
+::-webkit-scrollbar-thumb {
+  background: #fcb69f;
+  border-radius: 4px;
+}

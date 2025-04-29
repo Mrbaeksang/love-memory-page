@@ -1,0 +1,254 @@
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  background: #f7f7f7;
+}
+
+.app-bg {
+  width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(90deg, #f7f7f7 0%, #fff 40%, #fff 60%, #f7f7f7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.app-main-container {
+  width: 100vw;
+  max-width: 430px;
+  background: transparent;
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.app-root {
+  width: 100vw;
+  min-height: 100vh;
+  background: #f7f7f7;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-bg-col {
+  flex: 1 1 0;
+  width: 100vw;
+  background: #f7f7f7;
+}
+
+.app-bg-row {
+  flex: 0 0 420px;
+  width: 100vw;
+  background: #fff;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 24px 0 #e0e0e022;
+  position: relative;
+}
+
+.section-fullvh {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding-bottom: 70px; /* for bottom nav space */
+}
+
+.section-home {
+  background: #fff;
+}
+
+.section-memories {
+  background: #f5f6fa;
+}
+
+.section-lovetype {
+  background: #ffe6ef;
+}
+
+.section-comment {
+  background: #e3f1ff;
+}
+
+section {
+  width: 100%;
+  padding: 2.7rem 0 2.7rem 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#home {
+  background: #fff8f3;
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 2px 16px 0 #f3e6d5aa;
+}
+
+#memories {
+  background: #f7faff;
+  border-radius: 0;
+  box-shadow: 0 2px 16px 0 #c9e0f8aa;
+}
+
+#lovetype {
+  background: #f8fff6;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 2px 16px 0 #d5f3e6aa;
+}
+
+h1, h2, h3 {
+  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  font-weight: 700;
+  color: #232323;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+}
+
+p, button, li, span, div {
+  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  color: #232323;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.navigation-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 1000;
+  background: rgba(255,255,255,0.96);
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+@media (max-width: 700px) {
+  .navigation-bar { display: none; }
+}
+
+.home-bg-section, .memories-container, .lovetype-section, .comment-section-content {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+  padding: 32px 0;
+}
+
+.section-memories .memories-container {
+  background: #f5f6fa;
+}
+
+.section-lovetype .lovetype-section {
+  background: #ffe6ef;
+}
+
+.section-comment .comment-section-content {
+  background: #e3f1ff;
+}
+
+@media (max-width: 600px) {
+  .app-main-container {
+    max-width: 100vw;
+  }
+  .section-fullvh {
+    padding: 0 2vw;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-bg {
+    background: #ececec;
+  }
+  .app-main-container {
+    width: 100vw;
+  }
+  .section-fullvh {
+    padding: 0;
+  }
+  .home-bg-section, .memories-container, .lovetype-section, .comment-section-content {
+    max-width: 98vw;
+    border-radius: 8px;
+    padding: 18px 0;
+  }
+  .app-root {
+    background: #ececec;
+  }
+  .app-bg-col {
+    min-height: 0;
+    display: none;
+  }
+  .app-bg-row {
+    max-width: 100vw;
+    min-width: 0;
+    box-shadow: none;
+    min-height: 200px;
+  }
+  .app-root {
+    padding-bottom: 80px;
+  }
+  section {
+    padding: 1.2rem 0 1.2rem 0;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}

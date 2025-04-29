@@ -1,0 +1,9 @@
+.fadein-up-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(.23,1.01,.32,1), transform 0.9s cubic-bezier(.23,1.01,.32,1);
+}
+.fadein-up-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

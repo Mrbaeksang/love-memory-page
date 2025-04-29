@@ -1,0 +1,219 @@
+.home-container {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+}
+
+.home-bg-section {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.home-card {
+  width: 90vw;
+  max-width: 370px;
+  min-width: 320px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.93);
+  border-radius: 22px;
+  box-shadow: 0 4px 32px rgba(255,183,197,0.13), 0 1.5px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 18px 22px 18px;
+  position: relative;
+}
+
+.hero-photo-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 14px #ffe6ef88;
+  margin-bottom: 18px;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.hero-title-row {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #e2668d;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-heart {
+  color: #ffb6c1;
+  font-size: 1.1em;
+  margin: 0 2px;
+}
+
+.hero-date {
+  color: #b48b6c;
+  font-size: 1.05rem;
+  margin-bottom: 15px;
+}
+
+.home-calligraphy {
+  font-family: 'Nanum Brush Script', 'Noto Sans KR', cursive;
+  font-size: 1.22rem;
+  color: #b48b6c;
+  margin-bottom: 7px;
+}
+
+.home-date-caption {
+  color: #a7a7a7;
+  font-size: 0.97rem;
+  margin-bottom: 22px;
+}
+
+.home-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.home-btn {
+  background: linear-gradient(90deg,#ffb6c1,#ffe6ef);
+  color: #e2668d;
+  border: none;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px #ffe6ef55;
+  font-size: 1.02rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+
+.home-btn:active {
+  background: linear-gradient(90deg,#ffe6ef,#ffb6c1);
+  color: #b48b6c;
+}
+
+.home-d-day-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 2.2rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.18rem;
+  color: #2e4b7d;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.home-d-date {
+  font-weight: 500;
+  color: #7b8bb7;
+}
+
+.home-d-count {
+  font-weight: 600;
+}
+
+.home-d-count b {
+  color: #d13b67;
+  font-size: 1.21em;
+}
+
+.home-anniversary-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.3rem 2.2rem;
+  justify-content: center;
+  margin-bottom: 1.7rem;
+}
+
+.home-anniv-row {
+  background: #f8fafd;
+  border: 1.2px solid #e0e9f7;
+  border-radius: 14px;
+  padding: 0.58em 1.25em 0.52em 1.25em;
+  font-size: 1.06rem;
+  color: #2e4b7d;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  min-width: 110px;
+  box-shadow: 0 2px 8px 0 rgba(46,75,125,0.04);
+}
+
+.home-anniv-label {
+  font-weight: 600;
+  color: #d13b67;
+  margin-right: 0.3em;
+}
+
+.home-anniv-date {
+  font-weight: 500;
+  color: #365699;
+}
+
+.home-anniv-day {
+  color: #8a9bb7;
+  font-size: 0.99em;
+  margin-left: 0.2em;
+}
+
+.home-anniversary-list-plain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: center;
+  margin-bottom: 1.7rem;
+}
+
+.home-anniv-row-plain {
+  font-size: 1.07rem;
+  color: #2e4b7d;
+  font-family: inherit;
+  letter-spacing: -0.2px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .home-card {
+    max-width: 98vw;
+    min-width: 0;
+    padding: 18px 4px 14px 4px;
+  }
+  .hero-photo-wrap {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+body, html, #root {
+  height: 100%;
+}

@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nunito:wght@400;700&display=swap');
+
+html, body, #root {
+  font-family: 'Gowun Batang', 'Nunito', 'Pretendard', 'SUIT', 'Noto Sans KR', sans-serif;
+  background: #ececec;
+  color: #3b2d1f;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Gowun Batang', 'Nunito', 'Pretendard', serif;
+  font-weight: 700;
+  color: #a95c1f;
+  letter-spacing: 0.02em;
+}
+
+strong, b {
+  color: #e07a5f;
+  font-weight: 700;
+}
+
+a {
+  color: #5abf7a;
+  text-decoration: underline dotted;
+  transition: color 0.18s;
+}
+a:hover {
+  color: #a95c1f;
+}
+
+.fadein-up {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeInUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fadein-img img {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(.4,0,.2,1);
+}
+.fadein-img img[loading="lazy"] {
+  opacity: 1;
+}
