@@ -1,8 +1,8 @@
 import React from "react";
-import { FaHome, FaRegImage, FaHeart, FaMapMarkedAlt } from "react-icons/fa";
+import { FaHome, FaRegImage, FaHeart, FaMapMarkedAlt, FaBookReader } from "react-icons/fa";
 import "./BottomNavigation.css";
 
-const BottomNavigation = ({ onHome, onMemories, onLoveType, onTravelMap }) => {
+const BottomNavigation = ({ onHome, onMemories, onLoveType, onTravelMap, onGuestbook }) => {
   return (
     <nav className="bottom-nav">
       <button className="bottom-nav-btn" onClick={onHome} aria-label="Home">
@@ -20,6 +20,10 @@ const BottomNavigation = ({ onHome, onMemories, onLoveType, onTravelMap }) => {
       <button className="bottom-nav-btn" onClick={onTravelMap} aria-label="Travel map">
         <FaMapMarkedAlt size={22} />
         <span>Travel map</span>
+      </button>
+      <button className="bottom-nav-btn" onClick={onGuestbook} aria-label="Guestbook">
+        <FaBookReader size={22} />
+        <span>Guestbook</span>
       </button>
     </nav>
   );

@@ -1,54 +1,81 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { galleryFileMap } from "./galleryFileMap";
+import { supabase } from "../lib/supabaseClient";
 import "./GalleryMonth.css";
 
 const GalleryMonth = () => {
   const { year, month } = useParams();
   const navigate = useNavigate();
-  const images = (galleryFileMap[year] && galleryFileMap[year][month]) || [];
+  const [images, setImages] = useState([]);
   const [modalImg, setModalImg] = useState(null);
   const modalImgRef = useRef(null);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
 
+  const title = `${year}년 ${parseInt(month, 10)}월의 우리`;
+  const emotionText = "이 달의 소중한 추억들을 담았어요.";
+
+  // 이미지 목록 가져오기
   useEffect(() => {
-    console.log("[GalleryMonth] year:", year, "month:", month, "images:", images);
-  }, [year, month, images]);
+    const fetchImages = async () => {
+      const { data, error } = await supabase
+        .storage
+        .from("gallery")
+        .list(`${year}/${month}`, { limit: 100, offset: 0 });
 
-  // pinch-to-zoom 이벤트 등록 (mobile only)
+      if (error) return console.error("❌ 이미지 목록 불러오기 실패:", error);
+
+      const urls = data
+        .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f.name))
+        .map((f) =>
+          supabase.storage
+            .from("gallery")
+            .getPublicUrl(`${year}/${month}/${f.name}`).data.publicUrl
+        );
+
+      setImages(urls);
+    };
+    fetchImages();
+  }, [year, month]);
+
+  // 모달 이미지에 대한 pinch-to-zoom (모바일)
   useEffect(() => {
     if (!modalImg) return;
     const img = modalImgRef.current;
     if (!img) return;
+
     let scale = 1, lastDist = null;
-    function getDist(e) {
-      if (e.touches.length < 2) return 0;
+
+    const getDist = (e) => {
       const [t1, t2] = e.touches;
       return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-    }
-    function onTouchStart(e) {
-      if (e.touches.length === 2) {
-        lastDist = getDist(e);
-      }
-    }
-    function onTouchMove(e) {
+    };
+
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) lastDist = getDist(e);
+    };
+
+    const onTouchMove = (e) => {
       if (e.touches.length === 2 && lastDist) {
         const dist = getDist(e);
-        let newScale = Math.min(Math.max(scale * (dist / lastDist), 1), 3);
+        const newScale = Math.min(Math.max(scale * (dist / lastDist), 1), 3);
         img.style.transform = `scale(${newScale})`;
         if (Math.abs(newScale - scale) > 0.01) scale = newScale;
         lastDist = dist;
         e.preventDefault();
       }
-    }
-    function onTouchEnd(e) {
-      if (e.touches.length < 2) {
-        img.style.transform = "scale(1)";
-        scale = 1; lastDist = null;
-      }
-    }
+    };
+
+    const onTouchEnd = () => {
+      img.style.transform = "scale(1)";
+      scale = 1;
+      lastDist = null;
+    };
+
     img.addEventListener("touchstart", onTouchStart, { passive: false });
     img.addEventListener("touchmove", onTouchMove, { passive: false });
     img.addEventListener("touchend", onTouchEnd, { passive: false });
+
     return () => {
       img.removeEventListener("touchstart", onTouchStart);
       img.removeEventListener("touchmove", onTouchMove);
@@ -56,10 +83,47 @@ const GalleryMonth = () => {
     };
   }, [modalImg]);
 
-  const title = `${year}년 ${parseInt(month, 10)}월의 우리`;
-  const emotionText = "이 달의 소중한 추억들을 담았어요.";
+  // 댓글 불러오기
+  const fetchComments = async (url) => {
+    const { data, error } = await supabase
+      .from("gallery_comments")
+      .select("*")
+      .eq("image_url", url)
+      .order("created_at", { ascending: false });
 
-  if (!images || images.length === 0) {
+    if (!error) setComments(data);
+  };
+
+  // 댓글 저장
+  const handleSubmitComment = async () => {
+    if (!comment.trim()) return;
+
+    const { error } = await supabase.from("gallery_comments").insert({
+      image_url: modalImg,
+      content: comment,
+    });
+
+    if (!error) {
+      setComment("");
+      fetchComments(modalImg);
+    } else {
+      alert("❌ 댓글 저장 실패");
+    }
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = async (id) => {
+    const { error } = await supabase.from("gallery_comments").delete().eq("id", id);
+    if (!error) fetchComments(modalImg);
+  };
+
+  // 이미지 클릭 → 모달 오픈 + 댓글
+  const handleModalOpen = (url) => {
+    setModalImg(url);
+    fetchComments(url);
+  };
+
+  if (!images.length) {
     return (
       <div className="gallery-month-bg">
         <div className="gallery-header-bar">
@@ -67,7 +131,7 @@ const GalleryMonth = () => {
         </div>
         <h2 className="gallery-month-title">{title}</h2>
         <div className="gallery-month-emotion">{emotionText}</div>
-        <div style={{textAlign:'center',color:'#b0b0b0',marginTop:'2em',fontSize:'1.1em'}}>아직 등록된 추억이 없습니다.<br/>이미지 파일명을 다시 확인해 주세요.</div>
+        <div className="gallery-month-empty">아직 등록된 추억이 없습니다.</div>
       </div>
     );
   }
@@ -79,25 +143,56 @@ const GalleryMonth = () => {
       </div>
       <h2 className="gallery-month-title">{title}</h2>
       <div className="gallery-month-emotion">{emotionText}</div>
+
       <div className="gallery-month-grid">
-        {images.map((img, idx) => (
-          <div className="gallery-photo-card" key={img}>
+        {images.map((url, idx) => (
+          <div className="gallery-photo-card" key={url}>
             <img
-              src={`/gallery/${img}`}
+              src={url}
               alt={`추억 ${idx + 1}`}
-              loading="lazy"
               className="gallery-photo-img"
-              onClick={() => setModalImg(`/gallery/${img}`)}
-              onError={e => { e.target.style.display = 'none'; console.warn('이미지 로드 실패:', img); }}
-              style={{cursor:'zoom-in'}}
+              loading="lazy"
+              onClick={() => handleModalOpen(url)}
+              onError={(e) => (e.target.style.display = "none")}
+              style={{ cursor: "zoom-in" }}
             />
           </div>
         ))}
       </div>
+
+      {/* 모달 */}
       {modalImg && (
         <div className="gallery-modal-bg" onClick={() => setModalImg(null)}>
-          <div className="gallery-modal-img-wrap">
+          <div className="gallery-modal-img-wrap" onClick={(e) => e.stopPropagation()}>
             <img ref={modalImgRef} src={modalImg} alt="확대 이미지" className="gallery-modal-img" />
+
+            <div className="gallery-comment-box">
+              <textarea
+                className="gallery-comment-textarea"
+                placeholder="이 사진에 대한 감상을 남겨보세요 ✍️"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              <button className="gallery-comment-submit" onClick={handleSubmitComment}>
+                댓글 남기기
+              </button>
+
+              <div className="gallery-comment-list">
+                {comments.map((c) => (
+                  <div key={c.id} className="gallery-comment-item fade-in">
+                    <p>{c.content}</p>
+                    <div className="comment-meta">
+                      <span>{new Date(c.created_at).toLocaleDateString()}</span>
+                      <button
+                        className="comment-delete"
+                        onClick={() => handleDeleteComment(c.id)}
+                      >🗑</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         </div>
       )}

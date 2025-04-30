@@ -1,0 +1,357 @@
+/* 전체 섹션 배경 */
+.section-guestbook {
+  background: linear-gradient(135deg, #fff3f0, #ffe5e5);
+  position: relative;
+  padding: 2rem 0;
+}
+
+/* 내부 컨텐츠 정렬 */
+.section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* 제목 */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #444;
+  text-shadow: 1px 1px 2px rgba(255, 182, 182, 0.4);
+}
+
+/* 방명록 카드 */
+.guestbook-container {
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+  margin: 20px auto;
+  background: #ffffffcc;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.guestbook-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #fca69f, #ffb3b3);
+  border-radius: 0 0 8px 8px;
+}
+
+/* 입력 영역 */
+.guestbook-content {
+  background: linear-gradient(to bottom, #fff1ee, #ffe5e0);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.guestbook-content:hover {
+  transform: translateY(-5px);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-input,
+.form-textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #fffaf9;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #fca69f;
+  box-shadow: 0 0 0 2px rgba(252, 166, 159, 0.2);
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #fca69f, #ffb3b3);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(252, 166, 159, 0.2);
+}
+
+.submit-btn:hover {
+  background: #f58a7c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(252, 166, 159, 0.3);
+}
+
+/* 메시지 카드 */
+.messages-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.message-card {
+  background: #fff8f7;
+  border-left: 4px solid #fcb69f;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.message-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.author {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.timestamp {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.message-text {
+  margin: 1rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #2c3e50;
+  opacity: 0.95;
+  word-break: break-word;
+}
+
+/* 삭제 버튼 */
+.delete-btn {
+  padding: 8px 12px;
+  background: linear-gradient(to right, #ff4d4f, #ff6b6b);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(255, 77, 79, 0.2);
+}
+
+.delete-btn:hover {
+  background: #ff3d3d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 77, 79, 0.3);
+}
+
+/* 삭제 영역 */
+.delete-section {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.delete-section input {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #fffaf9;
+}
+
+.delete-section button {
+  padding: 0.7rem 1rem;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-section button:hover {
+  background: #000;
+}
+
+/* 오류 메시지 */
+.error-message {
+  font-size: 14px;
+  color: #ff4d4f;
+  margin-top: -8px;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 77, 79, 0.1);
+  animation: error-shake 0.3s ease-in-out;
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .guestbook-content {
+    padding: 1.2rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    font-size: 0.95rem;
+  }
+
+  .submit-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+
+  .message-card {
+    padding: 0.8rem;
+  }
+
+  .author {
+    font-size: 0.95rem;
+  }
+
+  .message-text {
+    margin: 0.4rem 0;
+  }
+
+  .delete-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .delete-section {
+    padding: 1rem;
+  }
+}
+
+/* 모달 전체 배경 (화면 덮기) */
+.delete-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 박스 */
+.delete-modal-content {
+  background: #fff8f7;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+}
+
+/* 모달 내 인풋 */
+.modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-top: 1rem;
+  background: #fffaf9;
+}
+
+/* 모달 버튼 */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-cancel-btn,
+.modal-delete-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
+
+.modal-cancel-btn {
+  background: #ccc;
+  color: #333;
+}
+
+.modal-delete-btn {
+  background: linear-gradient(to right, #ff4d4f, #ff6b6b);
+  color: white;
+}
+
+.modal-delete-btn:hover {
+  background: #ff3d3d;
+}
+
+.modal-cancel-btn:hover {
+  background: #bbb;
+}

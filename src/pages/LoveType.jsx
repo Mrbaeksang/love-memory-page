@@ -20,8 +20,10 @@ const gfType = {
 
 const LoveType = () => {
   const navigate = useNavigate();
+
   return (
     <div className="lovetype-container">
+      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
       <h2>우리의 연애 타입</h2>
       <RandomImage />
       <div className="type-cards-horizontal">
@@ -30,14 +32,14 @@ const LoveType = () => {
           <p><b>성향:</b> {myType.type}</p>
           <p>{myType.description}</p>
           <p><b>연애스타일:</b> {myType.loveStyle}</p>
-          <button className="lovetype-detail-btn" onClick={()=>navigate("/lovetype/sanghyun")}>자세히 알아보기</button>
+          <button className="lovetype-detail-btn" onClick={() => navigate("/lovetype/sanghyun")}>자세히 알아보기</button>
         </div>
         <div className="type-card type-card-flex">
           <h3>{gfType.name}</h3>
           <p><b>성향:</b> {gfType.type}</p>
           <p>{gfType.description}</p>
           <p><b>연애스타일:</b> {gfType.loveStyle}</p>
-          <button className="lovetype-detail-btn" onClick={()=>navigate("/lovetype/hyeeun")}>자세히 알아보기</button>
+          <button className="lovetype-detail-btn" onClick={() => navigate("/lovetype/hyeeun")}>자세히 알아보기</button>
         </div>
       </div>
     </div>

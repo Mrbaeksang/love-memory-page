@@ -1,6 +1,9 @@
 import React from "react";
 import "./LoveType.css";
 import RandomImage from "../RandomImage";
+import { useNavigate } from "react-router-dom";
+
+
 
 const QA = ({q, a}) => (
   <div className="lovetype-qa"><span className="lovetype-q">Q.</span> {q}<br/><span className="lovetype-a"> {a}</span></div>
@@ -144,6 +147,9 @@ const LoveTypeDetail = ({ who }) => {
   }
   return (
     <div className="lovetype-container vertical">
+      {/* ✅ 홈으로 돌아가기 버튼 정상 위치 */}
+      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
+
       <h2>{name}의 연애 심리 리포트</h2>
       <div style={{color:'#6abf7a',fontSize:'1.1rem',marginBottom:'1.2rem'}}>({type})</div>
       {getSectionsWithImages(sections)}

@@ -7,14 +7,20 @@ import GalleryMonth from "./pages/GalleryMonth";
 import LoveTypeDetail from "./pages/LoveTypeDetail";
 import TravelMap from "./pages/TravelMap";
 import BottomNavigation from "./BottomNavigation";
+import Guestbook from "./components/Guestbook";
+import GalleryUpload from "./components/GalleryUpload";
+import ScrollToTop from "./components/ScrollToTop"; // ✅ 추가
+
 import "./App.css";
 import "./fadein.css";
+import "./components/Guestbook.css";
 
 function App() {
   const homeRef = useRef(null);
   const memoriesRef = useRef(null);
   const loveTypeRef = useRef(null);
   const travelMapRef = useRef(null);
+  const guestbookRef = useRef(null);
 
   const scrollToSection = (ref) => {
     if (ref.current) {
@@ -22,28 +28,57 @@ function App() {
     }
   };
 
+  const handleGuestbook = () => {
+    scrollToSection(guestbookRef);
+  };
+
   return (
     <div className="app-bg">
       <div className="app-main-container">
+        {/* ✅ 모든 페이지 이동 시 맨 위로 스크롤 */}
+        <ScrollToTop />
+
         <Routes>
+          {/* 🏠 메인 페이지 - 풀페이지 섹션 */}
           <Route path="/" element={
             <>
-              <section ref={homeRef} id="home" className="section-fullvh section-home"><Home onMemories={() => scrollToSection(memoriesRef)} /*onComment={() => scrollToSection(commentRef)}*/ /></section>
-              <section ref={memoriesRef} id="memories" className="section-fullvh section-memories"><Memories /></section>
-              <section ref={loveTypeRef} id="lovetype" className="section-fullvh section-lovetype"><LoveType /></section>
-              <section ref={travelMapRef} id="travelmap" className="section-fullvh section-travelmap"><TravelMap /></section>
-              {/* <section ref={commentRef} id="comment" className="section-fullvh section-comment"><Comment /></section> */}
+              <section ref={homeRef} id="home" className="section-fullvh section-home">
+                <Home onMemories={() => scrollToSection(memoriesRef)} />
+              </section>
+              <section ref={memoriesRef} id="memories" className="section-fullvh section-memories">
+                <Memories />
+              </section>
+              <section ref={loveTypeRef} id="lovetype" className="section-fullvh section-lovetype">
+                <LoveType />
+              </section>
+              <section ref={travelMapRef} id="travelmap" className="section-fullvh section-travelmap">
+                <TravelMap />
+              </section>
+              <section ref={guestbookRef} id="guestbook" className="section-fullvh section-guestbook">
+                <Guestbook />
+              </section>
               <BottomNavigation
                 onHome={() => scrollToSection(homeRef)}
                 onMemories={() => scrollToSection(memoriesRef)}
                 onLoveType={() => scrollToSection(loveTypeRef)}
                 onTravelMap={() => scrollToSection(travelMapRef)}
+                onGuestbook={handleGuestbook}
               />
             </>
           } />
+
+          {/* 🖼️ 월별 갤러리 페이지 */}
           <Route path="/gallery/:year/:month" element={<GalleryMonth />} />
+
+          {/* 📸 업로드 페이지 */}
+          <Route path="/upload" element={<GalleryUpload />} />
+
+          {/* 💕 러브타입 상세 페이지 */}
           <Route path="/lovetype/sanghyun" element={<LoveTypeDetail who="sanghyun" />} />
           <Route path="/lovetype/hyeeun" element={<LoveTypeDetail who="hyeeun" />} />
+
+          {/* 📝 방명록 별도 진입 */}
+          <Route path="/guestbook" element={<Guestbook />} />
         </Routes>
       </div>
     </div>

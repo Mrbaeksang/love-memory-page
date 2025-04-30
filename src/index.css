@@ -68,3 +68,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* 📂 src/index.css 또는 main.css */
+
+.back-home-btn {
+  font-size: 1rem;
+  background: none;
+  border: none;
+  color: #ff8888;
+  margin: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

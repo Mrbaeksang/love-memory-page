@@ -9,8 +9,10 @@ const years = Object.keys(galleryFileMap).sort((a, b) => b - a);
 
 const Memories = () => {
   const navigate = useNavigate();
+
   return (
     <div className="memories-container">
+      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
       <RandomImage />
       <div className="memories-thumbnail-grid">
         {years.map(year =>
