@@ -15,22 +15,20 @@ const GalleryMonth = () => {
   const title = `${year}년 ${parseInt(month, 10)}월의 우리`;
   const emotionText = "이 달의 소중한 추억들을 담았어요.";
 
-  // 이미지 목록 가져오기
+  // 이미지 가져오기
   useEffect(() => {
     const fetchImages = async () => {
       const { data, error } = await supabase
         .storage
         .from("gallery")
-        .list(`${year}/${month}`, { limit: 100, offset: 0 });
+        .list(`${year}/${month}`, { limit: 100 });
 
-      if (error) return console.error("❌ 이미지 목록 불러오기 실패:", error);
+      if (error) return console.error("❌ 이미지 목록 실패:", error);
 
       const urls = data
         .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f.name))
         .map((f) =>
-          supabase.storage
-            .from("gallery")
-            .getPublicUrl(`${year}/${month}/${f.name}`).data.publicUrl
+          supabase.storage.from("gallery").getPublicUrl(`${year}/${month}/${f.name}`).data.publicUrl
         );
 
       setImages(urls);
@@ -38,7 +36,55 @@ const GalleryMonth = () => {
     fetchImages();
   }, [year, month]);
 
-  // 모달 이미지에 대한 pinch-to-zoom (모바일)
+  // 댓글 불러오기
+  const fetchComments = async (url) => {
+    const { data, error } = await supabase
+      .from("gallery_comments")
+      .select("*")
+      .eq("image_url", url)
+      .order("created_at", { ascending: false });
+
+    if (!error) setComments(data);
+  };
+
+  // 댓글 작성
+  const handleSubmitComment = async () => {
+    if (!comment.trim()) return;
+
+    const { error } = await supabase.from("gallery_comments").insert({
+      image_url: modalImg,
+      content: comment.trim(),
+    });
+
+    if (!error) {
+      setComment("");
+      fetchComments(modalImg);
+    } else {
+      alert("❌ 댓글 저장 실패");
+    }
+  };
+
+  // Enter 키 입력 시 댓글 전송
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitComment();
+    }
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = async (id) => {
+    const { error } = await supabase.from("gallery_comments").delete().eq("id", id);
+    if (!error) fetchComments(modalImg);
+  };
+
+  // 모달 오픈
+  const handleModalOpen = (url) => {
+    setModalImg(url);
+    fetchComments(url);
+  };
+
+  // 모바일 pinch-to-zoom
   useEffect(() => {
     if (!modalImg) return;
     const img = modalImgRef.current;
@@ -83,46 +129,7 @@ const GalleryMonth = () => {
     };
   }, [modalImg]);
 
-  // 댓글 불러오기
-  const fetchComments = async (url) => {
-    const { data, error } = await supabase
-      .from("gallery_comments")
-      .select("*")
-      .eq("image_url", url)
-      .order("created_at", { ascending: false });
-
-    if (!error) setComments(data);
-  };
-
-  // 댓글 저장
-  const handleSubmitComment = async () => {
-    if (!comment.trim()) return;
-
-    const { error } = await supabase.from("gallery_comments").insert({
-      image_url: modalImg,
-      content: comment,
-    });
-
-    if (!error) {
-      setComment("");
-      fetchComments(modalImg);
-    } else {
-      alert("❌ 댓글 저장 실패");
-    }
-  };
-
-  // 댓글 삭제
-  const handleDeleteComment = async (id) => {
-    const { error } = await supabase.from("gallery_comments").delete().eq("id", id);
-    if (!error) fetchComments(modalImg);
-  };
-
-  // 이미지 클릭 → 모달 오픈 + 댓글
-  const handleModalOpen = (url) => {
-    setModalImg(url);
-    fetchComments(url);
-  };
-
+  // 메인 화면
   if (!images.length) {
     return (
       <div className="gallery-month-bg">
@@ -172,27 +179,32 @@ const GalleryMonth = () => {
                 placeholder="이 사진에 대한 감상을 남겨보세요 ✍️"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="gallery-comment-submit" onClick={handleSubmitComment}>
                 댓글 남기기
               </button>
 
               <div className="gallery-comment-list">
+                {comments.length === 0 && (
+                  <div style={{ color: "#aaa", fontSize: "0.95rem", marginTop: "8px" }}>
+                    아직 댓글이 없습니다. 첫 댓글을 남겨보세요!
+                  </div>
+                )}
                 {comments.map((c) => (
                   <div key={c.id} className="gallery-comment-item fade-in">
                     <p>{c.content}</p>
                     <div className="comment-meta">
                       <span>{new Date(c.created_at).toLocaleDateString()}</span>
-                      <button
-                        className="comment-delete"
-                        onClick={() => handleDeleteComment(c.id)}
-                      >🗑</button>
+                      <button className="comment-delete" onClick={() => handleDeleteComment(c.id)}>
+                        🗑
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
 
+            </div>
           </div>
         </div>
       )}
