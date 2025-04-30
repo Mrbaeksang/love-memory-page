@@ -1,6 +1,5 @@
 import React from "react";
 import "./Memories.css";
-import { galleryFileMap } from "./galleryFileMap";
 import { useNavigate } from "react-router-dom";
 import RandomImage from "../RandomImage";
 
