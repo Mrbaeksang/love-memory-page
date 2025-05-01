@@ -10,6 +10,7 @@ import BottomNavigation from "./BottomNavigation";
 import Guestbook from "./components/Guestbook";
 import GalleryUpload from "./components/GalleryUpload";
 import ScrollToTop from "./components/ScrollToTop";
+import React, { useRef, useEffect } from "react"; // ✅ useEffect 추가
 
 // 💬 새로 추가된 댓글 갤러리용 페이지
 import CommentGalleryPage from "./pages/CommentGalleryPage";
@@ -25,6 +26,11 @@ function App() {
   const loveTypeRef = useRef(null);
   const travelMapRef = useRef(null);
   const guestbookRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/log-visit")
+      .catch(err => console.error("방문자 기록 실패:", err));
+  }, []);
 
   const scrollToSection = (ref) => {
     if (ref.current) {
