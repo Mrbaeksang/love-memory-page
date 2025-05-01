@@ -1,0 +1,110 @@
+
+.comment-detail-container {
+  padding: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.comment-detail-back {
+  background: transparent;
+  border: none;
+  color: #e86c3d;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.comment-detail-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.comment-detail-image {
+  width: 100%;
+  display: block;
+}
+
+.comment-detail-box {
+  padding: 1rem;
+  background: #fff8f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.comment-detail-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #e86c3d;
+}
+
+.comment-detail-item {
+  background: #fff;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.comment-detail-date {
+  font-size: 0.8rem;
+  color: #999;
+}
+.comment-form {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  resize: vertical;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fffaf9;
+  color: #333;
+}
+
+.comment-submit {
+  align-self: flex-end;
+  background: linear-gradient(to right, #ff8a65, #ff6e6e);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.comment-submit:hover {
+  background: linear-gradient(to right, #ff7043, #ff5252);
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.4rem;
+}
+
+.comment-like-btn {
+  background: none;
+  border: none;
+  color: #e86c3d;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.1s ease;
+}
+
+.comment-like-btn:hover {
+  transform: scale(1.1);
+}

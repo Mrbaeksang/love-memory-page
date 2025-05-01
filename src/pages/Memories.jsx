@@ -3,6 +3,8 @@ import "./Memories.css";
 import { useNavigate } from "react-router-dom";
 import RandomImage from "../RandomImage";
 import { supabase } from "../lib/supabaseClient";
+import RandomCommentedImageButton from "../components/RandomCommentedImageButton";
+
 
 const Memories = () => {
   const navigate = useNavigate();
@@ -53,8 +55,24 @@ const Memories = () => {
 
   return (
     <div className="memories-container">
-      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
+      <button className="back-home-btn" onClick={() => navigate("/")}>
+        ← 홈으로
+      </button>
+  
+      {/* 버튼 2개 세로 정렬 */}
+      <div className="memories-top-button-group">
+        <button className="upload-button" onClick={() => navigate("/upload")}>
+          📤 사진 업로드
+        </button>
+        <RandomCommentedImageButton
+          onSelect={(url) => {
+            navigate(`/gallery/random?img=${encodeURIComponent(url)}`);
+          }}
+        />
+      </div>
+  
       <RandomImage />
+  
       <div className="memories-thumbnail-grid">
         {thumbnails.map(({ year, month, thumb }) => (
           <div
@@ -74,6 +92,7 @@ const Memories = () => {
       </div>
     </div>
   );
-};
+};  
+  
 
 export default Memories;

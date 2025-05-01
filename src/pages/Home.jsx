@@ -4,6 +4,7 @@ import "./Home.css";
 import RandomImage from "../RandomImage";
 import GalleryPreview from "../components/GalleryPreview"; // ✅ 추가
 
+
 // D-Day 계산 함수
 function getDDay() {
   const startDate = new Date(2025, 0, 1);

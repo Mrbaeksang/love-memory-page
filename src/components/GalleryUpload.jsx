@@ -4,11 +4,18 @@ import EXIF from "exif-js";
 
 const GalleryUpload = () => {
   const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState("");
 
   const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
+    const selectedFiles = [...e.target.files];
+    setFiles(selectedFiles);
+    setStatus("");
+
+    // 썸네일 미리보기 생성
+    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setPreviews(newPreviews);
   };
 
   const getDateFromExif = (file) =>
@@ -16,10 +23,14 @@ const GalleryUpload = () => {
       const reader = new FileReader();
       reader.onload = function (e) {
         const buffer = e.target.result;
-        EXIF.getData({ src: buffer }, function () {
-          const date = EXIF.getTag(this, "DateTimeOriginal");
-          resolve(date);
-        });
+        try {
+          EXIF.getData({ src: buffer }, function () {
+            const date = EXIF.getTag(this, "DateTimeOriginal");
+            resolve(date);
+          });
+        } catch (err) {
+          resolve(null);
+        }
       };
       reader.readAsArrayBuffer(file);
     });
@@ -39,23 +50,31 @@ const GalleryUpload = () => {
 
     const timestamp = Date.now();
     const safeName = file.name.replace(/\s+/g, "_").toLowerCase();
-
     return `gallery/${year}/${month}/${timestamp}_${safeName}`;
   };
 
   const uploadFiles = async () => {
-    if (files.length === 0) return alert("업로드할 파일을 선택하세요.");
+    if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
 
     setUploading(true);
     setStatus("📤 업로드 중...");
 
     for (const file of files) {
-      const path = await getUploadPath(file);
-      const { error } = await supabase.storage.from("gallery").upload(path, file);
+      try {
+        const path = await getUploadPath(file);
+        const { error } = await supabase.storage.from("gallery").upload(path, file, {
+          upsert: true,
+        });
 
-      if (error) {
-        console.error("업로드 실패:", error);
-        setStatus(`❌ ${file.name} 업로드 실패`);
+        if (error) {
+          console.error("❌ 업로드 실패:", error);
+          setStatus(`❌ ${file.name} 업로드 실패`);
+          setUploading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("⚠️ 예외 발생:", err);
+        setStatus("❌ 예기치 못한 오류 발생");
         setUploading(false);
         return;
       }
@@ -64,11 +83,13 @@ const GalleryUpload = () => {
     setStatus("✅ 모든 파일 업로드 완료!");
     setUploading(false);
     setFiles([]);
+    setPreviews([]);
   };
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>📸 갤러리 사진 업로드</h2>
+      <h2 style={{ marginBottom: "1rem" }}>📸 갤러리 사진 업로드</h2>
+
       <input
         type="file"
         accept="image/*"
@@ -77,11 +98,52 @@ const GalleryUpload = () => {
         disabled={uploading}
         style={{ marginBottom: "1rem" }}
       />
-      <br />
-      <button onClick={uploadFiles} disabled={uploading || files.length === 0}>
+
+      {/* 썸네일 미리보기 */}
+      {previews.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            justifyContent: "center",
+            marginBottom: "1rem",
+          }}
+        >
+          {previews.map((src, idx) => (
+            <img
+              key={idx}
+              src={src}
+              alt={`preview-${idx}`}
+              style={{
+                width: "90px",
+                height: "90px",
+                objectFit: "cover",
+                borderRadius: "8px",
+                border: "1px solid #ddd",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <button
+        onClick={uploadFiles}
+        disabled={uploading || files.length === 0}
+        style={{
+          padding: "0.6em 1.2em",
+          background: "#ff9966",
+          border: "none",
+          borderRadius: "6px",
+          color: "#fff",
+          fontWeight: "bold",
+          cursor: uploading ? "not-allowed" : "pointer",
+        }}
+      >
         {uploading ? "업로드 중..." : "✨ 업로드"}
       </button>
-      <p>{status}</p>
+
+      {status && <p style={{ marginTop: "1rem", color: "#333" }}>{status}</p>}
     </div>
   );
 };

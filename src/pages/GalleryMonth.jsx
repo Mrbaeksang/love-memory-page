@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import "./GalleryMonth.css";
+import RandomCommentedImageButton from "../components/RandomCommentedImageButton";
+
 
 const GalleryMonth = () => {
   const { year, month } = useParams();
@@ -150,6 +152,12 @@ const GalleryMonth = () => {
       </div>
       <h2 className="gallery-month-title">{title}</h2>
       <div className="gallery-month-emotion">{emotionText}</div>
+
+      <RandomCommentedImageButton onSelect={(url) => {
+  setModalImg(url);
+  fetchComments(url);
+}} />
+
 
       <div className="gallery-month-grid">
         {images.map((url, idx) => (

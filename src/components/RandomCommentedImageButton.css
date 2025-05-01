@@ -1,0 +1,17 @@
+/* src/components/RandomCommentedImageButton.css */
+
+.gallery-random-comment-btn {
+    background: #e86c3d;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    padding: 10px 16px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .gallery-random-comment-btn:hover {
+    background: #d45628;
+  }
+  

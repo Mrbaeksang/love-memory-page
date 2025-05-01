@@ -9,7 +9,11 @@ import TravelMap from "./pages/TravelMap";
 import BottomNavigation from "./BottomNavigation";
 import Guestbook from "./components/Guestbook";
 import GalleryUpload from "./components/GalleryUpload";
-import ScrollToTop from "./components/ScrollToTop"; // ✅ 추가
+import ScrollToTop from "./components/ScrollToTop";
+
+// 💬 새로 추가된 댓글 갤러리용 페이지
+import CommentGalleryPage from "./pages/CommentGalleryPage";
+import CommentDetailPage from "./pages/CommentDetailPage";
 
 import "./App.css";
 import "./fadein.css";
@@ -40,32 +44,55 @@ function App() {
 
         <Routes>
           {/* 🏠 메인 페이지 - 풀페이지 섹션 */}
-          <Route path="/" element={
-            <>
-              <section ref={homeRef} id="home" className="section-fullvh section-home">
-                <Home onMemories={() => scrollToSection(memoriesRef)} />
-              </section>
-              <section ref={memoriesRef} id="memories" className="section-fullvh section-memories">
-                <Memories />
-              </section>
-              <section ref={loveTypeRef} id="lovetype" className="section-fullvh section-lovetype">
-                <LoveType />
-              </section>
-              <section ref={travelMapRef} id="travelmap" className="section-fullvh section-travelmap">
-                <TravelMap />
-              </section>
-              <section ref={guestbookRef} id="guestbook" className="section-fullvh section-guestbook">
-                <Guestbook />
-              </section>
-              <BottomNavigation
-                onHome={() => scrollToSection(homeRef)}
-                onMemories={() => scrollToSection(memoriesRef)}
-                onLoveType={() => scrollToSection(loveTypeRef)}
-                onTravelMap={() => scrollToSection(travelMapRef)}
-                onGuestbook={handleGuestbook}
-              />
-            </>
-          } />
+          <Route
+            path="/"
+            element={
+              <>
+                <section
+                  ref={homeRef}
+                  id="home"
+                  className="section-fullvh section-home"
+                >
+                  <Home onMemories={() => scrollToSection(memoriesRef)} />
+                </section>
+                <section
+                  ref={memoriesRef}
+                  id="memories"
+                  className="section-fullvh section-memories"
+                >
+                  <Memories />
+                </section>
+                <section
+                  ref={loveTypeRef}
+                  id="lovetype"
+                  className="section-fullvh section-lovetype"
+                >
+                  <LoveType />
+                </section>
+                <section
+                  ref={travelMapRef}
+                  id="travelmap"
+                  className="section-fullvh section-travelmap"
+                >
+                  <TravelMap />
+                </section>
+                <section
+                  ref={guestbookRef}
+                  id="guestbook"
+                  className="section-fullvh section-guestbook"
+                >
+                  <Guestbook />
+                </section>
+                <BottomNavigation
+                  onHome={() => scrollToSection(homeRef)}
+                  onMemories={() => scrollToSection(memoriesRef)}
+                  onLoveType={() => scrollToSection(loveTypeRef)}
+                  onTravelMap={() => scrollToSection(travelMapRef)}
+                  onGuestbook={handleGuestbook}
+                />
+              </>
+            }
+          />
 
           {/* 🖼️ 월별 갤러리 페이지 */}
           <Route path="/gallery/:year/:month" element={<GalleryMonth />} />
@@ -74,8 +101,18 @@ function App() {
           <Route path="/upload" element={<GalleryUpload />} />
 
           {/* 💕 러브타입 상세 페이지 */}
-          <Route path="/lovetype/sanghyun" element={<LoveTypeDetail who="sanghyun" />} />
-          <Route path="/lovetype/hyeeun" element={<LoveTypeDetail who="hyeeun" />} />
+          <Route
+            path="/lovetype/sanghyun"
+            element={<LoveTypeDetail who="sanghyun" />}
+          />
+          <Route
+            path="/lovetype/hyeeun"
+            element={<LoveTypeDetail who="hyeeun" />}
+          />
+
+          {/* 💬 댓글 이미지 갤러리 */}
+          <Route path="/comment" element={<CommentGalleryPage />} />
+          <Route path="/comment-detail" element={<CommentDetailPage />} />
 
           {/* 📝 방명록 별도 진입 */}
           <Route path="/guestbook" element={<Guestbook />} />

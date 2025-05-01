@@ -1,0 +1,61 @@
+
+.comment-gallery-container {
+  padding: 1.5rem;
+}
+
+.comment-gallery-title {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #e86c3d;
+  font-weight: bold;
+}
+
+.comment-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.comment-gallery-card {
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.comment-gallery-card:hover {
+  transform: scale(1.03);
+}
+
+.comment-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-gallery-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-top-left-radius: 10px;
+}
+.back-home-button {
+  background: transparent;
+  border: none;
+  color: #e86c3d;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  padding-left: 0.2rem;
+}
+.back-home-button:hover {
+  text-decoration: underline;
+}
