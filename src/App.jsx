@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react"; // ✅ 중복 제거
+
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Memories from "./pages/Memories";
@@ -10,7 +11,6 @@ import BottomNavigation from "./BottomNavigation";
 import Guestbook from "./components/Guestbook";
 import GalleryUpload from "./components/GalleryUpload";
 import ScrollToTop from "./components/ScrollToTop";
-import React, { useRef, useEffect } from "react"; // ✅ useEffect 추가
 
 // 💬 새로 추가된 댓글 갤러리용 페이지
 import CommentGalleryPage from "./pages/CommentGalleryPage";
@@ -19,6 +19,7 @@ import CommentDetailPage from "./pages/CommentDetailPage";
 import "./App.css";
 import "./fadein.css";
 import "./components/Guestbook.css";
+
 
 function App() {
   const homeRef = useRef(null);
