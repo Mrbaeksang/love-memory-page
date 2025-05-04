@@ -60,81 +60,78 @@ const GalleryUpload = () => {
   };
 
   const createThumbnailBlob = (file) =>
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       const img = new Image();
       const reader = new FileReader();
-  
+
       reader.onload = (e) => {
         img.src = e.target.result;
       };
-  
-      // 🛡️ 이미지 로딩 실패 시 대비 (모바일 대응)
-      img.onerror = () => {
-        console.error("❌ 이미지 로딩 실패:", file.name);
-        resolve(null); // 실패 시 null 반환
-      };
-  
+
       img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const size = 200;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext("2d");
-  
-        const minDim = Math.min(img.width, img.height);
-        const sx = (img.width - minDim) / 2;
-        const sy = (img.height - minDim) / 2;
-  
-        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
-        canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.85);
+        try {
+          const canvas = document.createElement("canvas");
+          const size = 200;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+
+          const minDim = Math.min(img.width, img.height);
+          const sx = (img.width - minDim) / 2;
+          const sy = (img.height - minDim) / 2;
+
+          ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("썸네일 생성 실패: blob 생성 안됨"));
+          }, "image/jpeg", 0.85);
+        } catch (err) {
+          reject(new Error("썸네일 생성 중 오류: " + err.message));
+        }
       };
-  
+
+      img.onerror = () => reject(new Error("이미지 로딩 실패"));
+      reader.onerror = () => reject(new Error("파일 읽기 실패"));
       reader.readAsDataURL(file);
     });
-  
 
-    const uploadFiles = async () => {
-      if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
-    
-      setUploading(true);
-      setStatus("📤 업로드 중...");
-    
-      for (const file of files) {
-        try {
-          const { originalPath, thumbPath } = await getUploadInfo(file);
-          const thumbBlob = await createThumbnailBlob(file);
-    
-          if (!thumbBlob) {
-            console.warn("⚠️ 썸네일 생성 실패 (blob null):", file.name);
-            continue; // 업로드 스킵하고 다음으로
-          }
-    
-          const { error: error1 } = await supabase.storage
-            .from("gallery")
-            .upload(originalPath, file, { upsert: true });
-    
-          const { error: error2 } = await supabase.storage
-            .from("gallery")
-            .upload(thumbPath, thumbBlob, { upsert: true });
-    
-          if (error1 || error2) {
-            console.error("❌ 업로드 실패:", error1 || error2);
-            setStatus(`❌ ${file.name} 업로드 실패`);
-            continue; // 실패한 파일만 넘기고 다음으로
-          }
-        } catch (err) {
-          console.error("⚠️ 예외 발생:", err);
-          setStatus(`❌ ${file.name} 처리 중 오류`);
+  const uploadFiles = async () => {
+    if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
+
+    setUploading(true);
+    setStatus("📤 업로드 중...");
+
+    for (const file of files) {
+      try {
+        const { originalPath, thumbPath } = await getUploadInfo(file);
+        const thumbBlob = await createThumbnailBlob(file);
+
+        const { error: error1 } = await supabase.storage
+          .from("gallery")
+          .upload(originalPath, file, { upsert: true });
+
+        const { error: error2 } = await supabase.storage
+          .from("gallery")
+          .upload(thumbPath, thumbBlob, { upsert: true });
+
+        if (error1 || error2) {
+          console.error("❌ 업로드 실패:", error1 || error2);
+          setStatus(`❌ ${file.name} 업로드 실패`);
           continue;
         }
+      } catch (err) {
+        console.error("⚠️ 예외 발생:", err);
+        setStatus(`❌ ${file.name} 처리 중 오류`);
+        continue;
       }
-    
-      setStatus("✅ 모든 파일 업로드 완료!");
-      setUploading(false);
-      setFiles([]);
-      setPreviews([]);
-    };
-    
+    }
+
+    setStatus("✅ 모든 파일 업로드 완료!");
+    setUploading(false);
+    setFiles([]);
+    setPreviews([]);
+  };
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
