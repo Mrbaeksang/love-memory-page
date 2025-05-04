@@ -35,7 +35,7 @@ const GalleryUpload = () => {
       reader.readAsArrayBuffer(file);
     });
 
-  const getUploadPath = async (file) => {
+  const getUploadInfo = async (file) => {
     const exifDate = await getDateFromExif(file);
     let year, month;
 
@@ -53,8 +53,38 @@ const GalleryUpload = () => {
     const ext = file.name.split(".").pop().toLowerCase();
     const safeName = `${nameWithoutExt || "photo"}.${ext}`;
 
-    return `${year}/${month}/${timestamp}_${safeName}`;
+    return {
+      originalPath: `${year}/${month}/${timestamp}_${safeName}`,
+      thumbPath: `thumb/${year}/${month}/${timestamp}_${safeName}`,
+    };
   };
+
+  const createThumbnailBlob = (file) =>
+    new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.src = e.target.result;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const size = 200;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        const minDim = Math.min(img.width, img.height);
+        const sx = (img.width - minDim) / 2;
+        const sy = (img.height - minDim) / 2;
+
+        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+        canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.85);
+      };
+
+      reader.readAsDataURL(file);
+    });
 
   const uploadFiles = async () => {
     if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
@@ -64,13 +94,19 @@ const GalleryUpload = () => {
 
     for (const file of files) {
       try {
-        const path = await getUploadPath(file);
-        const { error } = await supabase.storage.from("gallery").upload(path, file, {
-          upsert: true,
-        });
+        const { originalPath, thumbPath } = await getUploadInfo(file);
+        const thumbBlob = await createThumbnailBlob(file);
 
-        if (error) {
-          console.error("❌ 업로드 실패:", error);
+        const { error: error1 } = await supabase.storage
+          .from("gallery")
+          .upload(originalPath, file, { upsert: true });
+
+        const { error: error2 } = await supabase.storage
+          .from("gallery")
+          .upload(thumbPath, thumbBlob, { upsert: true });
+
+        if (error1 || error2) {
+          console.error("❌ 업로드 실패:", error1 || error2);
           setStatus(`❌ ${file.name} 업로드 실패`);
           setUploading(false);
           return;
@@ -91,7 +127,6 @@ const GalleryUpload = () => {
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      {/* ← 홈으로 버튼 추가 */}
       <button
         onClick={() => navigate("/")}
         style={{

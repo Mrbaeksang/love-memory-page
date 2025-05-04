@@ -217,3 +217,23 @@
 body, html, #root {
   height: 100%;
 }
+.gallery-button-wrap {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.full-gallery-button {
+  background-color: #ff875e;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.full-gallery-button:hover {
+  background-color: #ff6b3d;
+}

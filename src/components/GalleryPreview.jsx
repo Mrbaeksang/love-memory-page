@@ -9,36 +9,39 @@ const GalleryPreview = () => {
 
   useEffect(() => {
     const fetchAllImages = async () => {
-      const randomImages = [];
+      const allImages = [];
 
-      const { data: folders } = await supabase.storage.from("gallery").list("", { limit: 100 });
-      if (!folders) return;
-
-      for (const yearFolder of folders) {
-        if (!yearFolder.name.match(/^\d{4}$/)) continue;
+      const { data: years } = await supabase.storage.from("gallery").list("", { limit: 100 });
+      for (const year of years || []) {
+        if (!year.name.match(/^\d{4}$/)) continue;
 
         const { data: months } = await supabase.storage
           .from("gallery")
-          .list(yearFolder.name, { limit: 100 });
+          .list(year.name, { limit: 100 });
 
-        for (const monthFolder of months || []) {
-          if (!monthFolder.name.match(/^\d{2}$/)) continue;
+        for (const month of months || []) {
+          if (!month.name.match(/^\d{2}$/)) continue;
 
           const { data: files } = await supabase.storage
             .from("gallery")
-            .list(`${yearFolder.name}/${monthFolder.name}`, { limit: 100 });
+            .list(`${year.name}/${month.name}`, { limit: 100 });
 
-          (files || []).forEach((file) => {
-            const url = supabase.storage
-              .from("gallery")
-              .getPublicUrl(`${yearFolder.name}/${monthFolder.name}/${file.name}`).data.publicUrl;
+          for (const file of files || []) {
+            const thumbPath = `thumb/${year.name}/${month.name}/${file.name}`;
+            const originPath = `${year.name}/${month.name}/${file.name}`;
 
-            randomImages.push(url);
-          });
+            const thumbUrl = supabase.storage.from("gallery").getPublicUrl(thumbPath).data.publicUrl;
+            const originalUrl = supabase.storage.from("gallery").getPublicUrl(originPath).data.publicUrl;
+
+            allImages.push({
+              thumb: thumbUrl,
+              original: originalUrl,
+            });
+          }
         }
       }
 
-      const shuffled = randomImages.sort(() => 0.5 - Math.random());
+      const shuffled = allImages.sort(() => 0.5 - Math.random());
       setImages(shuffled.slice(0, 6));
     };
 
@@ -54,14 +57,22 @@ const GalleryPreview = () => {
     <div className="gallery-preview-section">
       <h2 className="preview-title">📸 우리의 추억</h2>
       <div className="gallery-preview-grid">
-        {images.map((url, idx) => (
+        {images.map((img, idx) => (
           <div
             key={idx}
             className="preview-img-card"
-            onClick={() => handleClick(url)} // ✅ 클릭 시 이동 추가
+            onClick={() => handleClick(img.original)}
             style={{ cursor: "pointer" }}
           >
-            <img src={url} alt={`preview-${idx}`} className="preview-img" />
+            <img
+              src={img.thumb}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = img.original;
+              }}
+              alt={`preview-${idx}`}
+              className="preview-img"
+            />
           </div>
         ))}
       </div>

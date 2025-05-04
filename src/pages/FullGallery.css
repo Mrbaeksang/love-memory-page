@@ -1,0 +1,39 @@
+.full-gallery-wrapper {
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .full-gallery-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1.2rem;
+    color: #ff6b81;
+  }
+  
+  .full-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  .thumb-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .thumb-card img:hover {
+    transform: scale(1.05);
+  }
+  .gallery-back-button {
+    cursor: pointer;
+    color: #ff5e5e;
+    font-weight: bold;
+    font-size: 1rem;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+  }
+    
