@@ -1,0 +1,17 @@
+{
+    "name": "Love Memory",
+    "short_name": "Love Memory",
+    "description": "우리가 함께한 시간, Love Memory",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fdf6e3",
+    "theme_color": "#ffffff",
+    "icons": [
+      {
+        "src": "/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
