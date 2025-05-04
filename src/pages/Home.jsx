@@ -1,9 +1,9 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import RandomImage from "../RandomImage";
-import GalleryPreview from "../components/GalleryPreview"; // ✅ 추가
-
+import GalleryPreview from "../components/GalleryPreview";
 
 // D-Day 계산 함수
 function getDDay() {
@@ -39,6 +39,8 @@ function getAnniversaries() {
 }
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="home-bg-section">
       <div className="home-card">
@@ -76,8 +78,19 @@ const Home = () => {
         <div className="home-date-caption">2025년 1월 1일, 우리의 시작</div>
       </div>
 
-      {/* ✅ 무작위 대표 이미지 썸네일 추가 */}
+      {/* ✅ 무작위 대표 이미지 썸네일 */}
       <GalleryPreview />
+
+      {/* ✅ 전체 갤러리 보기 버튼 */}
+      <div className="gallery-button-wrap">
+  <button
+    onClick={() => navigate("/gallery")}
+    className="full-gallery-button"
+  >
+    📂 전체 갤러리 보기
+  </button>
+</div>
+
     </div>
   );
 };
