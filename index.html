@@ -2,22 +2,35 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Love Memory</title>
-
-    <!-- 아이콘 / 앱 설정 -->
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/icon-512.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="우리의 추억을 기록하는 공간, Love Memory" />
     <meta name="theme-color" content="#ffffff" />
 
-    <!-- iOS PWA 대응 -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Love Memory" />
+    <title>Love Memory</title>
 
-    <!-- favicon -->
-    <link rel="icon" type="image/png" href="/icon-512.png" />
+    <!-- 📱 PWA: Android 및 대부분 브라우저 -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon-512.png" sizes="512x512" />
+    <link rel="icon" href="/icon-192x192.png" sizes="192x192" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- 🍎 iOS 전용 PWA 대응 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Love Memory" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- 기본 splash 대응 아이폰 해상도용 -->
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1170-2532.png" media="(device-width: 390px) and (device-height: 844px)" />
+    <!-- 추후 더 많은 해상도 추가 가능 -->
+
+    <!-- 🧢 Maskable icon (Android 홈 화면 설치 시 아이콘 잘림 방지) -->
+    <link rel="mask-icon" href="/icon-512x512-maskable.png" color="#ffffff" />
+
+    <!-- ✅ 기본 설정 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Love Memory" />
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
