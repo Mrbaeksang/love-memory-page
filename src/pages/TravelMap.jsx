@@ -5,11 +5,6 @@ import markerImg from "../assets/marker.png";
 import "./TravelMap.css";
 import { useNavigate } from "react-router-dom";
 
-
-
-<button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
-
-
 const TravelMap = () => {
   const navigate = useNavigate();
   const mapRef = useRef(null);
@@ -31,12 +26,29 @@ const TravelMap = () => {
 
   const handleMapClick = (e) => {
     if (!isAdding) return;
-    const rect = mapRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+  
+    const imageEl = mapRef.current.querySelector("img");
+    if (!imageEl) return;
+  
+    const zoomRatio = imageEl.getBoundingClientRect().width / imageEl.naturalWidth;
+  
+    const rect = imageEl.getBoundingClientRect();
+    const rawX = e.clientX - rect.left;
+    const rawY = e.clientY - rect.top;
+  
+    // 🔥 확대된 좌표를 원본 기준으로 환산
+    const trueX = rawX / zoomRatio;
+    const trueY = rawY / zoomRatio;
+  
+    const x = (trueX / imageEl.naturalWidth) * 100;
+    const y = (trueY / imageEl.naturalHeight) * 100;
+  
     setTempMarker({ x, y });
-    setGuideText(""); // 위치 선택 안내 숨김
+    setGuideText("");
   };
+  
+  
+  
 
   const handleSave = async () => {
     const { region, reason, type } = markerData;
@@ -82,27 +94,27 @@ const TravelMap = () => {
 
   return (
     <div className="travel-map-wrap">
+      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
+
       {!isAdding && !isDeletingMode && (
-  <div className="map-fab-buttons">
-  <button
-    onClick={() => {
-      setIsAdding(true);
-      setGuideText("📍 지도를 클릭해 위치를 선택하세요.");
-    }}
-    className="map-fab-button"
-  >
-    📍 마커 추가
-  </button>
-  <button
-    onClick={() => setIsDeletingMode(true)}
-    className="map-fab-button"
-  >
-    ❌ 삭제 모드
-  </button>
-</div>
-
-)}
-
+        <div className="map-fab-buttons">
+          <button
+            onClick={() => {
+              setIsAdding(true);
+              setGuideText("📍 지도를 클릭해 위치를 선택하세요.");
+            }}
+            className="map-fab-button"
+          >
+            📍 마커 추가
+          </button>
+          <button
+            onClick={() => setIsDeletingMode(true)}
+            className="map-fab-button"
+          >
+            ❌ 삭제 모드
+          </button>
+        </div>
+      )}
 
       <div
         ref={mapRef}

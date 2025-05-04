@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import EXIF from "exif-js";
+import { useNavigate } from "react-router-dom";
 
 const GalleryUpload = () => {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState("");
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const selectedFiles = [...e.target.files];
     setFiles(selectedFiles);
     setStatus("");
 
-    // 썸네일 미리보기 생성
     const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
     setPreviews(newPreviews);
   };
@@ -22,9 +23,8 @@ const GalleryUpload = () => {
     new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (e) {
-        const buffer = e.target.result;
         try {
-          EXIF.getData({ src: buffer }, function () {
+          EXIF.getData({ src: e.target.result }, function () {
             const date = EXIF.getTag(this, "DateTimeOriginal");
             resolve(date);
           });
@@ -49,8 +49,11 @@ const GalleryUpload = () => {
     }
 
     const timestamp = Date.now();
-    const safeName = file.name.replace(/\s+/g, "_").toLowerCase();
-    return `gallery/${year}/${month}/${timestamp}_${safeName}`;
+    const nameWithoutExt = file.name.split(".")[0].replace(/[^a-z0-9_-]/gi, "").toLowerCase();
+    const ext = file.name.split(".").pop().toLowerCase();
+    const safeName = `${nameWithoutExt || "photo"}.${ext}`;
+
+    return `${year}/${month}/${timestamp}_${safeName}`;
   };
 
   const uploadFiles = async () => {
@@ -88,6 +91,21 @@ const GalleryUpload = () => {
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
+      {/* ← 홈으로 버튼 추가 */}
+      <button
+        onClick={() => navigate("/")}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#ff8fa3",
+          fontSize: "1.1rem",
+          cursor: "pointer",
+          marginBottom: "1rem",
+        }}
+      >
+        ← 홈으로
+      </button>
+
       <h2 style={{ marginBottom: "1rem" }}>📸 갤러리 사진 업로드</h2>
 
       <input
@@ -99,7 +117,6 @@ const GalleryUpload = () => {
         style={{ marginBottom: "1rem" }}
       />
 
-      {/* 썸네일 미리보기 */}
       {previews.length > 0 && (
         <div
           style={{

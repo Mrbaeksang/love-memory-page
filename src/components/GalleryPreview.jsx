@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import "./GalleryPreview.css";
 
 const GalleryPreview = () => {
   const [images, setImages] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllImages = async () => {
@@ -43,12 +45,22 @@ const GalleryPreview = () => {
     fetchAllImages();
   }, []);
 
+  const handleClick = (url) => {
+    navigate(`/comment-detail?img=${encodeURIComponent(url)}`);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="gallery-preview-section">
       <h2 className="preview-title">📸 우리의 추억</h2>
       <div className="gallery-preview-grid">
         {images.map((url, idx) => (
-          <div key={idx} className="preview-img-card">
+          <div
+            key={idx}
+            className="preview-img-card"
+            onClick={() => handleClick(url)} // ✅ 클릭 시 이동 추가
+            style={{ cursor: "pointer" }}
+          >
             <img src={url} alt={`preview-${idx}`} className="preview-img" />
           </div>
         ))}

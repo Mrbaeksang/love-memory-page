@@ -6,7 +6,7 @@ import styles from "./CommentDetailPage.module.css";
 const CommentDetailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const modalImgRef = useRef(null);
+  const commentInputRef = useRef(null); // 자동 포커스용
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -16,6 +16,12 @@ const CommentDetailPage = () => {
 
   useEffect(() => {
     if (imgUrl) fetchComments();
+
+    // ✨ 포커스 자동 설정 및 스크롤 이동
+    if (commentInputRef.current) {
+      commentInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      commentInputRef.current.focus();
+    }
   }, [imgUrl]);
 
   const fetchComments = async () => {
@@ -43,7 +49,7 @@ const CommentDetailPage = () => {
 
     if (!error) {
       setNewComment("");
-      fetchComments(); // 새로고침
+      fetchComments();
     } else {
       alert("댓글 등록 실패");
       console.error(error);
@@ -59,7 +65,6 @@ const CommentDetailPage = () => {
       .eq("id", id);
 
     if (!error) {
-      // 즉시 상태 업데이트
       setComments((prev) =>
         prev.map((c) =>
           c.id === id ? { ...c, like_count: (c.like_count ?? 0) + 1 } : c
@@ -76,24 +81,19 @@ const CommentDetailPage = () => {
 
       {imgUrl && (
         <div className={styles["comment-detail-image-wrapper"]}>
-          <img
-            ref={modalImgRef}
-            src={imgUrl}
-            alt="상세 이미지"
-            className={styles["comment-detail-image"]}
-          />
+          <img src={imgUrl} alt="상세 이미지" className={styles["comment-detail-image"]} />
         </div>
       )}
 
-      {/* ✍️ 댓글 작성 폼 */}
       <div className={styles["comment-form"]}>
         <textarea
+          ref={commentInputRef} // 👈 자동 포커스 ref 추가됨
           placeholder="댓글을 입력하세요..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           rows={3}
           className={styles["comment-input"]}
-          style={{ color: "#333" }} // 글씨 안 보이는 문제 대응
+          style={{ color: "#333" }}
         />
         <button
           onClick={handleSubmit}
@@ -104,7 +104,6 @@ const CommentDetailPage = () => {
         </button>
       </div>
 
-      {/* 💬 댓글 목록 */}
       <div className={styles["comment-detail-box"]}>
         <h3 className={styles["comment-detail-title"]}>💬 댓글</h3>
         {comments.length === 0 ? (

@@ -5,14 +5,19 @@
   width: 100vw;
   height: 62px;
   background: #fff;
-  box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.07);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 100;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+
+  /* ??? 모바일 안전 영역 대응 (iPhone 홈바 등) */
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
+
+/* 버튼 스타일 */
 .bottom-nav-btn {
   background: none;
   border: none;
@@ -28,13 +33,18 @@
   cursor: pointer;
   transition: color 0.15s;
 }
-.bottom-nav-btn:active, .bottom-nav-btn:focus {
+
+.bottom-nav-btn:active,
+.bottom-nav-btn:focus {
   color: #ff8fa3;
 }
+
 .bottom-nav-btn span {
   font-size: 0.82rem;
   margin-top: 2px;
 }
+
+/* ?? 태블릿~PC 중앙 정렬 + 반지름 더 크게 */
 @media (min-width: 700px) {
   .bottom-nav {
     max-width: 430px;

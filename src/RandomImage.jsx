@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "./lib/supabaseClient";
+import "./RandomImage.css";
 
 const RandomImage = ({ style = {} }) => {
   const [url, setUrl] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllAndPickRandom = async () => {
       try {
-        // ✅ 최상위 폴더 목록 가져오기 (예: 2024, 2025)
         const { data: folders, error: folderErr } = await supabase.storage
           .from("gallery")
           .list("", { limit: 100 });
@@ -23,16 +25,12 @@ const RandomImage = ({ style = {} }) => {
 
         let allFiles = [];
 
-        // ✅ 각 연도 → 각 월 → 이미지 파일들 수집
         for (const year of folderPaths) {
           const { data: months, error: monthErr } = await supabase.storage
             .from("gallery")
             .list(year);
 
-          if (monthErr || !months) {
-            console.warn(`"${year}" 폴더 오류`, monthErr);
-            continue;
-          }
+          if (monthErr || !months) continue;
 
           const monthFolders = months
             .filter(m => m.name && m.metadata === null)
@@ -43,10 +41,7 @@ const RandomImage = ({ style = {} }) => {
               .from("gallery")
               .list(`${year}/${month}`);
 
-            if (fileErr || !files) {
-              console.warn(`"${year}/${month}" 폴더 오류`, fileErr);
-              continue;
-            }
+            if (fileErr || !files) continue;
 
             const imageFiles = files
               .filter(file => /\.(jpe?g|png|webp)$/i.test(file.name))
@@ -56,16 +51,12 @@ const RandomImage = ({ style = {} }) => {
           }
         }
 
-        // ✅ 이미지가 없으면 리턴
         if (!allFiles.length) {
           console.warn("이미지를 찾을 수 없음.");
           return;
         }
 
-        // ✅ 랜덤 경로 선택
         const randomPath = allFiles[Math.floor(Math.random() * allFiles.length)];
-
-        // ✅ publicUrl 안전하게 꺼내기
         const publicUrl = supabase.storage
           .from("gallery")
           .getPublicUrl(randomPath).data?.publicUrl;
@@ -79,14 +70,22 @@ const RandomImage = ({ style = {} }) => {
     fetchAllAndPickRandom();
   }, []);
 
+  const handleClick = () => {
+    if (url) {
+      navigate(`/comment-detail?img=${encodeURIComponent(url)}`);
+      window.scrollTo(0, 0);
+    }
+  };
+
   return url ? (
     <div className="lovetype-random-image-wrap">
       <img
         src={url}
         alt="감성 랜덤 이미지"
-        className="lovetype-random-image"
+        className="lovetype-random-image clickable"
         style={style}
         loading="lazy"
+        onClick={handleClick} // ✅ 클릭 이벤트 추가
       />
     </div>
   ) : null;
