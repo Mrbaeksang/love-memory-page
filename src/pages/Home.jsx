@@ -13,7 +13,7 @@ function getDDay() {
   return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
 }
 
-// 🎉 기념일 계산
+// 🎉 기념일 리스트
 function getAnniversaries() {
   const startDate = new Date(2025, 0, 1);
   const items = [
@@ -40,7 +40,7 @@ const Home = () => {
   return (
     <div className="home-bg-section">
       <div className="home-card">
-        {/* 📸 메인 이미지 */}
+        {/* 📸 커플 메인 이미지 */}
         <div className="hero-photo-wrap">
           <img src="/1.jpg" alt="커플 메인" className="hero-photo" />
         </div>
@@ -48,7 +48,7 @@ const Home = () => {
         {/* 🌈 랜덤 이미지 */}
         <RandomImage />
 
-        {/* 🕰️ D-Day 정보 */}
+        {/* 🕰️ 함께한 날 계산 */}
         <div className="home-d-day-info">
           <span className="home-d-date">2025년 1월 1일 ~</span>
           <span className="home-d-count">
@@ -56,7 +56,7 @@ const Home = () => {
           </span>
         </div>
 
-        {/* 🎉 기념일 목록 */}
+        {/* 🎊 기념일 목록 */}
         <div className="home-anniversary-list-plain">
           {getAnniversaries().map(({ label, dateStr, dayOfWeek }) => (
             <div className="home-anniv-row-plain" key={label}>
@@ -67,22 +67,33 @@ const Home = () => {
           ))}
         </div>
 
-        {/* 💕 타이틀 */}
+        {/* 💖 커플 타이틀 */}
         <div className="hero-title-row">
           <span className="hero-title">
             혜은&nbsp;<FaHeart className="hero-heart" />&nbsp;상현
           </span>
         </div>
 
+        {/* ✍️ 캘리그라피 */}
         <div className="home-calligraphy">우리, 사랑이 쌓이는 시간</div>
         <div className="home-date-caption">2025년 1월 1일, 우리의 시작</div>
       </div>
 
-      {/* 📷 썸네일 미리보기 */}
+      {/* 🖼️ 썸네일 갤러리 미리보기 */}
       <GalleryPreview />
 
-      {/* 📂 전체 갤러리 버튼 */}
-      <div className="gallery-button-wrap" style={{ textAlign: "center", marginTop: "1.5rem" }}>
+      {/* ⬇️ 하단 간격 확보 (플레이어와 겹침 방지) */}
+      <div style={{ height: "16px" }} />
+
+      {/* 📂 전체 갤러리 이동 버튼 */}
+      <div
+        className="gallery-button-wrap"
+        style={{
+          textAlign: "center",
+          marginTop: "1.5rem",
+          marginBottom: "100px", // MusicPlayer와 겹치지 않게 충분한 여백 확보
+        }}
+      >
         <button
           onClick={() => navigate("/gallery")}
           className="full-gallery-button"

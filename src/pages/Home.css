@@ -1,36 +1,34 @@
-.home-container {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: transparent;
-}
-
+/* 💖 공통 배경 섹션 */
+.home-container,
 .home-bg-section {
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
   background: transparent;
+  min-height: 100vh;
 }
 
+/* 📦 카드 레이아웃 */
 .home-card {
   width: 90vw;
   max-width: 370px;
   min-width: 320px;
   margin: 0 auto;
-  background: rgba(255,255,255,0.93);
+  padding: 32px 18px 22px;
+  background: rgba(255, 255, 255, 0.93);
   border-radius: 22px;
-  box-shadow: 0 4px 32px rgba(255,183,197,0.13), 0 1.5px 12px rgba(0,0,0,0.06);
+  box-shadow:
+    0 4px 32px rgba(255, 183, 197, 0.13),
+    0 1.5px 12px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 18px 22px 18px;
   position: relative;
 }
 
+/* 📸 커플 메인 사진 */
 .hero-photo-wrap {
   width: 120px;
   height: 120px;
@@ -47,6 +45,7 @@
   border-radius: 50%;
 }
 
+/* 💕 커플 이름 + 하트 */
 .hero-title-row {
   font-size: 1.45rem;
   font-weight: 700;
@@ -64,8 +63,15 @@
   margin: 0 2px;
 }
 
-.hero-date {
+/* ✍️ 문구 */
+.hero-date,
+.home-calligraphy,
+.home-date-caption {
   color: #b48b6c;
+  text-align: center;
+}
+
+.hero-date {
   font-size: 1.05rem;
   margin-bottom: 15px;
 }
@@ -73,56 +79,24 @@
 .home-calligraphy {
   font-family: 'Nanum Brush Script', 'Noto Sans KR', cursive;
   font-size: 1.22rem;
-  color: #b48b6c;
   margin-bottom: 7px;
 }
 
 .home-date-caption {
-  color: #a7a7a7;
   font-size: 0.97rem;
+  color: #a7a7a7;
   margin-bottom: 22px;
 }
 
-.home-btn-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  width: 100%;
-  justify-content: center;
-}
-
-.home-btn {
-  background: linear-gradient(90deg,#ffb6c1,#ffe6ef);
-  color: #e2668d;
-  border: none;
-  border-radius: 9px;
-  box-shadow: 0 2px 8px #ffe6ef55;
-  font-size: 1.02rem;
-  font-weight: 600;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.16s, color 0.16s;
-}
-
-.home-btn:active {
-  background: linear-gradient(90deg,#ffe6ef,#ffb6c1);
-  color: #b48b6c;
-}
-
+/* 🕰️ D-Day 정보 */
 .home-d-day-info {
   display: flex;
-  flex-direction: row;
-  align-items: center;
   gap: 1.2rem;
   justify-content: center;
-  margin-top: 2.2rem;
-  margin-bottom: 1.2rem;
+  align-items: center;
   font-size: 1.18rem;
+  margin: 2.2rem 0 1.2rem;
   color: #2e4b7d;
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
 }
 
 .home-d-date {
@@ -139,33 +113,47 @@
   font-size: 1.21em;
 }
 
-.home-anniversary-list {
+/* 🎉 기념일 목록 */
+.home-anniversary-list,
+.home-anniversary-list-plain {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1.3rem 2.2rem;
   justify-content: center;
+  align-items: center;
+  gap: 1.3rem 2.2rem;
+  flex-wrap: wrap;
   margin-bottom: 1.7rem;
+  flex-direction: column;
+}
+
+.home-anniv-row,
+.home-anniv-row-plain {
+  font-size: 1.07rem;
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  letter-spacing: -0.2px;
 }
 
 .home-anniv-row {
   background: #f8fafd;
   border: 1.2px solid #e0e9f7;
   border-radius: 14px;
-  padding: 0.58em 1.25em 0.52em 1.25em;
-  font-size: 1.06rem;
+  padding: 0.58em 1.25em 0.52em;
   color: #2e4b7d;
-  display: flex;
-  align-items: center;
-  gap: 0.7em;
   min-width: 110px;
-  box-shadow: 0 2px 8px 0 rgba(46,75,125,0.04);
+  box-shadow: 0 2px 8px rgba(46, 75, 125, 0.04);
+}
+
+.home-anniv-row-plain {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .home-anniv-label {
   font-weight: 600;
   color: #d13b67;
-  margin-right: 0.3em;
 }
 
 .home-anniv-date {
@@ -174,52 +162,15 @@
 }
 
 .home-anniv-day {
-  color: #8a9bb7;
   font-size: 0.99em;
-  margin-left: 0.2em;
+  color: #8a9bb7;
 }
 
-.home-anniversary-list-plain {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  align-items: center;
-  margin-bottom: 1.7rem;
-}
-
-.home-anniv-row-plain {
-  font-size: 1.07rem;
-  color: #2e4b7d;
-  font-family: inherit;
-  letter-spacing: -0.2px;
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 0.5em;
-  align-items: center;
-}
-
-@media (max-width: 600px) {
-  .home-card {
-    max-width: 98vw;
-    min-width: 0;
-    padding: 18px 4px 14px 4px;
-  }
-  .hero-photo-wrap {
-    width: 90px;
-    height: 90px;
-  }
-}
-
-body, html, #root {
-  height: 100%;
-}
+/* 📂 전체 갤러리 버튼 */
 .gallery-button-wrap {
   text-align: center;
   margin-top: 1.5rem;
+  margin-bottom: 80px; /* ⬇️ MusicPlayer와 겹치지 않게 */
 }
 
 .full-gallery-button {
@@ -236,4 +187,18 @@ body, html, #root {
 
 .full-gallery-button:hover {
   background-color: #ff6b3d;
+}
+
+/* 📱 모바일 반응형 */
+@media (max-width: 600px) {
+  .home-card {
+    max-width: 98vw;
+    min-width: 0;
+    padding: 18px 4px 14px;
+  }
+
+  .hero-photo-wrap {
+    width: 90px;
+    height: 90px;
+  }
 }

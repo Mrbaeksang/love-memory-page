@@ -3,53 +3,53 @@
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 62px;
-  background: #fff;
-  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.07);
+  background: rgba(255, 240, 245, 0.95); /* ì€ì€í•œ ë¶„í™ ë°°ê²½ */
+  border-top: 1px solid #fcdde8;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 100;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-
-  /* ??? ¸ğ¹ÙÀÏ ¾ÈÀü ¿µ¿ª ´ëÀÀ (iPhone È¨¹Ù µî) */
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding: 6px 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(6px);
 }
 
-/* ¹öÆ° ½ºÅ¸ÀÏ */
 .bottom-nav-btn {
-  background: none;
-  border: none;
-  outline: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: #b48b6c;
-  font-size: 0.92rem;
-  font-weight: 600;
-  gap: 2px;
+  background: none;
+  border: none;
+  font-size: 0.73rem;
+  color: #a06d7d; /* ë¶€ë“œëŸ¬ìš´ ì§„ë¶„í™í†¤ */
   cursor: pointer;
-  transition: color 0.15s;
-}
-
-.bottom-nav-btn:active,
-.bottom-nav-btn:focus {
-  color: #ff8fa3;
+  transition: all 0.2s ease;
+  min-width: 56px;
 }
 
 .bottom-nav-btn span {
-  font-size: 0.82rem;
-  margin-top: 2px;
+  margin-top: 3px;
+  font-weight: 500;
 }
 
-/* ?? ÅÂºí¸´~PC Áß¾Ó Á¤·Ä + ¹İÁö¸§ ´õ Å©°Ô */
-@media (min-width: 700px) {
+.bottom-nav-btn svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: #a06d7d;
+}
+
+.bottom-nav-btn.active {
+  color: #e2668d;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.bottom-nav-btn.active svg {
+  transform: scale(1.1);
+  color: #ff6b8b;
+}
+
+@media (max-width: 600px) {
   .bottom-nav {
-    max-width: 430px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 16px 16px 24px 24px;
+    padding-bottom: env(safe-area-inset-bottom, 8px);
   }
 }

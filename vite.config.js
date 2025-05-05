@@ -30,5 +30,11 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+  optimizeDeps: {
+    exclude: ['jsmediatags'], // ✅ Vite의 의존성 최적화 스캔에서 제외
+  },
+  ssr: {
+    noExternal: ['jsmediatags'], // ✅ SSR 시 외부 처리 (동적 import 에러 방지)
+  }
 });

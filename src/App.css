@@ -25,6 +25,7 @@ html, body, #root {
   margin: 0 auto;
   position: relative;
   box-sizing: border-box;
+  padding-bottom: 140px; /* ✅ 하단 MusicPlayer + Navigation 높이 확보 */
 }
 
 .app-root {
@@ -34,7 +35,7 @@ html, body, #root {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  padding-bottom: 80px;
+  padding-bottom: 140px;
 }
 
 .app-bg-col {
@@ -167,20 +168,23 @@ p, button, li, span, div {
 
 .navigation-bar {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100vw;
   z-index: 1000;
-  background: rgba(255,255,255,0.96);
-  border-bottom: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid #eee;
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 0;
+  justify-content: space-around; /* ✅ gap 없이 균등 정렬 */
+  padding: 10px 0; /* ✅ 위아래 여백 확보 */
+  box-sizing: border-box;
+  overflow: visible; /* ✅ 아이콘 짤림 방지 */
 }
 
 @media (max-width: 700px) {
-  .navigation-bar { display: none; }
+  .navigation-bar {
+    display: flex;
+  }
 }
 
 .home-bg-section, .memories-container, .lovetype-section, .comment-section-content {
@@ -235,7 +239,7 @@ p, button, li, span, div {
   }
   .app-root {
     background: #ececec;
-    padding-bottom: 80px;
+    padding-bottom: 140px;
   }
   .app-bg-col {
     min-height: 0;
@@ -252,4 +256,17 @@ p, button, li, span, div {
     border-radius: 0 !important;
     box-shadow: none !important;
   }
+}
+.music-player-container {
+  position: fixed;
+  bottom: 56px; /* ✅ 네비게이션 바 위에 띄우기 */
+  left: 0;
+  width: 100vw;
+  max-width: 430px;
+  margin: 0 auto;
+  z-index: 999;
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+  padding: 8px 0;
 }
