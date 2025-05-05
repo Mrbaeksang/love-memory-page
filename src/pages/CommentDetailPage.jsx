@@ -6,10 +6,12 @@ import styles from "./CommentDetailPage.module.css";
 const CommentDetailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const commentInputRef = useRef(null); // 자동 포커스용
+  const commentInputRef = useRef(null);
+
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [likingIds, setLikingIds] = useState([]);
 
   const params = new URLSearchParams(location.search);
   const imgUrl = params.get("img");
@@ -17,7 +19,6 @@ const CommentDetailPage = () => {
   useEffect(() => {
     if (imgUrl) fetchComments();
 
-    // ✨ 포커스 자동 설정 및 스크롤 이동
     if (commentInputRef.current) {
       commentInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       commentInputRef.current.focus();
@@ -25,13 +26,17 @@ const CommentDetailPage = () => {
   }, [imgUrl]);
 
   const fetchComments = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("gallery_comments")
       .select("*")
       .eq("image_url", imgUrl)
       .order("created_at", { ascending: false });
 
-    setComments(data || []);
+    if (error) {
+      console.error("댓글 가져오기 실패", error);
+    } else {
+      setComments(data || []);
+    }
   };
 
   const handleSubmit = async () => {
@@ -59,18 +64,26 @@ const CommentDetailPage = () => {
   };
 
   const handleLike = async (id, currentCount) => {
-    const { error } = await supabase
+    if (likingIds.includes(id)) return; // 중복 방지
+    setLikingIds((prev) => [...prev, id]);
+
+    const { data, error } = await supabase
       .from("gallery_comments")
       .update({ like_count: currentCount + 1 })
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    if (!error) {
+    if (error) {
+      console.error("좋아요 실패", error);
+    } else {
       setComments((prev) =>
         prev.map((c) =>
           c.id === id ? { ...c, like_count: (c.like_count ?? 0) + 1 } : c
         )
       );
     }
+
+    setLikingIds((prev) => prev.filter((x) => x !== id));
   };
 
   return (
@@ -87,7 +100,7 @@ const CommentDetailPage = () => {
 
       <div className={styles["comment-form"]}>
         <textarea
-          ref={commentInputRef} // 👈 자동 포커스 ref 추가됨
+          ref={commentInputRef}
           placeholder="댓글을 입력하세요..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
@@ -119,6 +132,7 @@ const CommentDetailPage = () => {
                 <button
                   onClick={() => handleLike(c.id, c.like_count ?? 0)}
                   className={styles["comment-like-btn"]}
+                  disabled={likingIds.includes(c.id)}
                 >
                   ❤️ {c.like_count ?? 0}
                 </button>
