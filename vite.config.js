@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -8,9 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Love Memory',
-        short_name: 'Love Memory',
-        description: '우리가 함께한 시간, Love Memory',
+        name: '혜은❤️상현',
+        short_name: '혜은상현',
+        description: '우리가 함께한 시간, 혜은과 상현의 추억',
         start_url: '/',
         display: 'standalone',
         background_color: '#fdf6e3',

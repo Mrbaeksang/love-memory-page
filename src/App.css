@@ -1,15 +1,17 @@
-body, html, #root {
+html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
-  background: #f7f7f7;
+  background: #fdf6e3;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
 }
 
 .app-bg {
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(90deg, #f7f7f7 0%, #fff 40%, #fff 60%, #f7f7f7 100%);
+  background: linear-gradient(90deg, #fdf6e3 0%, #fff 40%, #fff 60%, #fdf6e3 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,16 +30,17 @@ body, html, #root {
 .app-root {
   width: 100vw;
   min-height: 100vh;
-  background: #f7f7f7;
+  background: #fdf6e3;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  padding-bottom: 80px;
 }
 
 .app-bg-col {
   flex: 1 1 0;
   width: 100vw;
-  background: #f7f7f7;
+  background: #fdf6e3;
 }
 
 .app-bg-row {
@@ -59,7 +62,7 @@ body, html, #root {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  padding-bottom: 70px; /* for bottom nav space */
+  padding-bottom: 70px;
 }
 
 .section-home {
@@ -80,7 +83,7 @@ body, html, #root {
 
 section {
   width: 100%;
-  padding: 2.7rem 0 2.7rem 0;
+  padding: 2.7rem 0;
   margin: 0 auto;
   box-sizing: border-box;
   min-height: 90vh;
@@ -232,6 +235,7 @@ p, button, li, span, div {
   }
   .app-root {
     background: #ececec;
+    padding-bottom: 80px;
   }
   .app-bg-col {
     min-height: 0;
@@ -243,11 +247,8 @@ p, button, li, span, div {
     box-shadow: none;
     min-height: 200px;
   }
-  .app-root {
-    padding-bottom: 80px;
-  }
   section {
-    padding: 1.2rem 0 1.2rem 0;
+    padding: 1.2rem 0;
     border-radius: 0 !important;
     box-shadow: none !important;
   }
