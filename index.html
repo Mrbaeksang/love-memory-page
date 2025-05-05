@@ -8,25 +8,25 @@
 
     <title>Love Memory</title>
 
-    <!-- 📱 PWA: Android 및 대부분 브라우저 -->
+    <!-- ✅ Manifest + 기본 아이콘 -->
     <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon-192.png" sizes="192x192" />
     <link rel="icon" href="/icon-512.png" sizes="512x512" />
-    <link rel="icon" href="/icon-192x192.png" sizes="192x192" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="mask-icon" href="/icon-512.png" color="#ffffff" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- 🍎 iOS 전용 PWA 대응 -->
+    <!-- ✅ iOS 전용 PWA 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Love Memory" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <!-- 기본 splash 대응 아이폰 해상도용 -->
-    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1170-2532.png" media="(device-width: 390px) and (device-height: 844px)" />
-    <!-- 추후 더 많은 해상도 추가 가능 -->
 
-    <!-- 🧢 Maskable icon (Android 홈 화면 설치 시 아이콘 잘림 방지) -->
-    <link rel="mask-icon" href="/icon-512x512-maskable.png" color="#ffffff" />
+    <!-- ❌ Splash 이미지 주석 처리 (이미지 없으므로) -->
+    <!-- 
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1170-2532.png" 
+          media="(device-width: 390px) and (device-height: 844px)" />
+    -->
 
-    <!-- ✅ 기본 설정 -->
+    <!-- ✅ Android용 앱 네임 -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="Love Memory" />
   </head>
