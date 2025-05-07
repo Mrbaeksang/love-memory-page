@@ -1,7 +1,9 @@
+// src/components/GalleryUpload.jsx
 import React, { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import EXIF from "exif-js";
 import { useNavigate } from "react-router-dom";
+import { getAnonId } from "../utils/getAnonId"; // ✅ 기기별 user_id
 
 const GalleryUpload = () => {
   const [files, setFiles] = useState([]);
@@ -96,106 +98,57 @@ const GalleryUpload = () => {
       reader.readAsDataURL(file);
     });
 
-    const uploadFiles = async () => {
-      if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
-    
-      setUploading(true);
-      setStatus("📤 업로드 중...");
-    
-      let uploadSuccess = false;
-    
-      for (const file of files) {
-        try {
-          const { originalPath, thumbPath } = await getUploadInfo(file);
-          const thumbBlob = await createThumbnailBlob(file);
-    
-          const { error: error1 } = await supabase.storage
-            .from("gallery")
-            .upload(originalPath, file, { upsert: true });
-    
-          const { error: error2 } = await supabase.storage
-            .from("gallery")
-            .upload(thumbPath, thumbBlob, { upsert: true });
-    
-          if (error1 || error2) {
-            console.error("❌ 업로드 실패:", error1 || error2);
-            setStatus(`❌ ${file.name} 업로드 실패`);
-            continue;
-          }
-    
-          // ✅ 성공 표시
-          uploadSuccess = true;
-        } catch (err) {
-          console.error("⚠️ 예외 발생:", err);
-          setStatus(`❌ ${file.name} 처리 중 오류`);
+  const uploadFiles = async () => {
+    if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
+
+    setUploading(true);
+    setStatus("📤 업로드 중...");
+
+    let uploadSuccess = false;
+    const uploaderId = getAnonId(); // ✅ 기기별 익명 user_id
+
+    for (const file of files) {
+      try {
+        const { originalPath, thumbPath } = await getUploadInfo(file);
+        const thumbBlob = await createThumbnailBlob(file);
+
+        const { error: error1 } = await supabase.storage
+          .from("gallery")
+          .upload(originalPath, file, { upsert: true });
+
+        const { error: error2 } = await supabase.storage
+          .from("gallery")
+          .upload(thumbPath, thumbBlob, { upsert: true });
+
+        if (error1 || error2) {
+          console.error("❌ 업로드 실패:", error1 || error2);
+          setStatus(`❌ ${file.name} 업로드 실패`);
           continue;
         }
+
+        // ✅ 여기서 gallery_metadata 같은 테이블에 uploader 정보 저장 가능
+        // await supabase.from("gallery_metadata").insert({
+        //   image_path: originalPath,
+        //   user_id: uploaderId,
+        //   uploaded_at: new Date().toISOString(),
+        // });
+
+        uploadSuccess = true;
+      } catch (err) {
+        console.error("⚠️ 예외 발생:", err);
+        setStatus(`❌ ${file.name} 처리 중 오류`);
+        continue;
       }
-    
-      if (uploadSuccess) {
-        try {
-          // ✅ 푸시 대상 유저 ID
-          const receiverUserId = "hyeeun"; // 상대방 ID (닉네임 또는 user_id)
+    }
 
-          // ✅ 토큰 조회 및 중복 제거
-          const { data: tokenData, error: tokenErr } = await supabase
-            .from("notification_tokens")
-            .select("token")
-            .eq("user_id", receiverUserId)
-            .single();
-
-          if (tokenErr || !tokenData?.token) {
-            console.error("❌ 토큰 조회 실패:", tokenErr || "토큰이 없습니다");
-            return;
-          }
-
-          // ✅ 토큰 유효성 검사
-          const isValidToken = tokenData.token.startsWith("https://fcm.googleapis.com");
-          if (!isValidToken) {
-            console.error("❌ 유효하지 않은 토큰:", tokenData.token);
-            return;
-          }
-
-          try {
-            const response = await fetch("/api/send-push-v1", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                token: tokenData.token,
-                title: "추억이 한 장 더 저장됐어요 💖",
-                body: "새로운 사진이 업로드되었습니다. 지금 바로 확인해보세요!",
-                click_action: "https://love-memory-page.vercel.app/gallery",
-              }),
-            });
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              console.error("❌ 푸시 알림 전송 실패:", errorText);
-              // 토큰이 만료되었을 경우 삭제
-              if (errorText.includes("Invalid registration token")) {
-                await supabase
-                  .from("notification_tokens")
-                  .delete()
-                  .eq("user_id", receiverUserId);
-                console.log("❌ 만료된 토큰 삭제 완료");
-              }
-            } else {
-              console.log("✅ 푸시 알림 전송 성공");
-            }
-          } catch (err) {
-            console.error("❌ 푸시 알림 전송 중 오류:", err);
-          }
-        } catch (err) {
-          console.error("❌ 토큰 조회 중 오류:", err);
-        }
-      }
-    
+    if (uploadSuccess) {
       setStatus("✅ 모든 파일 업로드 완료!");
-      setUploading(false);
-      setFiles([]);
-      setPreviews([]);
-    };
-    
+    }
+
+    setUploading(false);
+    setFiles([]);
+    setPreviews([]);
+  };
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>

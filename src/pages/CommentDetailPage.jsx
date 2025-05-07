@@ -1,6 +1,8 @@
+// ✅ 리팩토링: 이미지 주인과 댓글 작성자의 user_id를 고정값이 아닌 동적으로 처리
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
+import { getAnonId } from "../utils/getAnonId"; // ✅ 디바이스 기반 ID 생성
 import styles from "./CommentDetailPage.module.css";
 
 const CommentDetailPage = () => {
@@ -42,35 +44,33 @@ const CommentDetailPage = () => {
   const handleSubmit = async () => {
     if (!newComment.trim()) return;
     setSubmitting(true);
-  
-    // 1. 댓글 등록
+
+    const myUserId = getAnonId(); // ✅ 작성자 ID
+
     const { error } = await supabase.from("gallery_comments").insert([
       {
         image_url: imgUrl,
         content: newComment.trim(),
         created_at: new Date().toISOString(),
         like_count: 0,
+        user_id: myUserId, // ✅ user_id 저장
       },
     ]);
-  
+
     if (!error) {
       setNewComment("");
       fetchComments();
-  
-      // 2. 푸시 대상 유저 ID를 결정 (지금은 고정값으로 예시)
-      const imageOwnerId = "sarang_lover"; // 🔧 이미지 주인 ID (후에 동적으로 가져올 수 있음)
-  
-      // 3. 토큰 조회
+
+      // ✅ 푸시 대상: 이미지 소유자 ID는 Supabase에서 별도 연동 예정 (지금은 댓글 외부에서 설정 불가)
+      const imageOwnerId = "sarang_lover"; // TODO: 이미지 업로드 시 저장해둔 user_id를 불러오는 방식으로 개선 필요
+
       const { data: tokenData, error: tokenErr } = await supabase
         .from("notification_tokens")
         .select("token")
         .eq("user_id", imageOwnerId)
         .single();
-  
-      if (tokenErr || !tokenData) {
-        console.warn("FCM 토큰 조회 실패:", tokenErr);
-      } else {
-        // 4. 푸시 전송 요청
+
+      if (!tokenErr && tokenData) {
         await fetch("/api/send-push-v1", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,53 +78,48 @@ const CommentDetailPage = () => {
             token: tokenData.token,
             title: "사진에 댓글이 달렸어요!",
             body: "예쁜 추억에 새로운 댓글이 도착했어요 💌",
-            click_action: "https://love-memory-page.vercel.app/comment-detail?img=" + encodeURIComponent(imgUrl),
+            click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
           }),
         });
+      } else {
+        console.warn("FCM 토큰 조회 실패:", tokenErr);
       }
     } else {
       alert("댓글 등록 실패");
       console.error(error);
     }
-  
+
     setSubmitting(false);
   };
-  
 
   const handleLike = async (commentId) => {
-    // 1. 좋아요 처리
     const { data, error } = await supabase.rpc("increment_like_count", {
       comment_id_input: commentId,
     });
-  
+
     if (!error) {
       fetchComments();
-  
-      // 2. 댓글 정보 조회 (작성자 파악용)
+
       const { data: commentData, error: fetchError } = await supabase
         .from("gallery_comments")
         .select("*")
         .eq("id", commentId)
         .single();
-  
+
       if (fetchError || !commentData) {
         console.warn("댓글 정보 조회 실패");
         return;
       }
-  
-      const commentOwnerId = commentData.user_id || "sarang_lover"; // 예시: 고정 ID 또는 향후 사용자 ID 필드 사용
-  
-      // 3. 해당 유저의 토큰 조회
+
+      const commentOwnerId = commentData.user_id || "unknown_user";
+
       const { data: tokenData, error: tokenErr } = await supabase
         .from("notification_tokens")
         .select("token")
         .eq("user_id", commentOwnerId)
         .single();
-  
-      if (tokenErr || !tokenData) {
-        console.warn("좋아요 푸시 - 토큰 조회 실패");
-      } else {
-        // 4. 푸시 전송
+
+      if (!tokenErr && tokenData) {
         await fetch("/api/send-push-v1", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -132,15 +127,16 @@ const CommentDetailPage = () => {
             token: tokenData.token,
             title: "누군가 내 댓글에 공감했어요 💕",
             body: "소중한 말에 따뜻한 반응이 도착했어요.",
-            click_action: "https://love-memory-page.vercel.app/comment-detail?img=" + encodeURIComponent(imgUrl),
+            click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
           }),
         });
+      } else {
+        console.warn("좋아요 푸시 - 토큰 조회 실패");
       }
     } else {
       alert("좋아요 실패");
     }
   };
-  
 
   return (
     <div className={styles["comment-detail-container"]}>
@@ -186,7 +182,7 @@ const CommentDetailPage = () => {
                   {new Date(c.created_at).toLocaleDateString()}
                 </span>
                 <button
-                  onClick={() => handleLike(c.id, c.like_count ?? 0)}
+                  onClick={() => handleLike(c.id)}
                   className={styles["comment-like-btn"]}
                   disabled={likingIds.includes(c.id)}
                 >
