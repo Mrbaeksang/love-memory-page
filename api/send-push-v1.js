@@ -42,14 +42,17 @@ export default async function handler(req, res) {
       notification: {
         title,
         body,
-        icon: "https://love-memory-page.vercel.app/icon-192.png",
       },
       webpush: {
+        notification: {
+          icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ 위치 옮김
+        },
         fcmOptions: {
           link: click_action || "https://love-memory-page.vercel.app",
         },
       },
     };
+    
 
     const response = await getMessaging().send(message);
     console.log("✅ FCM 전송 성공:", response);
