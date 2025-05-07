@@ -2,22 +2,26 @@
 
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
-import serviceAccount from "../../firebase-service-account.json";
+
+// ✅ 환경변수에서 base64로 인코딩된 서비스 계정 키 불러오기
+const decodedServiceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_ADMIN_KEY, "base64").toString("utf-8")
+);
 
 // ✅ Firebase Admin 초기화 (중복 방지)
 if (!getApps().length) {
   initializeApp({
-    credential: cert(serviceAccount),
+    credential: cert(decodedServiceAccount),
   });
 }
 
 export default async function handler(req, res) {
-  // ✅ CORS 헤더 추가
+  // ✅ CORS 헤더 설정
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ Preflight 요청 처리
+  // ✅ OPTIONS 사전 요청 처리
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -38,7 +42,7 @@ export default async function handler(req, res) {
       notification: {
         title,
         body,
-        icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ PWA 아이콘
+        icon: "https://love-memory-page.vercel.app/icon-192.png",
       },
       webpush: {
         fcmOptions: {
@@ -52,7 +56,6 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, response });
   } catch (error) {
     console.error("🔴 FCM 전송 오류:", error);
-  
     return res.status(500).json({
       error: "푸시 전송 실패",
       details: {
@@ -63,5 +66,4 @@ export default async function handler(req, res) {
       }
     });
   }
-  
 }

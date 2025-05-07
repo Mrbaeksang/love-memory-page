@@ -32,11 +32,13 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+.env.production
+.env.development
 
 # -------------------------------
 # ✅ Firebase 키 파일
 # -------------------------------
-firebase-private-key.json
+firebase-admin-key.json
 firebase/firebase-admin-key.json
 firebase/firebase-admin-key*.json
 
@@ -59,3 +61,6 @@ firebase-messaging-sw.js.LICENSE.txt
 # -------------------------------
 *.bak
 *.secret.*
+*.pem
+*.crt
+*.key
