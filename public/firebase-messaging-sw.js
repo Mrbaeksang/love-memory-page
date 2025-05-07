@@ -1,6 +1,5 @@
 // public/firebase-messaging-sw.js
 
-// ✅ Firebase 초기화용 import
 importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js");
 
@@ -16,25 +15,24 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// ✅ 커스텀 알림 형태와 클릭 동작
-self.addEventListener("push", (event) => {
-  const data = event.data?.json();
-  if (!data) return;
+// ✅ 백그라운드 메시지 수신 핸들러 (이게 진짜 핵심!)
+messaging.onBackgroundMessage(function (payload) {
+  console.log("📦 백그라운드 메시지 수신:", payload);
 
-  const { title, body, icon, click_action } = data.notification;
+  const { title, body, icon, click_action } = payload.notification;
 
-  event.waitUntil(
-    self.registration.showNotification(title, {
-      body,
-      icon,
-      data: { url: click_action },
-    })
-  );
+  self.registration.showNotification(title, {
+    body,
+    icon: icon || "/icon-512.png",
+    data: {
+      url: click_action || "/",
+    },
+  });
 });
 
-self.addEventListener("notificationclick", (event) => {
+self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  event.waitUntil(
-    clients.openWindow(event.notification.data.url || "/")
-  );
+  if (event.notification.data?.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
 });

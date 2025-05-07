@@ -1,10 +1,10 @@
 // /api/send-push-v1.js
-import { initializeApp, cert } from "firebase-admin/app";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import serviceAccount from "../../firebase-service-account.json";
 
 // Firebase Admin 초기화 (중복 방지)
-if (!initializeApp.length) {
+if (getApps().length === 0) {
   initializeApp({
     credential: cert(serviceAccount),
   });
