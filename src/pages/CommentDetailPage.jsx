@@ -68,7 +68,7 @@ const CommentDetailPage = () => {
         .from("notification_tokens")
         .select("token")
         .eq("user_id", imageOwnerId)
-        .single();
+        .maybeSingle();
 
       if (!tokenErr && tokenData) {
         await fetch("/api/send-push-v1", {
@@ -111,31 +111,33 @@ const CommentDetailPage = () => {
         return;
       }
 
-      const commentOwnerId = commentData.user_id || "unknown_user";
+      const commentOwnerId = commentData.user_id;
+if (commentOwnerId) {
+  const { data: tokenData, error: tokenErr } = await supabase
+    .from("notification_tokens")
+    .select("token")
+    .eq("user_id", commentOwnerId)
+    .maybeSingle(); // ✅ 안전하게 조회
 
-      const { data: tokenData, error: tokenErr } = await supabase
-        .from("notification_tokens")
-        .select("token")
-        .eq("user_id", commentOwnerId)
-        .single();
+  if (!tokenErr && tokenData) {
+    await fetch("/api/send-push-v1", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: tokenData.token,
+        title: "누군가 내 댓글에 공감했어요 💕",
+        body: "소중한 말에 따뜻한 반응이 도착했어요.",
+        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
+      }),
+    });
+  } else {
+    console.warn("좋아요 푸시 - 토큰 조회 실패");
+  }
+} else {
+  console.warn("commentOwnerId 없음 → 푸시 생략");
+}
+};
 
-      if (!tokenErr && tokenData) {
-        await fetch("/api/send-push-v1", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: tokenData.token,
-            title: "누군가 내 댓글에 공감했어요 💕",
-            body: "소중한 말에 따뜻한 반응이 도착했어요.",
-            click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
-          }),
-        });
-      } else {
-        console.warn("좋아요 푸시 - 토큰 조회 실패");
-      }
-    } else {
-      alert("좋아요 실패");
-    }
   };
 
   return (
