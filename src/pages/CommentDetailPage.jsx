@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { getAnonId } from "../utils/getAnonId"; // ✅ 디바이스 기반 ID 생성
 import { sendPushToAll } from "../utils/sendPushToAll"; // ✅ 전역 푸시 유틸
-import { fetchUserIdFromImageUrl } from "../utils/fetchUserIdFromImageUrl"; // ✅ 이미지 user_id 조회 유틸
+import { fetchUserIdFromImageUrl } from "../utils/fetchUserIdFromImageUrl";
+ // ✅ 이미지 user_id 조회 유틸
 import styles from "./CommentDetailPage.module.css";
 
 const CommentDetailPage = () => {

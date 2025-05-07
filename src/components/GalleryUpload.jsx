@@ -4,6 +4,8 @@ import { supabase } from "../lib/supabaseClient";
 import EXIF from "exif-js";
 import { useNavigate } from "react-router-dom";
 import { getAnonId } from "../utils/getAnonId"; // ✅ 기기별 user_id
+import { sendPushToAll } from "../utils/sendPushToAll"; // ✅ 누락된 import
+
 
 const GalleryUpload = () => {
   const [files, setFiles] = useState([]);
