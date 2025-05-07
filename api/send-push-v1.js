@@ -2,84 +2,78 @@
 
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
+import { createClient } from "@supabase/supabase-js";
 
-// ✅ 환경변수에서 base64로 인코딩된 서비스 계정 키 불러오기
+// ✅ Supabase Admin 연결 (만료된 토큰 삭제용)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY // ✅ 반드시 Service Role 사용
+);
+
+// ✅ Firebase Admin 초기화
 const decodedServiceAccount = JSON.parse(
   Buffer.from(process.env.FIREBASE_ADMIN_KEY, "base64").toString("utf-8")
 );
 
-// ✅ Firebase Admin 초기화 (중복 방지)
 if (!getApps().length) {
-  initializeApp({
-    credential: cert(decodedServiceAccount),
-  });
+  initializeApp({ credential: cert(decodedServiceAccount) });
 }
 
 export default async function handler(req, res) {
-  // ✅ CORS 헤더 설정
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ OPTIONS 사전 요청 처리
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const { registration_ids, title, body, click_action } = req.body;
 
-  const { token, title, body, click_action } = req.body;
-
-  if (!token || !title || !body) {
-    return res.status(400).json({ error: "Missing fields: token, title, body are required" });
+  if (!registration_ids || !Array.isArray(registration_ids) || registration_ids.length === 0 || !title || !body) {
+    return res.status(400).json({ error: "Missing or invalid fields" });
   }
 
   try {
     const message = {
-      token,
-      notification: {
-        title,
-        body,
-      },
+      notification: { title, body },
+      tokens: registration_ids,
       webpush: {
         notification: {
-          icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ 위치 옮김
+          icon: "https://love-memory-page.vercel.app/icon-192.png",
         },
         fcmOptions: {
           link: click_action || "https://love-memory-page.vercel.app",
         },
       },
     };
-    
 
-    const response = await getMessaging().send(message);
-    console.log("✅ FCM 전송 성공:", response);
-    res.status(200).json({ success: true, response });
-  } // 👇 아래 부분만 try-catch 안에 추가
-  catch (error) {
-    console.error("🔴 FCM 전송 오류:", error);
-  
-    // ⛔ registration-token-not-registered 에러일 경우 DB에서 토큰 제거
-    if (
-      error.errorInfo?.code === "messaging/registration-token-not-registered" &&
-      token
-    ) {
-      console.warn("🧹 만료된 FCM 토큰 삭제 중:", token);
-      await supabase.from("notification_tokens").delete().eq("token", token);
+    const response = await getMessaging().sendEachForMulticast(message);
+
+    // ❌ 실패한 토큰 제거
+    const failedTokens = response.responses
+      .map((r, idx) => (!r.success ? registration_ids[idx] : null))
+      .filter(Boolean);
+
+    if (failedTokens.length > 0) {
+      await supabase
+        .from("notification_tokens")
+        .delete()
+        .in("token", failedTokens);
+      console.warn("🧹 만료된 FCM 토큰 삭제:", failedTokens);
     }
-  
-    return res.status(500).json({
-      error: "푸시 전송 실패",
-      details: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        info: error.errorInfo || null,
-      },
+
+    console.log("✅ FCM 전송 완료:", {
+      successCount: response.successCount,
+      failureCount: response.failureCount,
     });
+
+    res.status(200).json({
+      success: true,
+      successCount: response.successCount,
+      failureCount: response.failureCount,
+    });
+  } catch (error) {
+    console.error("🔴 FCM 전송 실패:", error);
+    res.status(500).json({ error: "FCM 전송 중 서버 오류", detail: error.message });
   }
-  
-  
 }
