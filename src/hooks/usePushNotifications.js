@@ -3,7 +3,6 @@ import { supabase } from "../lib/supabaseClient";
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
 
-// 🔑 환경변수에서 Firebase 설정 불러오기
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -11,46 +10,47 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// 🔑 VAPID 키 (Web Push 인증키)
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
-
 const firebaseApp = initializeApp(firebaseConfig);
 
 export default function usePushNotifications(user_id) {
   useEffect(() => {
-    const registerToken = async () => {
+    // ✅ 사용자 인터랙션 후 실행할 알림 등록 함수
+    const registerPush = async () => {
       try {
-        const messaging = getMessaging(firebaseApp);
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          console.warn("🔕 알림 권한이 거부되었습니다.");
+          return;
+        }
 
+        const messaging = getMessaging(firebaseApp);
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
 
         if (token) {
-          // ✅ 본인 토큰 localStorage 저장 (작성자 제외용)
           localStorage.setItem("fcm_token", token);
 
-          // ✅ Supabase에 토큰 저장
           const { error } = await supabase
-          .from("notification_tokens")
-          .upsert({ user_id, token }, { onConflict: "token" });
+            .from("notification_tokens")
+            .upsert({ user_id, token }, { onConflict: "token" });
 
-        if (error) {
-          console.error("❌ Supabase 토큰 저장 실패:", error);
-        } else {
-          console.log("📬 FCM 토큰 저장 완료:", token);
+          if (error) {
+            console.error("❌ Supabase 토큰 저장 실패:", error);
+          } else {
+            console.log("📬 FCM 토큰 저장 완료:", token);
+          }
         }
-        }
-      } catch (error) {
-        console.error("🔴 FCM 토큰 등록 실패:", error);
+      } catch (err) {
+        console.error("🔴 FCM 등록 실패:", err);
       }
     };
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then(() => {
-          console.log("✅ ServiceWorker 등록됨");
-          registerToken();
-        });
-    }
+    // ✅ 반드시 클릭 후 실행되도록 이벤트 등록
+    const listener = () => {
+      registerPush();
+      window.removeEventListener("click", listener); // 한 번만 실행
+    };
+
+    window.addEventListener("click", listener); // 페이지 내 첫 클릭 감지
   }, [user_id]);
 }

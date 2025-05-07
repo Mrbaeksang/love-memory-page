@@ -1,11 +1,11 @@
 // /api/send-push-v1.js
 
-import { initializeApp, cert } from "firebase-admin/app";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import serviceAccount from "../../firebase-service-account.json";
 
-// Firebase Admin 초기화 (중복 방지)
-if (!initializeApp.length) {
+// ✅ Firebase Admin 초기화 (중복 방지)
+if (!getApps().length) {
   initializeApp({
     credential: cert(serviceAccount),
   });
@@ -28,13 +28,17 @@ export default async function handler(req, res) {
 
   const { token, title, body, click_action } = req.body;
 
+  if (!token || !title || !body) {
+    return res.status(400).json({ error: "Missing fields: token, title, body are required" });
+  }
+
   try {
     const message = {
       token,
       notification: {
         title,
         body,
-        icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ PWA용 아이콘
+        icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ PWA 아이콘
       },
       webpush: {
         fcmOptions: {
@@ -44,6 +48,7 @@ export default async function handler(req, res) {
     };
 
     const response = await getMessaging().send(message);
+    console.log("✅ FCM 전송 성공:", response);
     res.status(200).json({ success: true, response });
   } catch (error) {
     console.error("🔴 FCM 전송 오류:", error);
