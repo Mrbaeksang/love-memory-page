@@ -1,8 +1,10 @@
-// ✅ 리팩토링: 이미지 주인과 댓글 작성자의 user_id를 고정값이 아닌 동적으로 처리
+// ✅ 리팩토링: 댓글과 좋아요 모두 sendPushToAll 사용하여 확실하게 푸시 전송
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { getAnonId } from "../utils/getAnonId"; // ✅ 디바이스 기반 ID 생성
+import { sendPushToAll } from "../utils/sendPushToAll"; // ✅ 전역 푸시 유틸
+import { fetchUserIdFromImageUrl } from "../utils/fetchUserIdFromImageUrl"; // ✅ 이미지 user_id 조회 유틸
 import styles from "./CommentDetailPage.module.css";
 
 const CommentDetailPage = () => {
@@ -61,29 +63,13 @@ const CommentDetailPage = () => {
       setNewComment("");
       fetchComments();
 
-      // ✅ 푸시 대상: 이미지 소유자 ID는 Supabase에서 별도 연동 예정 (지금은 댓글 외부에서 설정 불가)
-      const imageOwnerId = await fetchUserIdFromImageUrl(imgUrl);
-
-      const { data: tokenData, error: tokenErr } = await supabase
-        .from("notification_tokens")
-        .select("token")
-        .eq("user_id", imageOwnerId)
-        .maybeSingle();
-
-      if (!tokenErr && tokenData) {
-        await fetch("/api/send-push-v1", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: tokenData.token,
-            title: "사진에 댓글이 달렸어요!",
-            body: "예쁜 추억에 새로운 댓글이 도착했어요 💌",
-            click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
-          }),
-        });
-      } else {
-        console.warn("FCM 토큰 조회 실패:", tokenErr);
-      }
+      // ✅ 푸시 대상: 전체 사용자 (단, 작성자 제외)
+      await sendPushToAll({
+        title: "사진에 댓글이 달렸어요!",
+        body: "예쁜 추억에 새로운 댓글이 도착했어요 💌",
+        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
+        excludeUserId: myUserId,
+      });
     } else {
       alert("댓글 등록 실패");
       console.error(error);
@@ -112,32 +98,17 @@ const CommentDetailPage = () => {
       }
 
       const commentOwnerId = commentData.user_id;
-if (commentOwnerId) {
-  const { data: tokenData, error: tokenErr } = await supabase
-    .from("notification_tokens")
-    .select("token")
-    .eq("user_id", commentOwnerId)
-    .maybeSingle(); // ✅ 안전하게 조회
 
-  if (!tokenErr && tokenData) {
-    await fetch("/api/send-push-v1", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token: tokenData.token,
+      await sendPushToAll({
         title: "누군가 내 댓글에 공감했어요 💕",
         body: "소중한 말에 따뜻한 반응이 도착했어요.",
         click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
-      }),
-    });
-  } else {
-    console.warn("좋아요 푸시 - 토큰 조회 실패");
-  }
-} else {
-  console.warn("commentOwnerId 없음 → 푸시 생략");
-}
-};
-
+        excludeUserId: getAnonId(),
+        targetUserId: commentOwnerId,
+      });
+    } else {
+      alert("좋아요 실패");
+    }
   };
 
   return (

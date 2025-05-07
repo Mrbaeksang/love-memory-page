@@ -143,7 +143,19 @@ const GalleryUpload = () => {
 
     if (uploadSuccess) {
       setStatus("✅ 모든 파일 업로드 완료!");
+    
+      // ✅ 푸시 알림 전송
+      const uploaderId = getAnonId();
+      const imagePath = `https://love-memory-page.vercel.app/gallery`; // 원하는 위치로 조정 가능
+    
+      await sendPushToAll({
+        title: "새 사진이 올라왔어요!",
+        body: "추억이 하나 더 쌓였어요 📸",
+        click_action: imagePath,
+        excludeUserId: uploaderId,
+      });
     }
+    
 
     setUploading(false);
     setFiles([]);

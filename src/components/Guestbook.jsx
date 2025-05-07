@@ -120,15 +120,16 @@ const Guestbook = () => {
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <input
-              type="text"
-              placeholder="작성자 이름"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="form-input"
-              required
-              autoComplete="off"
-            />
+          <input
+  type="text"
+  placeholder="작성자 이름"
+  value={author}
+  onChange={(e) => setAuthor(e.target.value)}
+  className="form-input"
+  required
+  autoComplete="off"
+/>
+
           </div>
           <div className="form-group">
             <input
