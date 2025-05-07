@@ -57,8 +57,30 @@ export default async function handler(req, res) {
     const response = await getMessaging().send(message);
     console.log("✅ FCM 전송 성공:", response);
     res.status(200).json({ success: true, response });
-  } catch (error) {
+  } // 👇 아래 부분만 try-catch 안에 추가
+  catch (error) {
     console.error("🔴 FCM 전송 오류:", error);
+  
+    // ✅ 추가: registration-token-not-registered 에러일 경우 Supabase에서 해당 토큰 삭제
+    if (
+      error.errorInfo?.code === "messaging/registration-token-not-registered" &&
+      token
+    ) {
+      console.warn("⛔️ 만료된 FCM 토큰 삭제 시도:", token);
+  
+      // ✅ Supabase에 삭제 요청 (토큰 기준)
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      );
+  
+      await supabase
+        .from("notification_tokens")
+        .delete()
+        .eq("token", token);
+    }
+  
     return res.status(500).json({
       error: "푸시 전송 실패",
       details: {
@@ -69,4 +91,5 @@ export default async function handler(req, res) {
       }
     });
   }
+  
 }

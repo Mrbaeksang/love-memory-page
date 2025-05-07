@@ -62,7 +62,7 @@ const CommentDetailPage = () => {
       fetchComments();
 
       // ✅ 푸시 대상: 이미지 소유자 ID는 Supabase에서 별도 연동 예정 (지금은 댓글 외부에서 설정 불가)
-      const imageOwnerId = "sarang_lover"; // TODO: 이미지 업로드 시 저장해둔 user_id를 불러오는 방식으로 개선 필요
+      const imageOwnerId = await fetchUserIdFromImageUrl(imgUrl);
 
       const { data: tokenData, error: tokenErr } = await supabase
         .from("notification_tokens")
@@ -178,7 +178,7 @@ if (commentOwnerId) {
         ) : (
           comments.map((c) => (
             <div key={c.id} className={styles["comment-detail-item"]}>
-              <p>{c.content}</p>
+              <p>{c.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
               <div className={styles["comment-footer"]}>
                 <span className={styles["comment-detail-date"]}>
                   {new Date(c.created_at).toLocaleDateString()}

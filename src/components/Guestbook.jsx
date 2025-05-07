@@ -127,6 +127,7 @@ const Guestbook = () => {
               onChange={(e) => setAuthor(e.target.value)}
               className="form-input"
               required
+              autoComplete="off"
             />
           </div>
           <div className="form-group">
