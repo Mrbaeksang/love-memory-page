@@ -52,6 +52,16 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, response });
   } catch (error) {
     console.error("🔴 FCM 전송 오류:", error);
-    res.status(500).json({ error: "푸시 전송 실패", details: error.message });
+  
+    return res.status(500).json({
+      error: "푸시 전송 실패",
+      details: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        info: error.errorInfo || null
+      }
+    });
   }
+  
 }
