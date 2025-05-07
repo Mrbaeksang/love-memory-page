@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       manifest: {
         name: '혜은❤️상현',
         short_name: '혜은상현',
@@ -28,6 +28,19 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
+      },
+      workbox: {
+        runtimeCaching: [{
+          urlPattern: ({ url }) => url.origin === self.location.origin,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'app-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 7 // 7일
+            }
+          }
+        }]
       }
     })
   ],

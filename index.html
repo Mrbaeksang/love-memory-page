@@ -48,6 +48,16 @@
 
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script>
+  // Service Worker 초기화 및 캐시 정리
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => {
+        registration.unregister();
+      });
+    });
+  }
+</script>
+<script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
