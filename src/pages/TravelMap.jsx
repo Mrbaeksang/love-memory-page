@@ -198,6 +198,7 @@ const TravelMap = () => {
             <strong>{deletingMarker.region}</strong> - {deletingMarker.reason}
           </p>
           <div className="marker-buttons">
+
             <button className="cancel-btn" onClick={() => setDeletingMarker(null)}>
               취소
             </button>
