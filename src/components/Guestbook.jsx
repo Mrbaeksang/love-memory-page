@@ -46,9 +46,9 @@ const Guestbook = () => {
       setError('모든 필드를 입력해주세요.');
       return;
     }
-
+  
     if (!validatePassword(password)) return;
-
+  
     setIsSubmitting(true);
     try {
       const { data, error } = await supabase
@@ -61,9 +61,34 @@ const Guestbook = () => {
             created_at: new Date().toISOString()
           }
         ]);
-
+  
       if (error) throw error;
-
+  
+      // ✅ 푸시 알림 대상 ID
+      const receiverUserId = "sarang_lover"; // 혹은 실제 관리자의 Supabase user_id
+  
+      // ✅ 토큰 조회
+      const { data: tokenData, error: tokenErr } = await supabase
+        .from("notification_tokens")
+        .select("token")
+        .eq("user_id", receiverUserId)
+        .single();
+  
+      if (!tokenErr && tokenData?.token) {
+        // ✅ 푸시 전송
+        await fetch("/api/send-push-v1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: tokenData.token,
+            title: "방명록에 사랑의 흔적이 남았어요 💌",
+            body: `"${author}"님의 메시지가 도착했어요!`,
+            click_action: "https://love-memory-page.vercel.app/#guestbook",
+          }),
+        });
+      }
+  
+      // 원래 로직
       setNewMessage('');
       setAuthor('');
       setPassword('');
@@ -76,6 +101,7 @@ const Guestbook = () => {
       setIsSubmitting(false);
     }
   };
+  
 
   const handleDelete = async () => {
     if (!deleteId || !deletePassword) return;

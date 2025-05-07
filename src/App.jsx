@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import usePushNotifications from "./hooks/usePushNotifications";
+
 
 // 🧭 페이지 컴포넌트
 import Home from "./pages/Home";
@@ -47,6 +49,10 @@ function App() {
       console.error("방문자 기록 실패:", err)
     );
   }, []);
+
+  usePushNotifications("hyeeun"); // or "sanghyun" 등
+  // 푸시 알림 수신
+
 
   // 스크롤 이동
   const scrollToSection = (ref) => {

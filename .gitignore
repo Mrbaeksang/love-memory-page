@@ -1,4 +1,6 @@
-# Logs
+# -------------------------------
+# ✅ 기본 로그 & 빌드 파일
+# -------------------------------
 logs
 *.log
 npm-debug.log*
@@ -6,13 +8,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# -------------------------------
+# ✅ 에디터 관련 설정
+# -------------------------------
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,4 +25,37 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# -------------------------------
+# ✅ 환경 변수 파일 (민감정보)
+# -------------------------------
 .env
+.env.local
+.env.*.local
+
+# -------------------------------
+# ✅ Firebase 키 파일
+# -------------------------------
+firebase-private-key.json
+firebase/firebase-admin-key.json
+firebase/firebase-admin-key*.json
+
+# -------------------------------
+# ✅ Supabase 인증/비밀 포함된 설정
+# -------------------------------
+supabase/.env
+supabase/config.json
+supabase/secrets/*
+supabase/service-role-key.json
+
+# -------------------------------
+# ✅ 서비스 워커 & 푸시 관련 캐시
+# -------------------------------
+firebase-messaging-sw.js.map
+firebase-messaging-sw.js.LICENSE.txt
+
+# -------------------------------
+# ✅ 기타 민감한 config
+# -------------------------------
+*.bak
+*.secret.*

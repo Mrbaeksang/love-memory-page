@@ -96,42 +96,73 @@ const GalleryUpload = () => {
       reader.readAsDataURL(file);
     });
 
-  const uploadFiles = async () => {
-    if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
-
-    setUploading(true);
-    setStatus("📤 업로드 중...");
-
-    for (const file of files) {
-      try {
-        const { originalPath, thumbPath } = await getUploadInfo(file);
-        const thumbBlob = await createThumbnailBlob(file);
-
-        const { error: error1 } = await supabase.storage
-          .from("gallery")
-          .upload(originalPath, file, { upsert: true });
-
-        const { error: error2 } = await supabase.storage
-          .from("gallery")
-          .upload(thumbPath, thumbBlob, { upsert: true });
-
-        if (error1 || error2) {
-          console.error("❌ 업로드 실패:", error1 || error2);
-          setStatus(`❌ ${file.name} 업로드 실패`);
+    const uploadFiles = async () => {
+      if (files.length === 0) return alert("📂 업로드할 파일을 선택하세요.");
+    
+      setUploading(true);
+      setStatus("📤 업로드 중...");
+    
+      let uploadSuccess = false;
+    
+      for (const file of files) {
+        try {
+          const { originalPath, thumbPath } = await getUploadInfo(file);
+          const thumbBlob = await createThumbnailBlob(file);
+    
+          const { error: error1 } = await supabase.storage
+            .from("gallery")
+            .upload(originalPath, file, { upsert: true });
+    
+          const { error: error2 } = await supabase.storage
+            .from("gallery")
+            .upload(thumbPath, thumbBlob, { upsert: true });
+    
+          if (error1 || error2) {
+            console.error("❌ 업로드 실패:", error1 || error2);
+            setStatus(`❌ ${file.name} 업로드 실패`);
+            continue;
+          }
+    
+          // ✅ 성공 표시
+          uploadSuccess = true;
+        } catch (err) {
+          console.error("⚠️ 예외 발생:", err);
+          setStatus(`❌ ${file.name} 처리 중 오류`);
           continue;
         }
-      } catch (err) {
-        console.error("⚠️ 예외 발생:", err);
-        setStatus(`❌ ${file.name} 처리 중 오류`);
-        continue;
       }
-    }
-
-    setStatus("✅ 모든 파일 업로드 완료!");
-    setUploading(false);
-    setFiles([]);
-    setPreviews([]);
-  };
+    
+      if (uploadSuccess) {
+        // ✅ 푸시 대상 유저 ID
+        const receiverUserId = "hyeeun"; // 상대방 ID (닉네임 또는 user_id)
+    
+        // ✅ 토큰 조회
+        const { data: tokenData, error: tokenErr } = await supabase
+          .from("notification_tokens")
+          .select("token")
+          .eq("user_id", receiverUserId)
+          .single();
+    
+        if (!tokenErr && tokenData?.token) {
+          await fetch("/api/send-push-v1", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: tokenData.token,
+              title: "추억이 한 장 더 저장됐어요 💖",
+              body: "새로운 사진이 업로드되었습니다. 지금 바로 확인해보세요!",
+              click_action: "https://love-memory-page.vercel.app/gallery",
+            }),
+          });
+        }
+      }
+    
+      setStatus("✅ 모든 파일 업로드 완료!");
+      setUploading(false);
+      setFiles([]);
+      setPreviews([]);
+    };
+    
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
