@@ -30,12 +30,14 @@ export default function usePushNotifications(user_id) {
 
           // ✅ Supabase에 토큰 저장
           const { error } = await supabase
-            .from("notification_tokens")
-            .upsert({ user_id, token });
+          .from("notification_tokens")
+          .upsert({ user_id, token }, { onConflict: "token" });
 
-          if (!error) {
-            console.log("📬 FCM 토큰 저장 완료:", token);
-          }
+        if (error) {
+          console.error("❌ Supabase 토큰 저장 실패:", error);
+        } else {
+          console.log("📬 FCM 토큰 저장 완료:", token);
+        }
         }
       } catch (error) {
         console.error("🔴 FCM 토큰 등록 실패:", error);
