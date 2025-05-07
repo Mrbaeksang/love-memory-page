@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { sendPushToAll } from '../utils/sendPushToAll';
 
 const Guestbook = () => {
   const [messages, setMessages] = useState([]);
@@ -12,6 +13,7 @@ const Guestbook = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const myToken = localStorage.getItem("fcm_token");
 
   useEffect(() => {
     fetchMessages();
@@ -42,6 +44,7 @@ const Guestbook = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!author.trim() || !password.trim() || !newMessage.trim()) {
       setError('모든 필드를 입력해주세요.');
       return;
@@ -51,7 +54,7 @@ const Guestbook = () => {
   
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('guestbook')
         .insert([
           {
@@ -64,31 +67,18 @@ const Guestbook = () => {
   
       if (error) throw error;
   
-      // ✅ 푸시 알림 대상 ID
-      const receiverUserId = "sarang_lover"; // 혹은 실제 관리자의 Supabase user_id
+      // ✅ 작성자 본인의 FCM 토큰 가져오기
+      const myToken = localStorage.getItem("fcm_token");
   
-      // ✅ 토큰 조회
-      const { data: tokenData, error: tokenErr } = await supabase
-        .from("notification_tokens")
-        .select("token")
-        .eq("user_id", receiverUserId)
-        .single();
+      // ✅ 푸시 알림 (작성자 제외)
+      await sendPushToAll({
+        title: "방명록에 사랑의 흔적이 남았어요 💌",
+        body: `"${author}"님의 메시지가 도착했어요!`,
+        click_action: "https://love-memory-page.vercel.app/#guestbook",
+        excludeToken: myToken,
+      });
   
-      if (!tokenErr && tokenData?.token) {
-        // ✅ 푸시 전송
-        await fetch("/api/send-push-v1", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: tokenData.token,
-            title: "방명록에 사랑의 흔적이 남았어요 💌",
-            body: `"${author}"님의 메시지가 도착했어요!`,
-            click_action: "https://love-memory-page.vercel.app/#guestbook",
-          }),
-        });
-      }
-  
-      // 원래 로직
+      // ✅ 입력값 초기화 + 메시지 목록 새로고침
       setNewMessage('');
       setAuthor('');
       setPassword('');
@@ -105,7 +95,6 @@ const Guestbook = () => {
 
   const handleDelete = async () => {
     if (!deleteId || !deletePassword) return;
-
     if (!validatePassword(deletePassword)) return;
 
     setIsDeleting(true);

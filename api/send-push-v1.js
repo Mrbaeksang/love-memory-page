@@ -1,48 +1,33 @@
 // /api/send-push-v1.js
+import { initializeApp, cert } from "firebase-admin/app";
+import { getMessaging } from "firebase-admin/messaging";
+import serviceAccount from "../../firebase-service-account.json";
 
-import admin from "firebase-admin";
-import path from "path";
-import { promises as fs } from "fs";
-
-// ✅ Firebase 앱이 이미 초기화됐는지 체크 (중복 초기화 방지)
-if (!admin.apps.length) {
-  try {
-    const keyPath = path.resolve(__dirname, "../firebase/firebase-admin-key.json");
-    const serviceAccount = JSON.parse(await fs.readFile(keyPath, "utf-8"));
-    console.log("✅ Firebase 초기화 성공");
-    
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  } catch (error) {
-    console.error("❌ Firebase 초기화 실패:", error);
-    throw new Error("Firebase 초기화 실패: " + error.message);
-  }
+// Firebase Admin 초기화 (중복 방지)
+if (!initializeApp.length) {
+  initializeApp({
+    credential: cert(serviceAccount),
+  });
 }
 
 export default async function handler(req, res) {
+  // ✅ CORS 헤더 추가
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // ✅ Preflight 요청 처리
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { token, title, body, click_action } = req.body;
+
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ 
-        message: "POST 요청만 허용됩니다",
-        timestamp: new Date().toISOString()
-      });
-    }
-
-    const { token, title, body, click_action } = req.body;
-
-    if (!token || !title || !body) {
-      return res.status(400).json({ 
-        message: "필수 항목이 누락되었습니다",
-        missing: !token ? "token" : !title ? "title" : "body",
-        timestamp: new Date().toISOString()
-      });
-    }
-
-    // ✅ 클릭 시 이동할 기본 경로 설정
-    const clickAction = click_action || "https://love-memory-page.vercel.app";
-
-    // ✅ FCM 메시지 구조 정의 (Webpush 옵션 포함)
     const message = {
       token,
       notification: {
@@ -51,37 +36,15 @@ export default async function handler(req, res) {
       },
       webpush: {
         fcmOptions: {
-          link: clickAction,
-        },
-        notification: {
-          icon: "https://love-memory-page.vercel.app/icon-192.png",
+          link: click_action || "https://love-memory-page.vercel.app",
         },
       },
     };
 
-    const response = await admin.messaging().send(message);
-    
-    res.status(200).json({ 
-      message: "푸시 전송 성공", 
-      response,
-      timestamp: new Date().toISOString()
-    });
+    const response = await getMessaging().send(message);
+    res.status(200).json({ success: true, response });
   } catch (error) {
-    console.error("푸시 전송 오류:", {
-      error: error.message,
-      stack: error.stack,
-      request: {
-        token: "[REDACTED]",
-        title,
-        body,
-        click_action
-      }
-    });
-    
-    res.status(500).json({
-      message: "푸시 전송 실패",
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
+    console.error("🔴 FCM 전송 오류:", error);
+    res.status(500).json({ error: "푸시 전송 실패" });
   }
 }

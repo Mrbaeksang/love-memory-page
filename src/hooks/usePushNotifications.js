@@ -1,80 +1,54 @@
-// src/hooks/usePushNotifications.js
-
 import { useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 
-// 🔐 환경 변수에서 Firebase 설정값 불러오기
+// 🔑 환경변수에서 Firebase 설정 불러오기
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// 🔑 VAPID 키 (Web Push 인증키)
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
-// ✅ Firebase 앱 초기화 (중복 방지)
-const app = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
-const usePushNotifications = (userId) => {
+export default function usePushNotifications(user_id) {
   useEffect(() => {
-    const initPush = async () => {
+    const registerToken = async () => {
       try {
-        // ✅ Service Worker 등록 (중복 체크)
-        const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-        console.log("✅ ServiceWorker 등록됨");
+        const messaging = getMessaging(firebaseApp);
 
-        // ✅ 권한 요청
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
-          console.warn("❌ 푸시 권한 거부됨");
-          return;
+        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+
+        if (token) {
+          // ✅ 본인 토큰 localStorage 저장 (작성자 제외용)
+          localStorage.setItem("fcm_token", token);
+
+          // ✅ Supabase에 토큰 저장
+          const { error } = await supabase
+            .from("notification_tokens")
+            .upsert({ user_id, token });
+
+          if (!error) {
+            console.log("📬 FCM 토큰 저장 완료:", token);
+          }
         }
-
-        const messaging = getMessaging(app);
-
-        // ✅ 토큰 발급
-        const token = await getToken(messaging, {
-          vapidKey: VAPID_KEY,
-          serviceWorkerRegistration: registration,
-        });
-
-        if (!token) {
-          console.warn("❌ FCM 토큰 발급 실패");
-          return;
-        }
-
-        // ✅ Supabase에 토큰 저장
-        const { error } = await supabase
-          .from("notification_tokens")
-          .upsert({
-            user_id: userId,
-            token,
-            updated_at: new Date().toISOString(),
-          });
-
-        if (error) {
-          console.error("❌ Supabase 토큰 저장 실패:", error);
-        } else {
-          console.log("📬 FCM 토큰 저장 완료:", token);
-        }
-
-        // ✅ 수신 알림 로그
-        onMessage(messaging, (payload) => {
-          console.log("📥 수신된 알림:", payload);
-        });
-      } catch (err) {
-        console.error("🔥 푸시 초기화 중 예외 발생:", err);
+      } catch (error) {
+        console.error("🔴 FCM 토큰 등록 실패:", error);
       }
     };
 
-    initPush();
-  }, [userId]);
-};
-
-export default usePushNotifications;
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then(() => {
+          console.log("✅ ServiceWorker 등록됨");
+          registerToken();
+        });
+    }
+  }, [user_id]);
+}
