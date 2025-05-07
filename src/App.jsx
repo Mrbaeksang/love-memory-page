@@ -1,7 +1,7 @@
+// src/App.jsx
 import React, { useRef, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import usePushNotifications from "./hooks/usePushNotifications";
-
 
 // 🧭 페이지 컴포넌트
 import Home from "./pages/Home";
@@ -28,33 +28,40 @@ import AdminThumbnailFill from "./pages/AdminThumbnailFill";
 // 🧭 공통 컴포넌트
 import BottomNavigation from "./BottomNavigation";
 import ScrollToTop from "./components/ScrollToTop";
-import MusicPlayer from "./components/MusicPlayer"; // 🎵 음악 플레이어
+import MusicPlayer from "./components/MusicPlayer";
 
 // 🎨 스타일
 import "./App.css";
 import "./fadein.css";
 import "./components/Guestbook.css";
 
+// ✨ 랜덤한 사용자 ID 생성 유틸
+function getOrCreateUserId() {
+  let userId = localStorage.getItem("local_user_id");
+  if (!userId) {
+    userId = "user_" + Math.random().toString(36).substring(2, 12);
+    localStorage.setItem("local_user_id", userId);
+  }
+  return userId;
+}
+
 function App() {
-  // 섹션 참조
   const homeRef = useRef(null);
   const memoriesRef = useRef(null);
   const loveTypeRef = useRef(null);
   const travelMapRef = useRef(null);
   const guestbookRef = useRef(null);
 
-  // 방문자 기록
   useEffect(() => {
     fetch("/api/log-visit").catch((err) =>
       console.error("방문자 기록 실패:", err)
     );
   }, []);
 
-  usePushNotifications("hyeeun"); // or "sanghyun" 등
-  // 푸시 알림 수신
+  // ✅ 기기마다 고유한 user_id로 푸시 토큰 등록
+  const userId = getOrCreateUserId();
+  usePushNotifications(userId);
 
-
-  // 스크롤 이동
   const scrollToSection = (ref) => {
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth" });

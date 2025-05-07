@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { sendPushToAll } from '../utils/sendPushToAll';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { sendPushToAll } from "../utils/sendPushToAll";
+import { getAnonId } from "../utils/getAnonId"; // ✅ 디바이스별 user_id
 
 const Guestbook = () => {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [author, setAuthor] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [newMessage, setNewMessage] = useState("");
+  const [author, setAuthor] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [deletePassword, setDeletePassword] = useState('');
+  const [deletePassword, setDeletePassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const myToken = localStorage.getItem("fcm_token");
 
   useEffect(() => {
     fetchMessages();
@@ -22,76 +22,71 @@ const Guestbook = () => {
   const fetchMessages = async () => {
     try {
       const { data, error } = await supabase
-        .from('guestbook')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("guestbook")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setMessages(data || []);
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error("Error fetching messages:", error);
     }
   };
 
   const validatePassword = (pwd) => {
     if (!/^[0-9]{4}$/.test(pwd)) {
-      setError('비밀번호는 4자리 숫자여야 합니다');
+      setError("비밀번호는 4자리 숫자여야 합니다");
       return false;
     }
-    setError('');
+    setError("");
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!author.trim() || !password.trim() || !newMessage.trim()) {
-      setError('모든 필드를 입력해주세요.');
+      setError("모든 필드를 입력해주세요.");
       return;
     }
-  
+
     if (!validatePassword(password)) return;
-  
+
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('guestbook')
-        .insert([
-          {
-            author,
-            message: newMessage,
-            password,
-            created_at: new Date().toISOString()
-          }
-        ]);
-  
+      const { error } = await supabase.from("guestbook").insert([
+        {
+          author,
+          message: newMessage,
+          password,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
       if (error) throw error;
-  
-      // ✅ 작성자 본인의 FCM 토큰 가져오기
-      const myToken = localStorage.getItem("fcm_token");
-  
-      // ✅ 푸시 알림 (작성자 제외)
+
+      // ✅ 본인 user_id 기반으로 푸시 제외
+      const myUserId = getAnonId();
+
       await sendPushToAll({
         title: "방명록에 사랑의 흔적이 남았어요 💌",
         body: `"${author}"님의 메시지가 도착했어요!`,
         click_action: "https://love-memory-page.vercel.app/#guestbook",
-        excludeToken: myToken,
+        excludeUserId: myUserId,
       });
-  
-      // ✅ 입력값 초기화 + 메시지 목록 새로고침
-      setNewMessage('');
-      setAuthor('');
-      setPassword('');
-      setError('');
+
+      setNewMessage("");
+      setAuthor("");
+      setPassword("");
+      setError("");
       await fetchMessages();
     } catch (error) {
-      setError('메시지 작성 중 오류가 발생했습니다.');
-      console.error('Error submitting message:', error);
+      setError("메시지 작성 중 오류가 발생했습니다.");
+      console.error("Error submitting message:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
-  
 
   const handleDelete = async () => {
     if (!deleteId || !deletePassword) return;
@@ -100,20 +95,20 @@ const Guestbook = () => {
     setIsDeleting(true);
     try {
       const { error } = await supabase
-        .from('guestbook')
+        .from("guestbook")
         .delete()
-        .eq('id', deleteId)
-        .eq('password', deletePassword);
+        .eq("id", deleteId)
+        .eq("password", deletePassword);
 
       if (error) throw error;
 
-      setDeletePassword('');
+      setDeletePassword("");
       setDeleteId(null);
       setIsDeleteModalOpen(false);
       await fetchMessages();
     } catch (error) {
-      setError('비밀번호가 틀렸습니다.');
-      console.error('Error deleting message:', error);
+      setError("비밀번호가 틀렸습니다.");
+      console.error("Error deleting message:", error);
     } finally {
       setIsDeleting(false);
     }
@@ -145,6 +140,7 @@ const Guestbook = () => {
               }}
               className="form-input"
               required
+              autoComplete="current-password"
             />
             {error && <p className="error-message">{error}</p>}
           </div>
@@ -158,12 +154,8 @@ const Guestbook = () => {
               required
             />
           </div>
-          <button 
-            type="submit"
-            disabled={isSubmitting}
-            className="submit-btn"
-          >
-            {isSubmitting ? '작성 중...' : '기록하기'}
+          <button type="submit" disabled={isSubmitting} className="submit-btn">
+            {isSubmitting ? "작성 중..." : "기록하기"}
           </button>
         </form>
       </div>
@@ -173,9 +165,11 @@ const Guestbook = () => {
             <div className="message-header">
               <div className="author-container">
                 <span className="author">{msg.author}</span>
-                <small className="timestamp">{new Date(msg.created_at).toLocaleString()}</small>
+                <small className="timestamp">
+                  {new Date(msg.created_at).toLocaleString()}
+                </small>
               </div>
-              <button 
+              <button
                 onClick={() => {
                   setDeleteId(msg.id);
                   setIsDeleteModalOpen(true);
@@ -205,12 +199,13 @@ const Guestbook = () => {
                 }}
                 className="modal-input"
                 required
+                autoComplete="current-password"
               />
             </div>
             <div className="modal-buttons">
-              <button 
+              <button
                 onClick={() => {
-                  setDeletePassword('');
+                  setDeletePassword("");
                   setDeleteId(null);
                   setIsDeleteModalOpen(false);
                 }}
@@ -218,12 +213,12 @@ const Guestbook = () => {
               >
                 취소
               </button>
-              <button 
+              <button
                 onClick={handleDelete}
                 disabled={isDeleting}
                 className="modal-delete-btn"
               >
-                {isDeleting ? '삭제 중...' : '삭제'}
+                {isDeleting ? "삭제 중..." : "삭제"}
               </button>
             </div>
           </div>

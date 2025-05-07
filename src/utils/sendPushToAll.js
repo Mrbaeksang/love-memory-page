@@ -1,19 +1,20 @@
+// src/utils/sendPushToAll.js
 import { supabase } from "../lib/supabaseClient";
 
 const DEPLOY_URL = import.meta.env.VITE_DEPLOY_URL || "";
 
-export async function sendPushToAll({ title, body, click_action, excludeToken }) {
+export async function sendPushToAll({ title, body, click_action, excludeUserId }) {
   const { data: tokens, error } = await supabase
     .from("notification_tokens")
-    .select("token");
+    .select("token, user_id");
 
   if (error) {
     console.error("🔴 푸시 토큰 조회 실패:", error);
     return;
   }
 
-  const filtered = excludeToken
-    ? tokens.filter(({ token }) => token !== excludeToken)
+  const filtered = excludeUserId
+    ? tokens.filter(({ user_id }) => user_id !== excludeUserId)
     : tokens;
 
   const promises = filtered.map(({ token }) =>
