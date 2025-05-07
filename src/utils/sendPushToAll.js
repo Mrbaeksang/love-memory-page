@@ -17,14 +17,24 @@ export async function sendPushToAll({ title, body, click_action, excludeUserId }
     ? tokens.filter(({ user_id }) => user_id !== excludeUserId)
     : tokens;
 
-  const promises = filtered.map(({ token }) =>
-    fetch(`${DEPLOY_URL}/api/send-push-v1`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, title, body, click_action }),
-    })
-  );
+  const registrationIds = filtered.map((row) => row.token);
 
-  await Promise.all(promises);
-  console.log(`📣 ${filtered.length}명에게 푸시 전송 완료`);
+  if (registrationIds.length === 0) {
+    console.warn("📭 푸시 보낼 토큰이 없습니다.");
+    return;
+  }
+
+  const response = await fetch(`${DEPLOY_URL}/api/send-push-v1`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      registration_ids: registrationIds,
+      title,
+      body,
+      click_action,
+    }),
+  });
+
+  const result = await response.json();
+  console.log(`📣 푸시 전송 결과:`, result);
 }
