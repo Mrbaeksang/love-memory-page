@@ -1,10 +1,11 @@
 // /api/send-push-v1.js
-import { initializeApp, cert, getApps } from "firebase-admin/app";
+
+import { initializeApp, cert } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import serviceAccount from "../../firebase-service-account.json";
 
 // Firebase Admin 초기화 (중복 방지)
-if (getApps().length === 0) {
+if (!initializeApp.length) {
   initializeApp({
     credential: cert(serviceAccount),
   });
@@ -33,6 +34,7 @@ export default async function handler(req, res) {
       notification: {
         title,
         body,
+        icon: "https://love-memory-page.vercel.app/icon-192.png", // ✅ PWA용 아이콘
       },
       webpush: {
         fcmOptions: {
@@ -45,6 +47,6 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, response });
   } catch (error) {
     console.error("🔴 FCM 전송 오류:", error);
-    res.status(500).json({ error: "푸시 전송 실패" });
+    res.status(500).json({ error: "푸시 전송 실패", details: error.message });
   }
 }
