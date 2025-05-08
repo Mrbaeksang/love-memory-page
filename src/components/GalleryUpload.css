@@ -69,4 +69,15 @@
     font-size: 1rem;
     color: #444;
   }
+@keyframes uploadGlow {
+  0% { box-shadow: 0 0 0px #ff99bb; background-color: #fff0f5; }
+  50% { box-shadow: 0 0 10px #ff99bb; background-color: #ffe6ee; }
+  100% { box-shadow: 0 0 0px #ff99bb; background-color: #fff0f5; }
+}
+
+.comment-detail-item.highlight-upload {
+  animation: uploadGlow 2s ease-in-out;
+  border-left: 4px solid #ff99bb;
+  border-radius: 8px;
+}
   

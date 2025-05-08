@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { sendPushToAll } from "../utils/sendPushToAll";
-import { getAnonId } from "../utils/getAnonId"; // ✅ 디바이스별 user_id
+import { getAnonId } from "../utils/getAnonId";
 
 const Guestbook = () => {
   const [messages, setMessages] = useState([]);
@@ -14,6 +14,8 @@ const Guestbook = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [deletePassword, setDeletePassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const highlightId = new URLSearchParams(window.location.hash.split("?")[1])?.get("highlight");
 
   useEffect(() => {
     fetchMessages();
@@ -32,6 +34,17 @@ const Guestbook = () => {
       console.error("Error fetching messages:", error);
     }
   };
+
+  useEffect(() => {
+    if (highlightId && messages.length > 0) {
+      const el = document.getElementById(`message-${highlightId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("highlight");
+        setTimeout(() => el.classList.remove("highlight"), 2500);
+      }
+    }
+  }, [highlightId, messages]);
 
   const validatePassword = (pwd) => {
     if (!/^[0-9]{4}$/.test(pwd)) {
@@ -54,24 +67,27 @@ const Guestbook = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("guestbook").insert([
-        {
-          author,
-          message: newMessage,
-          password,
-          created_at: new Date().toISOString(),
-        },
-      ]);
+      const { data, error } = await supabase
+        .from("guestbook")
+        .insert([
+          {
+            author,
+            message: newMessage,
+            password,
+            created_at: new Date().toISOString(),
+          },
+        ])
+        .select(); // ✅ ID 받아오기 위해 select 추가
 
       if (error) throw error;
 
-      // ✅ 본인 user_id 기반으로 푸시 제외
+      const newMessageId = data?.[0]?.id;
       const myUserId = getAnonId();
 
       await sendPushToAll({
         title: "방명록에 사랑의 흔적이 남았어요 💌",
         body: `"${author}"님의 메시지가 도착했어요!`,
-        click_action: "https://love-memory-page.vercel.app/#guestbook",
+        click_action: `https://love-memory-page.vercel.app/#guestbook?highlight=${newMessageId}`,
         excludeUserId: myUserId,
       });
 
@@ -120,16 +136,15 @@ const Guestbook = () => {
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-          <input
-  type="text"
-  placeholder="작성자 이름"
-  value={author}
-  onChange={(e) => setAuthor(e.target.value)}
-  className="form-input"
-  required
-  autoComplete="off"
-/>
-
+            <input
+              type="text"
+              placeholder="작성자 이름"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              className="form-input"
+              required
+              autoComplete="off"
+            />
           </div>
           <div className="form-group">
             <input
@@ -163,7 +178,11 @@ const Guestbook = () => {
       </div>
       <div className="messages-container">
         {messages.map((msg) => (
-          <div key={msg.id} className="message-card">
+          <div
+            key={msg.id}
+            id={`message-${msg.id}`} // ✅ highlight용 ID 부여
+            className="message-card"
+          >
             <div className="message-header">
               <div className="author-container">
                 <span className="author">{msg.author}</span>
@@ -185,6 +204,7 @@ const Guestbook = () => {
           </div>
         ))}
       </div>
+
       {isDeleteModalOpen && (
         <div className="delete-modal">
           <div className="delete-modal-content">

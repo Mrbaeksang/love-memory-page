@@ -108,3 +108,23 @@
 .comment-like-btn:hover {
   transform: scale(1.1);
 }
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0px #ff99bb;
+    background-color: #fff0f5;
+  }
+  50% {
+    box-shadow: 0 0 12px #ff99bb;
+    background-color: #ffe6ee;
+  }
+  100% {
+    box-shadow: 0 0 0px #ff99bb;
+    background-color: #fff0f5;
+  }
+}
+
+.comment-highlight {
+  animation: glow 2s ease-in-out;
+  border-left: 4px solid #ff99bb;
+  border-radius: 8px;
+}

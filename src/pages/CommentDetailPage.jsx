@@ -1,9 +1,8 @@
-// ✅ 댓글 작성 + 좋아요 시 푸시알림 확실하게 작동하도록 리팩토링 완료
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { getAnonId } from "../utils/getAnonId"; // ✅ 고유 유저 식별자
-import { sendPushToAll } from "../utils/sendPushToAll"; // ✅ 푸시 전송 유틸
+import { getAnonId } from "../utils/getAnonId";
+import { sendPushToAll } from "../utils/sendPushToAll";
 import styles from "./CommentDetailPage.module.css";
 
 const CommentDetailPage = () => {
@@ -18,14 +17,15 @@ const CommentDetailPage = () => {
 
   const params = new URLSearchParams(location.search);
   const imgUrl = params.get("img");
+  const highlightId = params.get("highlight");
 
   useEffect(() => {
     if (imgUrl) fetchComments();
 
-    if (commentInputRef.current) {
-      commentInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      commentInputRef.current.focus();
-    }
+    setTimeout(() => {
+      commentInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      commentInputRef.current?.focus();
+    }, 100);
   }, [imgUrl]);
 
   const fetchComments = async () => {
@@ -42,34 +42,53 @@ const CommentDetailPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (highlightId && comments.length > 0) {
+      const el = document.getElementById(`comment-${highlightId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add(styles["comment-highlight"]);
+
+        // 애니메이션 종료 후 클래스 제거 (선택적)
+        setTimeout(() => {
+          el.classList.remove(styles["comment-highlight"]);
+        }, 2500);
+      }
+    }
+  }, [highlightId, comments]);
+
   const handleSubmit = async () => {
     if (!newComment.trim()) return;
     setSubmitting(true);
 
     const myUserId = getAnonId();
 
-    const { error } = await supabase.from("gallery_comments").insert([
-      {
-        image_url: imgUrl,
-        content: newComment.trim(),
-        created_at: new Date().toISOString(),
-        like_count: 0,
-        user_id: myUserId,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("gallery_comments")
+      .insert([
+        {
+          image_url: imgUrl,
+          content: newComment.trim(),
+          created_at: new Date().toISOString(),
+          like_count: 0,
+          user_id: myUserId,
+        },
+      ])
+      .select();
 
-    if (!error) {
+    if (!error && data?.[0]) {
+      const newCommentId = data[0].id;
       setNewComment("");
       fetchComments();
 
       await sendPushToAll({
         title: "사진에 댓글이 달렸어요!",
         body: "예쁜 추억에 새로운 댓글이 도착했어요 💌",
-        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
+        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}&highlight=${newCommentId}`,
         excludeUserId: myUserId,
       });
     } else {
-      alert("댓글 등록 실패");
+      alert("죄송해요 💔 댓글을 등록하는 데 문제가 생겼어요.\n잠시 후 다시 시도해 주세요.");
       console.error(error);
     }
 
@@ -78,23 +97,27 @@ const CommentDetailPage = () => {
 
   const handleLike = async (commentId) => {
     const myUserId = getAnonId();
-    setLikingIds((prev) => [...prev, commentId]);
+    setLikingIds((prev) => (prev.includes(commentId) ? prev : [...prev, commentId]));
 
     const { error } = await supabase.rpc("increment_like_count", {
       comment_id_input: commentId,
     });
 
     if (!error) {
-      fetchComments();
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, like_count: (c.like_count || 0) + 1 } : c
+        )
+      );
 
       await sendPushToAll({
         title: "누군가 내 댓글에 공감했어요 💕",
         body: "소중한 말에 따뜻한 반응이 도착했어요.",
-        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}`,
+        click_action: `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(imgUrl)}&highlight=${commentId}`,
         excludeUserId: myUserId,
       });
     } else {
-      alert("좋아요 실패");
+      alert("좋아요를 반영하지 못했어요 😢\n잠시 후 다시 시도해 주세요.");
       console.error(error);
     }
 
@@ -138,7 +161,11 @@ const CommentDetailPage = () => {
           <p className={styles["comment-detail-empty"]}>아직 댓글이 없습니다.</p>
         ) : (
           comments.map((c) => (
-            <div key={c.id} className={styles["comment-detail-item"]}>
+            <div
+              key={c.id}
+              id={`comment-${c.id}`}
+              className={styles["comment-detail-item"]}
+            >
               <p>{c.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
               <div className={styles["comment-footer"]}>
                 <span className={styles["comment-detail-date"]}>

@@ -355,3 +355,23 @@
 .modal-cancel-btn:hover {
   background: #bbb;
 }
+@keyframes glowGuestbook {
+  0% {
+    box-shadow: 0 0 0px #ff99bb;
+    background-color: #fff0f5;
+  }
+  50% {
+    box-shadow: 0 0 12px #ff99bb;
+    background-color: #ffe6ee;
+  }
+  100% {
+    box-shadow: 0 0 0px #ff99bb;
+    background-color: #fff0f5;
+  }
+}
+
+.highlight {
+  animation: glowGuestbook 2s ease-in-out;
+  border-left: 4px solid #ff99bb;
+  border-radius: 6px;
+}

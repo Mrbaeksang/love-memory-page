@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import EXIF from "exif-js";
 import { useNavigate } from "react-router-dom";
-import { getAnonId } from "../utils/getAnonId"; // ✅ 기기별 user_id
-import { sendPushToAll } from "../utils/sendPushToAll"; // ✅ 누락된 import
-
+import { getAnonId } from "../utils/getAnonId";
+import { sendPushToAll } from "../utils/sendPushToAll";
 
 const GalleryUpload = () => {
   const [files, setFiles] = useState([]);
@@ -60,6 +59,7 @@ const GalleryUpload = () => {
     return {
       originalPath: `${year}/${month}/${timestamp}_${safeName}`,
       thumbPath: `thumb/${year}/${month}/${timestamp}_${safeName}`,
+      encodedPublicPath: encodeURIComponent(`https://[YOUR_SUPABASE_URL]/storage/v1/object/public/gallery/${year}/${month}/${timestamp}_${safeName}`),
     };
   };
 
@@ -107,7 +107,7 @@ const GalleryUpload = () => {
     setStatus("📤 업로드 중...");
 
     let uploadSuccess = false;
-    const uploaderId = getAnonId(); // ✅ 기기별 익명 user_id
+    const uploaderId = getAnonId();
 
     for (const file of files) {
       try {
@@ -128,12 +128,16 @@ const GalleryUpload = () => {
           continue;
         }
 
-        // ✅ 여기서 gallery_metadata 같은 테이블에 uploader 정보 저장 가능
-        // await supabase.from("gallery_metadata").insert({
-        //   image_path: originalPath,
-        //   user_id: uploaderId,
-        //   uploaded_at: new Date().toISOString(),
-        // });
+        const publicUrl = `https://love-memory-page.vercel.app/comment-detail?img=${encodeURIComponent(
+          `https://[YOUR_SUPABASE_URL]/storage/v1/object/public/gallery/${originalPath}`
+        )}&highlight=upload`;
+
+        await sendPushToAll({
+          title: "새 사진이 올라왔어요!",
+          body: "추억이 하나 더 쌓였어요 📸",
+          click_action: publicUrl,
+          excludeUserId: uploaderId,
+        });
 
         uploadSuccess = true;
       } catch (err) {
@@ -145,19 +149,7 @@ const GalleryUpload = () => {
 
     if (uploadSuccess) {
       setStatus("✅ 모든 파일 업로드 완료!");
-    
-      // ✅ 푸시 알림 전송 (주의: 위에서 이미 const uploaderId = getAnonId(); 했음)
-      const imagePath = `https://love-memory-page.vercel.app/gallery`;
-    
-      await sendPushToAll({
-        title: "새 사진이 올라왔어요!",
-        body: "추억이 하나 더 쌓였어요 📸",
-        click_action: imagePath,
-        excludeUserId: uploaderId, // 위에서 정의된 ID 그대로 사용
-      });
     }
-    
-    
 
     setUploading(false);
     setFiles([]);

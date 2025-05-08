@@ -15,7 +15,6 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// ✅ 백그라운드 메시지 수신 핸들러 (이게 진짜 핵심!)
 messaging.onBackgroundMessage(function (payload) {
   console.log("📦 백그라운드 메시지 수신:", payload);
 

@@ -1,20 +1,10 @@
-// src/utils/fetchUserIdFromImageUrl.js
-import { supabase } from "../lib/supabaseClient";
+// src/utils/getAnonId.js
+export function getAnonId() {
+  const key = "local_user_id";
+  const stored = localStorage.getItem(key);
+  if (stored) return stored;
 
-/**
- * Supabase에서 이미지 URL을 기준으로 업로더의 user_id를 조회
- */
-export async function fetchUserIdFromImageUrl(imgUrl) {
-  const { data, error } = await supabase
-    .from("gallery_metadata")
-    .select("user_id")
-    .eq("image_path", imgUrl)
-    .maybeSingle();
-
-  if (error) {
-    console.warn("이미지 업로더 조회 실패:", error);
-    return null;
-  }
-
-  return data?.user_id ?? null;
+  const newId = "user_" + Math.random().toString(36).substring(2, 12);
+  localStorage.setItem(key, newId);
+  return newId;
 }

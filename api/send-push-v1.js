@@ -4,13 +4,11 @@ import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import { createClient } from "@supabase/supabase-js";
 
-// ✅ Supabase Admin 연결 (만료된 토큰 삭제용)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // ✅ 반드시 Service Role 사용
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// ✅ Firebase Admin 초기화
 const decodedServiceAccount = JSON.parse(
   Buffer.from(process.env.FIREBASE_ADMIN_KEY, "base64").toString("utf-8")
 );
@@ -45,11 +43,13 @@ export default async function handler(req, res) {
           link: click_action || "https://love-memory-page.vercel.app",
         },
       },
+      data: {
+        url: click_action || "https://love-memory-page.vercel.app",
+      },
     };
 
     const response = await getMessaging().sendEachForMulticast(message);
 
-    // ❌ 실패한 토큰 제거
     const failedTokens = response.responses
       .map((r, idx) => (!r.success ? registration_ids[idx] : null))
       .filter(Boolean);
