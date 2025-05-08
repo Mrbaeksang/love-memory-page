@@ -4,11 +4,13 @@ import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import { createClient } from "@supabase/supabase-js";
 
+// ✅ Supabase Admin 연결
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// ✅ Firebase Admin 초기화
 const decodedServiceAccount = JSON.parse(
   Buffer.from(process.env.FIREBASE_ADMIN_KEY, "base64").toString("utf-8")
 );
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
         },
       },
       data: {
-        url: click_action || "https://love-memory-page.vercel.app",
+        url: click_action || "https://love-memory-page.vercel.app", // ✅ 클릭 이동 경로
       },
     };
 
@@ -55,11 +57,8 @@ export default async function handler(req, res) {
       .filter(Boolean);
 
     if (failedTokens.length > 0) {
-      await supabase
-        .from("notification_tokens")
-        .delete()
-        .in("token", failedTokens);
-      console.warn("🧹 만료된 FCM 토큰 삭제:", failedTokens);
+      // ✅ 삭제 대신 경고만 출력 (보호 모드)
+      console.warn("🧹 FCM 실패한 토큰 (삭제는 하지 않음):", failedTokens);
     }
 
     console.log("✅ FCM 전송 완료:", {
