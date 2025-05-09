@@ -37,7 +37,7 @@ export default defineConfig({
             cacheName: 'app-cache',
             expiration: {
               maxEntries: 50,
-              maxAgeSeconds: 60 * 60 * 24 * 7 // 7일
+              maxAgeSeconds: 60 * 60 * 24 * 7
             }
           }
         }]
@@ -45,9 +45,9 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
-    exclude: ['jsmediatags'], // ✅ Vite의 의존성 최적화 스캔에서 제외
+    exclude: ['jsmediatags'],
   },
   ssr: {
-    noExternal: ['jsmediatags'], // ✅ SSR 시 외부 처리 (동적 import 에러 방지)
+    noExternal: ['jsmediatags'],
   }
 });

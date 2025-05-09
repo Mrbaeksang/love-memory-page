@@ -276,3 +276,39 @@
 .comment-input-group button:hover {
   background: #ff93c1;
 }
+/* src/pages/TravelMap.css */
+.travel-map-wrap {
+  padding: 1rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.search-box input {
+  padding: 8px;
+  width: 220px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.search-box button {
+  background: #ffdddd;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.naver-map {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+}
