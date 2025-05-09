@@ -152,15 +152,38 @@ export default function TravelMap() {
       <div id="map" ref={mapRef} className="naver-map"></div>
 
       {marker && (
-        <div className="travel-form">
-          <textarea placeholder="이유" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} />
-          <div>
-            <button onClick={() => setForm({ ...form, type: "want" })}>가보고 싶은 곳</button>
-            <button onClick={() => setForm({ ...form, type: "visited" })}>다녀온 곳</button>
-          </div>
-          <button onClick={saveMarker}>✨ 저장</button>
-        </div>
-      )}
+  <div className="travel-modal-card">
+    <h3>📍 {form.region || "선택된 위치"}</h3>
+    <textarea
+      className="marker-input"
+      placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
+      value={form.reason}
+      onChange={(e) => setForm({ ...form, reason: e.target.value })}
+    />
+    <div className="type-toggle">
+      <button
+        className={form.type === "want" ? "active" : ""}
+        onClick={() => setForm({ ...form, type: "want" })}
+      >
+        가보고 싶은 곳
+      </button>
+      <button
+        className={form.type === "visited" ? "active" : ""}
+        onClick={() => setForm({ ...form, type: "visited" })}
+      >
+        다녀온 곳
+      </button>
+    </div>
+    <div className="marker-buttons">
+      <button className="submit-btn" onClick={saveMarker}>✨ 저장</button>
+      <button className="cancel-btn" onClick={() => {
+        setMarker(null);
+        setForm({ region: "", reason: "", type: "want" });
+      }}>취소</button>
+    </div>
+  </div>
+)}
+
 
       {selectedMarker && (
         <div className="marker-comment-modal">
