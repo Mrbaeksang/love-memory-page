@@ -53,10 +53,21 @@ function App() {
   const guestbookRef = useRef(null);
 
   useEffect(() => {
-    fetch("/api/log-visit").catch((err) =>
-      console.error("방문자 기록 실패:", err)
-    );
+    const page = window.location.pathname;
+    const referer = document.referrer || "";
+    const userId = getOrCreateUserId(); // 수정된 부분
+  
+    fetch("/api/log-visit", {
+      method: "POST",
+      headers: {
+        "x-page-path": page,
+        "x-referer": referer,
+        "x-user-id": userId,
+      },
+    }).catch((err) => console.error("방문자 기록 실패:", err));
   }, []);
+  
+  
 
   // ✅ 기기마다 고유한 user_id로 푸시 토큰 등록
   const userId = getOrCreateUserId();
