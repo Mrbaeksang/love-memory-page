@@ -55,17 +55,21 @@ function App() {
   useEffect(() => {
     const page = window.location.pathname;
     const referer = document.referrer || "";
-    const userId = getOrCreateUserId(); // 수정된 부분
+    const userId = getOrCreateUserId();
   
     fetch("/api/log-visit", {
       method: "POST",
       headers: {
-        "x-page-path": page,
-        "x-referer": referer,
-        "x-user-id": userId,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        page,
+        referer,
+        anon_user_id: userId,
+      }),
     }).catch((err) => console.error("방문자 기록 실패:", err));
   }, []);
+  
   
   
 
