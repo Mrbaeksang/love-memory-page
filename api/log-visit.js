@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const config = {
   api: {
-    bodyParser: true, // ✅ req.body 사용 가능하게 만듦
+    bodyParser: true,
   },
 };
 
@@ -18,17 +18,10 @@ export default async function handler(req, res) {
 
   const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
   const userAgent = req.headers['user-agent'] || 'unknown';
-
   const { page, referer, anon_user_id } = req.body || {};
 
-  console.log("📌 ip:", ip);
-  console.log("📌 user-agent:", userAgent);
-  console.log("📌 page:", page);
-  console.log("📌 referer:", referer);
-  console.log("📌 anon_user_id:", anon_user_id);
-
   try {
-    const { data, error } = await supabase.from('visitor_log').insert([
+    const { error } = await supabase.from('visitor_log').insert([
       {
         ip: String(ip),
         user_agent: userAgent,
