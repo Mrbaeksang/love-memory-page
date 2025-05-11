@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoveType.css";
 import RandomImage from "../RandomImage";
+import usePageLogger from "../hooks/usePageLogger"; // ✅ 추가
+
+
 
 // 예시 설문 결과 데이터
 const myType = {
@@ -19,6 +22,8 @@ const gfType = {
 };
 
 const LoveType = () => {
+  usePageLogger();
+  
   const navigate = useNavigate();
 
   return (

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
+import usePageLogger from "../hooks/usePageLogger"; // ⬅ 이 줄 추가
 import "./GalleryMonth.css";
 import RandomCommentedImageButton from "../components/RandomCommentedImageButton";
 
 
 const GalleryMonth = () => {
+  usePageLogger();
   const { year, month } = useParams();
   const navigate = useNavigate();
   const [images, setImages] = useState([]);

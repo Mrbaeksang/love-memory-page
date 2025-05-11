@@ -2,6 +2,8 @@ import React from "react";
 import "./LoveType.css";
 import RandomImage from "../RandomImage";
 import { useNavigate } from "react-router-dom";
+import usePageLogger from "../hooks/usePageLogger"; // ✅ 추가
+
 
 
 
@@ -135,6 +137,8 @@ const hyeeunSections = [
 ];
 
 const LoveTypeDetail = ({ who }) => {
+  usePageLogger(); 
+  
   let name, type, sections;
   if (who === "sanghyun") {
     name = "상현";

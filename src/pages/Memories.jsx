@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import RandomImage from "../RandomImage";
 import { supabase } from "../lib/supabaseClient";
 import RandomCommentedImageButton from "../components/RandomCommentedImageButton";
+import usePageLogger from "../hooks/usePageLogger";
 
 
 const Memories = () => {
+  usePageLogger();
+
   const navigate = useNavigate();
   const [thumbnails, setThumbnails] = useState([]);
 

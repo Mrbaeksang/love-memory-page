@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import "./FullGallery.css"; // ✨ 스타일은 따로 관리
+import usePageLogger from "../hooks/usePageLogger"; // ⬅ 이 줄 추가
+
 
 const FullGallery = () => {
+  usePageLogger();
   const [thumbnails, setThumbnails] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();

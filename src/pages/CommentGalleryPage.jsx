@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
+import usePageLogger from "../hooks/usePageLogger"; // ⬅ 이 줄 추가
 import styles from "./CommentGalleryPage.module.css";
 
 const CommentGalleryPage = () => {
+  usePageLogger();
   const [images, setImages] = useState([]);
   const navigate = useNavigate();
 

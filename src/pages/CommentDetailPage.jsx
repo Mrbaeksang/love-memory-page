@@ -3,9 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { getAnonId } from "../utils/getAnonId";
 import { sendPushToAll } from "../utils/sendPushToAll";
+import usePageLogger from "../hooks/usePageLogger"; // ⬅ 이 줄 추가
 import styles from "./CommentDetailPage.module.css";
 
 const CommentDetailPage = () => {
+  usePageLogger();
   const location = useLocation();
   const navigate = useNavigate();
   const commentInputRef = useRef(null);
