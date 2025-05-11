@@ -55,7 +55,7 @@ function App() {
   useEffect(() => {
     const page = window.location.pathname;
     const referer = document.referrer || "";
-    const userId = getOrCreateUserId();
+    const anonUserId = getOrCreateUserId();
   
     fetch("/api/log-visit", {
       method: "POST",
@@ -65,10 +65,11 @@ function App() {
       body: JSON.stringify({
         page,
         referer,
-        anon_user_id: userId,
+        anon_user_id: anonUserId,
       }),
     }).catch((err) => console.error("방문자 기록 실패:", err));
   }, []);
+  
   
   
   
