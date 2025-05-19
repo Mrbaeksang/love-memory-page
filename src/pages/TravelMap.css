@@ -1,314 +1,278 @@
+/* TravelMap.css */
 .travel-map-wrap {
-  position: relative;
-  max-width: 900px;
+  padding: 16px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  padding-bottom: 2rem;
-}
-
-/* ¡ˆµµ */
-.leaflet-map {
-  width: 100%;
-  height: 500px;
-  border-radius: 12px;
-  margin: 1rem 0;
-}
-
-/* ∞Àªˆ π⁄Ω∫ */
-.search-box {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 1rem;
-}
-
-.search-box input {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  width: 200px;
-}
-
-.search-box button {
-  padding: 8px 16px;
-  background-color: #f8cfcf;
-  color: #333;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.search-box button:hover {
-  background-color: #f6bebe;
-}
-
-/* ∏∂ƒø ¿ÃπÃ¡ˆ Ω∫≈∏¿œ */
-.travel-marker-img {
-  width: 28px;
-  transform: translate(-50%, -95%);
-  z-index: 10;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
-}
-
-.travel-marker-img.want-marker {
-  filter: drop-shadow(0 2px 12px rgba(255, 100, 140, 0.6)) saturate(1.3);
-}
-
-.travel-marker-img.visited-marker {
-  filter: drop-shadow(0 2px 12px rgba(100, 180, 255, 0.6)) saturate(1.3);
-}
-
-.travel-marker-img.temp-marker {
-  opacity: 0.7;
-}
-
-/* ∏∂ƒø πˆ∆∞µÈ */
-.travel-map-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  z-index: 100;
-}
-
-.add-marker-btn,
-.delete-marker-btn {
-  background: white;
-  border: 1px solid #aaa;
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  transition: background 0.2s ease;
-}
-
-.add-marker-btn:hover,
-.delete-marker-btn:hover {
-  background: #f7b8b8;
-}
-
-/* ≈∏¿‘ º±≈√ πˆ∆∞ */
-.type-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 0.7rem;
-}
-
-.type-toggle button {
-  padding: 0.5rem 1.2rem;
-  border-radius: 10px;
-  background: #eee;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  color: #666;
-}
-
-.type-toggle .active {
-  background: #ffaecf;
-  color: white;
-}
-
-/* ¿‘∑¬ ∆˚ */
-.marker-input {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-top: 0.8rem;
-  font-size: 1rem;
-}
-
-.marker-buttons {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 1.2rem;
-}
-
-.submit-btn {
-  background: linear-gradient(to right, #fda085, #f6d365);
-  color: white;
-  padding: 0.7rem 1.5rem;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.submit-btn:hover {
-  background: #f78b66;
-}
-
-.cancel-btn {
-  background: #f2f2f2;
-  color: #444;
-  padding: 0.7rem 1.2rem;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.cancel-btn:hover {
-  background: #e4e4e4;
-}
-
-/* ¥Ò±€ ∏¥ﬁ */
-.travel-modal-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: 1.5rem auto 0 auto;
-  text-align: center;
-}
-
-/* «√∑Œ∆√ FAB πˆ∆∞ */
-.map-fab-buttons {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  z-index: 10;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.map-fab-button {
-  background-color: rgba(255, 182, 193, 0.9);
-  color: #fff;
-  font-size: 12px;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.map-fab-button:hover {
-  background-color: rgba(255, 160, 175, 1);
-}
-
-/* π›¿¿«¸ */
-@media (max-width: 600px) {
-  .travel-modal-card {
-    width: 92%;
-    padding: 1rem;
-  }
-
-  .marker-input {
-    font-size: 0.9rem;
-  }
-
-  .submit-btn,
-  .cancel-btn {
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-  }
-
-  .travel-map-controls {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-}
-
-/* ±‚≈∏ */
-.guide-text {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #666;
-  text-align: center;
-}
-.comment-list {
-  margin-top: 1rem;
-  text-align: left;
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 0 0.5rem;
-}
-
-.comment-item {
-  padding: 0.5rem 0.8rem;
-  background: #fffafc;
-  border: 1px solid #ffc9d6;
-  border-radius: 8px;
-  margin-bottom: 0.6rem;
-  font-size: 14px;
-  color: #444;
-}
-
-.comment-input-group {
+/* Î°úÎî© ÏÉÅÌÉú Ïä§ÌÉÄÏùº */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
   display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.comment-input-group input {
-  flex: 1;
-  padding: 0.5rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #f48fb1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
 }
 
-.comment-input-group button {
-  background: #ffaecf;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.comment-input-group button:hover {
-  background: #ff93c1;
-}
-/* src/pages/TravelMap.css */
-.travel-map-wrap {
-  padding: 1rem;
-  max-width: 900px;
-  margin: auto;
+/* ÏóêÎü¨ Î©îÏãúÏßÄ Ïä§ÌÉÄÏùº */
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-box {
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
-  justify-content: center;
+  width: 100%;
 }
 
 .search-box input {
-  padding: 8px;
-  width: 220px;
+  flex: 1;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #f48fb1;
+  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2);
 }
 
 .search-box button {
-  background: #ffdddd;
+  padding: 8px 16px;
+  background-color: #f48fb1;
   border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.1s;
+  min-width: 80px;
+}
+
+.search-box button:hover {
+  background-color: #f06292;
+}
+
+.search-box button:active {
+  transform: translateY(1px);
+}
+
+.search-box button:focus {
+  outline: 2px solid #f48fb1;
+  outline-offset: 2px;
+}
+
+.naver-map {
+  width: 100%;
+  height: 50vh;
+  min-height: 300px;
+  max-height: 600px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.travel-form {
+  background-color: #fff4f7;
+  border: 1px solid #ffcdd2;
+  padding: 16px;
+  border-radius: 16px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travel-form .form-header {
+  font-weight: bold;
+  color: #b71c1c;
+}
+
+.travel-form textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin: 8px 0;
+}
+
+.travel-form textarea:focus {
+  outline: none;
+  border-color: #f48fb1;
+  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2);
+}
+
+.travel-form .type-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.travel-form .type-buttons button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #999;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.travel-form .type-buttons button {
   padding: 8px 12px;
+  border: 2px solid #f48fb1;
+  background-color: white;
+  color: #f48fb1;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 20px;
+}
+
+.travel-form .type-buttons button.active {
+  background-color: #f48fb1;
+  color: white;
+}
+
+.travel-form .type-buttons button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(244, 143, 177, 0.3);
+}
+
+.travel-form .form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.travel-form .form-actions button {
+  padding: 8px 16px;
+  border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
 }
 
-.naver-map {
-  width: 100%;
-  height: 500px;
+.travel-form .form-actions .save {
+  background-color: #f48fb1;
+  color: white;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.travel-form .form-actions .save:hover {
+  background-color: #f06292;
+}
+
+.travel-form .form-actions .save:active {
+  transform: translateY(1px);
+}
+
+.travel-form .form-actions .save:focus {
+  outline: 2px solid #f48fb1;
+  outline-offset: 2px;
+}
+
+.travel-form .form-actions .cancel {
+  background-color: #f5f5f5;
+  color: #666;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.travel-form .form-actions .cancel:hover {
+  background-color: #e0e0e0;
+}
+
+.travel-form .form-actions .cancel:active {
+  transform: translateY(1px);
+}
+
+.travel-form .form-actions .cancel:focus {
+  outline: 2px solid #ccc;
+  outline-offset: 2px;
+}
+
+.marker-comment-modal {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #fff9fa;
+  border: 1px solid #f8bbd0;
   border-radius: 12px;
+  width: 100%;
+}
+
+.marker-comment-modal h3 {
+  margin-bottom: 4px;
+  font-size: 16px;
+  color: #d81b60;
+}
+
+.marker-comment-modal .comment-list {
+  margin: 8px 0;
+  padding: 8px;
+  background-color: #fce4ec;
+  border-radius: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.marker-comment-modal input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 6px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.marker-comment-modal button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  background-color: #f06292;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
 }

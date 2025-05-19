@@ -1,9 +1,31 @@
-// src/pages/TravelMap.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { sendPushToAll } from "../utils/sendPushToAll";
 import { getAnonId } from "../utils/getAnonId";
 import "./TravelMap.css";
+
+// 로딩 스피너 컴포넌트
+const LoadingSpinner = () => (
+  <div className="loading-overlay">
+    <div className="loading-spinner" />
+  </div>
+);
+
+// 에러 메시지 컴포넌트
+const ErrorMessage = ({ message, onRetry }) => (
+  <div className="error-message">
+    <p>{message}</p>
+    {onRetry && (
+      <button 
+        onClick={onRetry}
+        className="retry-button"
+        aria-label="다시 시도"
+      >
+        다시 시도
+      </button>
+    )}
+  </div>
+);
 
 export default function TravelMap() {
   const mapRef = useRef(null);
@@ -12,182 +34,358 @@ export default function TravelMap() {
   const [infoWindow, setInfoWindow] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [form, setForm] = useState({ region: "", reason: "", type: "want" });
-  const [selectedMarker, setSelectedMarker] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 초기 지도 로드
-  useEffect(() => {
-    window.initMap = () => {
-      const mapInstance = new window.naver.maps.Map("map", {
-        center: new window.naver.maps.LatLng(36.5, 127.5),
-        zoom: 7,
-        mapTypeControl: true,
+  // 지도 클릭 핸들러
+  const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
+    try {
+      const coord = e.coord;
+
+      if (tempMarker) tempMarker.setMap(null);
+      const marker = new window.naver.maps.Marker({ 
+        position: coord, 
+        map: nMap,
+        title: '선택한 위치',
+        alt: '선택한 위치 마커'
       });
-      setMap(mapInstance);
+      setTempMarker(marker);
 
-      const infoWin = new window.naver.maps.InfoWindow({ anchorSkew: true });
-      setInfoWindow(infoWin);
-
-      // 지도 클릭 시 임시 마커 하나만 생성
-      naver.maps.Event.addListener(mapInstance, "click", async (e) => {
-        const coord = e.coord;
-        if (tempMarker) tempMarker.setMap(null);
-
-        const marker = new naver.maps.Marker({ position: coord, map: mapInstance });
-        setTempMarker(marker);
-
+      setError(null);
+      setIsLoading(true);
+      
+      try {
         const res = await fetch(`/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`);
+        if (!res.ok) throw new Error('주소를 가져오는데 실패했습니다.');
+        
         const data = await res.json();
         const address = data?.results?.[0]?.land?.name || "주소 정보 없음";
 
-        setForm((prev) => ({ ...prev, region: address }));
-
-        infoWin.setContent(`
-          <div style="padding:10px;min-width:200px;line-height:150%;">
+        setForm(prev => ({ ...prev, region: address }));
+        
+        const infoContent = `
+          <div class="info-window" role="dialog" aria-label="선택한 위치 정보">
             <b>선택된 위치</b><br />
             ${address}
           </div>
-        `);
-        infoWin.open(mapInstance, marker);
+        `;
+        
+        nInfoWindow.setContent(infoContent);
+        nInfoWindow.open(nMap, marker);
+      } catch (err) {
+        setError('위치 정보를 가져오는 중 오류가 발생했습니다.');
+        console.error('Reverse geocode error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('지도에서 오류가 발생했습니다.');
+      console.error('Map click error:', err);
+      setIsLoading(false);
+    }
+  }, [tempMarker]);
+
+  // 저장된 마커 로드
+  const loadSavedMarkers = useCallback(async (nMap) => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.from("travel_markers").select("*");
+      
+      if (error) throw error;
+      
+      data?.forEach((m) => {
+        const pos = new window.naver.maps.LatLng(m.lat, m.lng);
+        new window.naver.maps.Marker({ 
+          position: pos, 
+          map: nMap,
+          title: m.region,
+          alt: `${m.region} 마커`,
+          icon: {
+            content: m.type === 'visited' ? '📍' : '🔹',
+            size: new window.naver.maps.Size(24, 24),
+            anchor: new window.naver.maps.Point(12, 12)
+          }
+        });
       });
-
-      loadStoredMarkers(mapInstance);
-    };
-
-    const script = document.createElement("script");
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${import.meta.env.VITE_NAVER_API_KEY_ID}&callback=initMap`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => document.head.removeChild(script);
+    } catch (err) {
+      setError('마커를 불러오는 중 오류가 발생했습니다.');
+      console.error('Load markers error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // 저장된 마커 불러오기
-  const loadStoredMarkers = async (nMap) => {
-    const { data } = await supabase.from("travel_markers").select("*");
-    data.forEach((m) => {
-      const pos = new window.naver.maps.LatLng(m.lat, m.lng);
-      const marker = new window.naver.maps.Marker({ position: pos, map: nMap });
-      marker.addListener("click", () => openCommentModal(m));
-    });
-  };
+  // 지도 초기화
+  useEffect(() => {
+    if (window.naver && window.naver.maps) {
+      initMap();
+      return;
+    }
 
-  const handleSearch = async () => {
-    if (!searchInput.trim()) return;
-    const res = await fetch(`/api/geocode?query=${encodeURIComponent(searchInput)}`);
-    const json = await res.json();
-    const item = json.addresses?.[0];
-    if (!item) return alert("검색 결과 없음");
+    window.initMap = initMap;
+    
+    const script = document.createElement("script");
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${
+      import.meta.env.VITE_NAVER_API_KEY
+    }&callback=initMap`;
+    script.async = true;
+    script.onerror = () => setError('지도 스크립트를 로드하는 데 실패했습니다.');
+    document.head.appendChild(script);
 
-    const latlng = new window.naver.maps.LatLng(item.y, item.x);
-    map.setCenter(latlng);
-    map.setZoom(14);
+    return () => {
+      if (window.initMap) {
+        delete window.initMap;
+      }
+      if (script.parentNode) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
 
-    if (tempMarker) tempMarker.setMap(null);
-    const marker = new window.naver.maps.Marker({ position: latlng, map });
-    setTempMarker(marker);
+  const initMap = useCallback(() => {
+    try {
+      const nMap = new window.naver.maps.Map("map", {
+        center: new window.naver.maps.LatLng(36.5, 127.5),
+        zoom: 7,
+        mapTypeControl: true,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: window.naver.maps.Position.TOP_RIGHT
+        }
+      });
 
-    setForm((prev) => ({
-      ...prev,
-      region: item.roadAddress || item.jibunAddress || "주소 없음",
-    }));
-  };
+      setMap(nMap);
+      const nInfoWindow = new window.naver.maps.InfoWindow({ 
+        anchorSkew: true,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        pixelOffset: new window.naver.maps.Point(0, -10)
+      });
+      
+      setInfoWindow(nInfoWindow);
+
+      // 지도 클릭 이벤트 리스너
+      const clickListener = window.naver.maps.Event.addListener(
+        nMap, 
+        "click", 
+        (e) => handleMapClick(e, nMap, nInfoWindow)
+      );
+
+      // 저장된 마커 로드
+      loadSavedMarkers(nMap);
+
+      // 클린업 함수
+      return () => {
+        if (clickListener) {
+          window.naver.maps.Event.removeListener(clickListener);
+        }
+      };
+    } catch (err) {
+      setError('지도를 초기화하는 중 오류가 발생했습니다.');
+      console.error('Map initialization error:', err);
+    }
+  }, [handleMapClick, loadSavedMarkers]);
+
+  const handleSearch = useCallback(async () => {
+    if (!searchInput.trim()) {
+      setError('검색어를 입력해주세요.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const res = await fetch(`/api/geocode?query=${encodeURIComponent(searchInput)}`);
+      if (!res.ok) throw new Error('검색에 실패했습니다.');
+      
+      const json = await res.json();
+      const item = json.addresses?.[0];
+      
+      if (!item) {
+        setError('검색 결과가 없습니다. 다른 검색어를 시도해주세요.');
+        return;
+      }
+
+      const latlng = new window.naver.maps.LatLng(item.y, item.x);
+      map.setCenter(latlng);
+      map.setZoom(14);
+
+      if (tempMarker) tempMarker.setMap(null);
+      const marker = new window.naver.maps.Marker({ 
+        position: latlng, 
+        map,
+        title: item.roadAddress || item.jibunAddress,
+        alt: '검색된 위치 마커'
+      });
+      setTempMarker(marker);
+
+      setForm(prev => ({
+        ...prev,
+        region: item.roadAddress || item.jibunAddress || "주소 없음",
+      }));
+    } catch (err) {
+      setError('검색 중 오류가 발생했습니다.');
+      console.error('Search error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchInput, map, tempMarker]);
 
   const saveMarker = async () => {
-    const { region, reason, type } = form;
-    if (!tempMarker || !region || !reason) return alert("모든 필드를 입력해주세요");
-    const pos = tempMarker.getPosition();
+    if (!tempMarker || !form.region || !form.reason) {
+      setError('주소와 이유를 모두 입력해주세요.');
+      return;
+    }
 
-    const { data, error } = await supabase.from("travel_markers").insert({
-      region,
-      reason,
-      type,
-      lat: pos.lat(),
-      lng: pos.lng(),
-    }).select();
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const pos = tempMarker.getPosition();
+      const { data, error } = await supabase
+        .from("travel_markers")
+        .insert({
+          region: form.region,
+          reason: form.reason,
+          type: form.type,
+          lat: pos.lat(),
+          lng: pos.lng(),
+        })
+        .select();
 
-    if (error || !data?.[0]) return alert("저장 실패");
+      if (error || !data?.[0]) {
+        throw new Error('저장에 실패했습니다.');
+      }
 
-    await sendPushToAll({
-      title: `${region}에 추억이 추가됐어요!`,
-      body: reason,
-      click_action: `https://love-memory-page.vercel.app/#travel?highlight=marker_${data[0].id}`,
-      excludeUserId: getAnonId(),
-    });
+      // 푸시 알림 전송 (비동기로 실행되지만 기다리지 않음)
+      sendPushToAll({
+        title: `${form.region}에 새 추억이 추가됐어요!`,
+        body: form.reason,
+        click_action: `${window.location.origin}/#travel?highlight=marker_${data[0].id}`,
+        excludeUserId: getAnonId(),
+      }).catch(err => {
+        console.error('푸시 알림 전송 실패:', err);
+      });
 
-    alert("✨ 저장 완료!");
-    setForm({ region: "", reason: "", type: "want" });
-    setTempMarker(null);
-    location.reload();
-  };
-
-  const openCommentModal = async (marker) => {
-    setSelectedMarker(marker);
-    const { data } = await supabase.from("travel_marker_comments")
-      .select("*")
-      .eq("marker_id", marker.id)
-      .order("created_at", { ascending: false });
-    setComments(data || []);
-  };
-
-  const submitComment = async () => {
-    const marker_id = selectedMarker.id;
-    if (!newComment.trim()) return;
-    const { error } = await supabase.from("travel_marker_comments").insert({
-      marker_id,
-      content: newComment,
-    });
-    if (!error) {
-      setComments([{ content: newComment, created_at: new Date().toISOString() }, ...comments]);
-      setNewComment("");
+      // 성공 메시지 표시 후 폼 초기화
+      alert("✨ 저장 완료!");
+      setTempMarker(null);
+      setForm({ region: "", reason: "", type: "want" });
+      setSearchInput("");
+      
+      // 페이지 새로고침 대신 마커만 다시 로드
+      if (map) {
+        loadSavedMarkers(map);
+      }
+    } catch (err) {
+      setError('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('Save marker error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="travel-map-wrap">
+      {/* 로딩 오버레이 */}
+      {isLoading && <LoadingSpinner />}
+      
+      {/* 검색 영역 */}
       <div className="search-box">
-        <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="주소 검색 (예: 부산, 제주도...)" />
-        <button onClick={handleSearch}>🔍 검색</button>
+        <input 
+          type="text"
+          value={searchInput} 
+          onChange={(e) => setSearchInput(e.target.value)} 
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+          placeholder="주소 검색 (예: 부산, 제주도…)" 
+          aria-label="주소 검색"
+          disabled={isLoading}
+        />
+        <button 
+          onClick={handleSearch} 
+          disabled={isLoading || !searchInput.trim()}
+          aria-label="검색"
+        >
+          🔍 검색
+        </button>
       </div>
+      
+      {/* 에러 메시지 */}
+      {error && (
+        <ErrorMessage 
+          message={error} 
+          onRetry={() => setError(null)} 
+        />
+      )}
+      
+      {/* 네이버 맵 */}
+      <div 
+        id="map" 
+        ref={mapRef} 
+        className="naver-map"
+        aria-label="여행 지도"
+        role="application"
+        tabIndex="-1"
+      ></div>
 
-      <div id="map" ref={mapRef} className="naver-map"></div>
-
+      {/* 마커 폼 */}
       {tempMarker && (
-        <div className="travel-form">
-          <h4>📍 {form.region}</h4>
+        <div 
+          className="marker-form-box travel-form"
+          role="dialog"
+          aria-labelledby="marker-form-title"
+        >
+          <h3 id="marker-form-title">
+            {form.type === 'want' ? '가보고 싶은 곳' : '다녀온 곳'}
+          </h3>
+          
+          <p>📍 {form.region || "주소 정보 없음"}</p>
+          
           <textarea
             placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
             value={form.reason}
             onChange={(e) => setForm({ ...form, reason: e.target.value })}
+            disabled={isLoading}
+            aria-label="이유 입력"
+            maxLength={500}
           />
-          <div className="button-group">
-            <button onClick={() => setForm({ ...form, type: "want" })}>가보고 싶은 곳</button>
-            <button onClick={() => setForm({ ...form, type: "visited" })}>다녀온 곳</button>
+          
+          <div className="type-buttons">
+            <button 
+              className={form.type === "want" ? "active" : ""}
+              onClick={() => setForm({ ...form, type: "want" })}
+              disabled={isLoading}
+              aria-pressed={form.type === "want"}
+            >
+              가보고 싶은 곳
+            </button>
+            <button 
+              className={form.type === "visited" ? "active" : ""}
+              onClick={() => setForm({ ...form, type: "visited" })}
+              disabled={isLoading}
+              aria-pressed={form.type === "visited"}
+            >
+              다녀온 곳
+            </button>
           </div>
-          <div className="submit-group">
-            <button className="save" onClick={saveMarker}>✨ 저장</button>
-            <button className="cancel" onClick={() => setTempMarker(null)}>취소</button>
+          
+          <div className="form-actions">
+            <button 
+              className="cancel" 
+              onClick={() => setTempMarker(null)}
+              disabled={isLoading}
+            >
+              취소
+            </button>
+            <button 
+              className="save" 
+              onClick={saveMarker}
+              disabled={isLoading || !form.reason.trim()}
+            >
+              {isLoading ? '저장 중...' : '✨ 저장'}
+            </button>
           </div>
-        </div>
-      )}
-
-      {selectedMarker && (
-        <div className="marker-comment-modal">
-          <h3>{selectedMarker.region}</h3>
-          <p>{selectedMarker.reason}</p>
-          <div className="comment-list">
-            {comments.map((c, i) => (
-              <div key={i}>{c.content}</div>
-            ))}
-          </div>
-          <input
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="댓글 작성..."
-          />
-          <button onClick={submitComment}>등록</button>
-          <button onClick={() => setSelectedMarker(null)}>닫기</button>
         </div>
       )}
     </div>
