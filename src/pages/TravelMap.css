@@ -234,6 +234,12 @@
   outline-offset: 2px;
 }
 
+/* 이미 있는 .travel-form 아래에 추가 */
+.travel-form {
+  margin-bottom: 90px; /* 하단 네비게이션과 여백 확보 */
+}
+
+
 .marker-comment-modal {
   margin-top: 20px;
   padding: 16px;

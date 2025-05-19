@@ -37,53 +37,72 @@ export default function TravelMap() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 지도 클릭 핸들러
-  const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
+const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
+  try {
+    const coord = e.coord;
+
+    // 기존 임시 마커 제거
+    if (tempMarker) tempMarker.setMap(null);
+
+    // 새 마커 생성
+    const marker = new window.naver.maps.Marker({
+      position: coord,
+      map: nMap,
+      title: "선택한 위치",
+      alt: "선택한 위치 마커",
+    });
+
+    setTempMarker(marker); // 임시 마커 상태 반영
+    setForm({ region: "", reason: "", type: "want" }); // 기본 폼 상태 초기화해서 UI 보이게 함
+
+    setError(null);
+    setIsLoading(true);
+
     try {
-      const coord = e.coord;
+      const res = await fetch(
+        `/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`
+      );
+      if (!res.ok) throw new Error("주소를 가져오는데 실패했습니다.");
 
-      if (tempMarker) tempMarker.setMap(null);
-      const marker = new window.naver.maps.Marker({ 
-        position: coord, 
-        map: nMap,
-        title: '선택한 위치',
-        alt: '선택한 위치 마커'
-      });
-      setTempMarker(marker);
+      const data = await res.json();
+      const area = data?.results?.[0]?.region;
+      const land = data?.results?.[0]?.land;
+      const address = [
+        area?.area1?.name,
+        area?.area2?.name,
+        area?.area3?.name,
+        land?.name,
+      ]
+        .filter(Boolean)
+        .join(" ") || "주소 정보 없음";
 
-      setError(null);
-      setIsLoading(true);
-      
-      try {
-        const res = await fetch(`/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`);
-        if (!res.ok) throw new Error('주소를 가져오는데 실패했습니다.');
-        
-        const data = await res.json();
-        const address = data?.results?.[0]?.land?.name || "주소 정보 없음";
+      setForm((prev) => ({
+        ...prev,
+        region: address.trim(),
+        // reason은 그대로 비우고 type은 유지
+      }));
 
-        setForm(prev => ({ ...prev, region: address }));
-        
-        const infoContent = `
-          <div class="info-window" role="dialog" aria-label="선택한 위치 정보">
-            <b>선택된 위치</b><br />
-            ${address}
-          </div>
-        `;
-        
-        nInfoWindow.setContent(infoContent);
-        nInfoWindow.open(nMap, marker);
-      } catch (err) {
-        setError('위치 정보를 가져오는 중 오류가 발생했습니다.');
-        console.error('Reverse geocode error:', err);
-      } finally {
-        setIsLoading(false);
-      }
+      const infoContent = `
+        <div class="info-window" role="dialog" aria-label="선택한 위치 정보">
+          <b>선택된 위치</b><br />
+          ${address}
+        </div>
+      `;
+      nInfoWindow.setContent(infoContent);
+      nInfoWindow.open(nMap, marker);
     } catch (err) {
-      setError('지도에서 오류가 발생했습니다.');
-      console.error('Map click error:', err);
+      setError("주소 조회 실패");
+      console.error("Reverse geocode error:", err);
+    } finally {
       setIsLoading(false);
     }
-  }, [tempMarker]);
+  } catch (err) {
+    setError("지도 클릭 처리 중 오류 발생");
+    console.error("Map click error:", err);
+    setIsLoading(false);
+  }
+}, [tempMarker]);
+
 
   // 저장된 마커 로드
   const loadSavedMarkers = useCallback(async (nMap) => {
