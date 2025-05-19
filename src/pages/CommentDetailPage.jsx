@@ -3,8 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { getAnonId } from "../utils/getAnonId";
 import { sendPushToAll } from "../utils/sendPushToAll";
-import usePageLogger from "../hooks/usePageLogger"; // ⬅ 이 줄 추가
+import usePageLogger from "../hooks/usePageLogger";
+import { getCommentMarker, getMarkerPhotos } from "../api/markers";
+import { FiMapPin, FiImage } from "react-icons/fi";
 import styles from "./CommentDetailPage.module.css";
+import "./CommentDetailPage.css";
 
 const CommentDetailPage = () => {
   usePageLogger();
@@ -16,19 +19,50 @@ const CommentDetailPage = () => {
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [likingIds, setLikingIds] = useState([]);
+  const [marker, setMarker] = useState(null);
+  const [markerPhotos, setMarkerPhotos] = useState([]);
+  const [isLoadingMarker, setIsLoadingMarker] = useState(true);
 
   const params = new URLSearchParams(location.search);
   const imgUrl = params.get("img");
   const highlightId = params.get("highlight");
 
   useEffect(() => {
-    if (imgUrl) fetchComments();
+    if (imgUrl) {
+      fetchComments();
+      fetchMarkerInfo();
+    }
 
     setTimeout(() => {
       commentInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       commentInputRef.current?.focus();
     }, 100);
   }, [imgUrl]);
+  
+  // 댓글과 연관된 마커 정보 가져오기
+  const fetchMarkerInfo = async () => {
+    try {
+      setIsLoadingMarker(true);
+      // 현재 댓글이 속한 이미지 URL로부터 댓글 ID 추출 (예: /comment-detail?img=...)
+      const commentId = location.pathname.split('/').pop();
+      
+      if (commentId) {
+        // 댓글과 연관된 마커 정보 가져오기
+        const markerData = await getCommentMarker(commentId);
+        if (markerData) {
+          setMarker(markerData);
+          
+          // 마커와 연관된 사진 가져오기
+          const photos = await getMarkerPhotos(markerData.id);
+          setMarkerPhotos(photos || []);
+        }
+      }
+    } catch (error) {
+      console.error('마커 정보를 불러오는 중 오류 발생:', error);
+    } finally {
+      setIsLoadingMarker(false);
+    }
+  };
 
   const fetchComments = async () => {
     const { data, error } = await supabase
@@ -138,9 +172,54 @@ const CommentDetailPage = () => {
         </div>
       )}
 
-      <div className={styles["comment-form"]}>
+      {/* 마커와 연동된 여행지 섹션 */}
+      {!isLoadingMarker && marker && (
+        <div className="marker-section">
+          <div className="marker-header">
+            <FiMapPin className="marker-icon" />
+            <h3>연결된 여행지: {marker.region}</h3>
+          </div>
+          <p className="marker-reason">{marker.reason}</p>
+          
+          {markerPhotos.length > 0 && (
+            <div className="marker-photos-preview">
+              <div className="photos-count">
+                <FiImage /> {markerPhotos.length}장의 사진
+              </div>
+              <button 
+                onClick={() => navigate(`/travel-map/photos/${marker.id}`)}
+                className="view-photos-button"
+              >
+                사진 모두 보기
+              </button>
+            </div>
+          )}
+          
+          <div className="photo-grid-preview">
+            {markerPhotos.slice(0, 3).map((photo, index) => (
+              <div 
+                key={photo.id} 
+                className="photo-thumbnail"
+                onClick={() => navigate(`/travel-map/photos/${marker.id}?photo=${photo.id}`)}
+                style={{
+                  backgroundImage: `url(${photo.thumbnail_url || photo.url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+                aria-label={`${index + 1}번째 사진 보기`}
+              />
+            ))}
+            {markerPhotos.length > 3 && (
+              <div className="more-photos-overlay">
+                +{markerPhotos.length - 3}장 더보기
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
+      <div className={styles.commentInputContainer} ref={commentInputRef}>
         <textarea
-          ref={commentInputRef}
           placeholder="댓글을 입력하세요..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}

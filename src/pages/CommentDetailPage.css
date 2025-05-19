@@ -1,0 +1,191 @@
+/* 여행지 마커 섹션 스타일 */
+.marker-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.marker-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.marker-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.marker-icon {
+  color: #f48fb1;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.marker-reason {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border-right: 3px solid #f48fb1;
+}
+
+/* 사진 미리보기 헤더 */
+.marker-photos-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.photos-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.view-photos-button {
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  color: #f48fb1;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.view-photos-button:hover {
+  background: #f0f0f0;
+  border-color: #d0d0d0;
+  transform: translateY(-1px);
+}
+
+/* 사진 그리드 미리보기 */
+.photo-grid-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  position: relative;
+  margin-top: 12px;
+}
+
+.photo-thumbnail {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #f5f5f5;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.photo-thumbnail:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.more-photos-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 0 0 8px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* 로딩 상태 */
+.marker-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .marker-section {
+    margin: 12px 0;
+    padding: 12px;
+  }
+  
+  .marker-header h3 {
+    font-size: 1rem;
+  }
+  
+  .marker-reason {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  .view-photos-button {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .photo-grid-preview {
+    gap: 6px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .marker-section {
+    background-color: #1e1e1e;
+    border-color: #333;
+  }
+  
+  .marker-header h3 {
+    color: #fff;
+  }
+  
+  .marker-reason {
+    color: #ddd;
+    background-color: #2a2a2a;
+    border-right-color: #f48fb1;
+  }
+  
+  .photos-count {
+    color: #bbb;
+  }
+  
+  .view-photos-button {
+    background: #333;
+    border-color: #444;
+    color: #f48fb1;
+  }
+  
+  .view-photos-button:hover {
+    background: #3a3a3a;
+    border-color: #555;
+  }
+  
+  .photo-thumbnail {
+    background-color: #2a2a2a;
+  }
+}

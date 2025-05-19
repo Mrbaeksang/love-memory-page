@@ -5,6 +5,7 @@ import LoveType from "./pages/LoveType";
 import GalleryMonth from "./pages/GalleryMonth";
 import Memories from "./pages/Memories";
 import Comment from "./pages/Comment";
+import TravelMapPhotoGalleryPage from "./pages/TravelMapPhotoGalleryPage";
 
 const AppRouter = () => (
   <Routes>
@@ -13,6 +14,7 @@ const AppRouter = () => (
     <Route path="/gallery/:year/:month" element={<GalleryMonth />} />
     <Route path="/lovetype" element={<LoveType />} />
     <Route path="/comment" element={<Comment />} />
+    <Route path="/travel-map/photos/:markerId" element={<TravelMapPhotoGalleryPage />} />
   </Routes>
 );
 
