@@ -120,47 +120,44 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       setError(null);
   
       const { data, error } = await supabase.from("travel_markers").select("*");
-      
       if (error) throw error;
+  
       if (!data || data.length === 0) {
-        console.warn("저장된 마커가 없습니다.");
+        console.warn("📭 저장된 마커가 없습니다.");
         return;
       }
   
-      console.log(`📌 ${data.length}개의 마커를 불러왔습니다.`);
+      console.log(`📍 ${data.length}개의 마커 로드됨`);
   
-      data.forEach((marker) => {
-        const lat = parseFloat(marker.lat);
-        const lng = parseFloat(marker.lng);
-        
-        if (isNaN(lat) || isNaN(lng)) {
-          console.warn("잘못된 좌표:", marker);
-          return;
-        }
+      // 첫 마커 위치로 지도 이동 (시각 확인용)
+      const first = data[0];
+      if (first?.lat && first?.lng) {
+        const firstPos = new window.naver.maps.LatLng(first.lat, first.lng);
+        nMap.setCenter(firstPos);
+        nMap.setZoom(11);
+      }
   
-        const pos = new window.naver.maps.LatLng(lat, lng);
+      data.forEach((m) => {
+        if (!m.lat || !m.lng) return;
+  
+        const pos = new window.naver.maps.LatLng(m.lat, m.lng);
   
         new window.naver.maps.Marker({
           position: pos,
           map: nMap,
-          title: marker.region || "이름 없는 장소",
-          icon: {
-            content: `<div style="font-size: 24px;">${
-              marker.type === "visited" ? "📍" : "🔹"
-            }</div>`,
-            size: new window.naver.maps.Size(24, 24),
-            anchor: new window.naver.maps.Point(12, 12)
-          },
-          clickable: false
+          title: m.region || "이름 없는 장소"
+          // icon 제거 → 기본 마커 사용
         });
       });
+  
     } catch (err) {
-      console.error("❌ 마커 로딩 중 오류:", err);
-      setError("저장된 마커를 불러오지 못했습니다.");
+      console.error("❌ 마커 로딩 실패:", err);
+      setError("마커를 불러오는 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
   }, []);
+  
   
 
   // 지도 초기화
