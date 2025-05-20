@@ -33,48 +33,32 @@ export default function TravelMap() {
   const [tempMarker, setTempMarker] = useState(null);
   const [infoWindow, setInfoWindow] = useState(null);
   const [searchInput, setSearchInput] = useState("");
-  const [form, setForm] = useState({ 
-    region: "", 
-    reason: "", 
-    type: "want",
-    isSaved: false,
-    id: null
-  });
+  const [form, setForm] = useState({ region: "", reason: "", type: "want" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
 const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   try {
-    // 마커 클릭 이벤트인 경우 무시
-    if (e.overlay) return;
-    
     const coord = e.coord;
 
     // 기존 임시 마커 제거
     if (tempMarker) {
       tempMarker.setMap(null);
-      setTempMarker(null);
     }
 
-    // 새 마커 생성
-    const marker = new window.naver.maps.Marker({
-      position: coord,
-      map: nMap,
-      title: "선택한 위치",
-      alt: "선택한 위치 마커",
-      clickable: true,
-      icon: {
-        content: '<div style="background:white;border:2px solid #4A90E2;border-radius:50%;width:20px;height:20px;box-sizing:border-box;"></div>',
-        size: new window.naver.maps.Size(20, 20),
-        anchor: new window.naver.maps.Point(10, 10)
-      }
-    });
-    
-    setTempMarker(marker);
-    
-    // 기존 인포윈도우 닫기
-    if (nInfoWindow) {
-      nInfoWindow.close();
+    // 새 마커 생성 또는 기존 마커 위치 업데이트
+    let marker = tempMarker;
+    if (!marker) {
+      marker = new window.naver.maps.Marker({
+        position: coord,
+        map: nMap,
+        title: "선택한 위치",
+        alt: "선택한 위치 마커",
+        clickable: true
+      });
+      setTempMarker(marker);
+    } else {
+      marker.setPosition(coord);
     }
 
     // 폼 초기화
@@ -150,35 +134,26 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
         const marker = new window.naver.maps.Marker({
           position: pos,
           map: nMap,
-          title: m.region || "이름 없는 장소",
-          icon: {
-            content: m.type === 'visited' ? 
-              '<div style="font-size:24px;">📍</div>' : 
-              '<div style="font-size:24px;color:#4A90E2;">🔹</div>',
-            size: new window.naver.maps.Size(24, 24),
-            anchor: new window.naver.maps.Point(12, 12)
-          }
+          title: m.region || "이름 없는 장소"
         });
 
         // 마커 클릭 이벤트 추가
         window.naver.maps.Event.addListener(marker, 'click', () => {
-          // 기존 임시 마커 제거
-          if (tempMarker) {
-            tempMarker.setMap(null);
-            setTempMarker(null);
-          }
+          const infoContent = `
+            <div class="info-window" style="padding: 10px;">
+              <div><strong>${m.region || '이름 없음'}</strong></div>
+              ${m.reason ? `<div>${m.reason}</div>` : ''}
+            </div>
+          `;
           
-          // 폼을 저장된 마커 정보로 업데이트
-          setForm({
-            region: m.region || '',
-            reason: m.reason || '',
-            type: m.type || 'want',
-            isSaved: true,
-            id: m.id
+          const infoWindow = new window.naver.maps.InfoWindow({
+            content: infoContent,
+            borderWidth: 0,
+            backgroundColor: 'transparent',
+            disableAnchor: true
           });
           
-          // 스크롤을 폼으로 이동
-          document.querySelector('.travel-form')?.scrollIntoView({ behavior: 'smooth' });
+          infoWindow.open(nMap, marker);
         });
       });
   
@@ -417,103 +392,62 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       ></div>
 
       {/* 마커 폼 */}
-      {(tempMarker || form.isSaved) && (
+      {tempMarker && (
         <div 
           className="marker-form-box travel-form"
           role="dialog"
           aria-labelledby="marker-form-title"
         >
-          <div className="marker-form-header">
-            <h3 id="marker-form-title">
-              {form.type === 'want' ? '가보고 싶은 곳' : '다녀온 곳'}
-              {form.isSaved && <span className="saved-badge">저장됨</span>}
-            </h3>
+          <h3 id="marker-form-title">
+            {form.type === 'want' ? '가보고 싶은 곳' : '다녀온 곳'}
+          </h3>
+          
+          <p>📍 {form.region || "주소 정보 없음"}</p>
+          
+          <textarea
+            placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
+            value={form.reason}
+            onChange={(e) => setForm({ ...form, reason: e.target.value })}
+            disabled={isLoading}
+            aria-label="이유 입력"
+            maxLength={500}
+          />
+          
+          <div className="type-buttons">
             <button 
-              className="close-button"
-              onClick={() => {
-                setTempMarker(null);
-                setForm({ region: "", reason: "", type: "want", isSaved: false, id: null });
-              }}
-              aria-label="닫기"
+              className={form.type === "want" ? "active" : ""}
+              onClick={() => setForm({ ...form, type: "want" })}
+              disabled={isLoading}
+              aria-pressed={form.type === "want"}
             >
-              ×
+              가보고 싶은 곳
+            </button>
+            <button 
+              className={form.type === "visited" ? "active" : ""}
+              onClick={() => setForm({ ...form, type: "visited" })}
+              disabled={isLoading}
+              aria-pressed={form.type === "visited"}
+            >
+              다녀온 곳
             </button>
           </div>
           
-          <div className="location-info">
-            <span className="location-icon">📍</span>
-            <p className="location-text">{form.region || "주소 정보 없음"}</p>
+          <div className="form-actions">
+            <button 
+              className="cancel" 
+              onClick={() => setTempMarker(null)}
+              disabled={isLoading}
+            >
+              취소
+            </button>
+            <button 
+              className="save" 
+              onClick={saveMarker}
+              disabled={isLoading || !form.reason.trim()}
+            >
+              {isLoading ? '저장 중...' : '✨ 저장'}
+            </button>
           </div>
-          
-          {form.isSaved ? (
-            <div className="saved-content">
-              {form.reason && (
-                <div className="saved-reason">
-                  <p>{form.reason}</p>
-                </div>
-              )}
-              <div className="photo-section">
-                <button className="add-photo">
-                  <span>+</span> 사진 추가
-                </button>
-              </div>
-              <div className="action-buttons">
-                <button className="edit-button">수정</button>
-                <button className="delete-button">삭제</button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <textarea
-                className="reason-input"
-                placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
-                value={form.reason}
-                onChange={(e) => setForm(prev => ({ ...prev, reason: e.target.value }))}
-                disabled={isLoading}
-                aria-label="이유 입력"
-                maxLength={500}
-              />
-              
-              <div className="type-buttons">
-                <button 
-                  className={`type-button ${form.type === "want" ? "active" : ""}`}
-                  onClick={() => setForm(prev => ({ ...prev, type: "want" }))}
-                  disabled={isLoading}
-                  aria-pressed={form.type === "want"}
-                >
-                  가보고 싶은 곳
-                </button>
-                <button 
-                  className={`type-button ${form.type === "visited" ? "active" : ""}`}
-                  onClick={() => setForm(prev => ({ ...prev, type: "visited" }))}
-                  disabled={isLoading}
-                  aria-pressed={form.type === "visited"}
-                >
-                  다녀온 곳
-                </button>
-              </div>
-              
-              <div className="form-actions">
-                <button 
-                  className="cancel-button" 
-                  onClick={() => {
-                    setTempMarker(null);
-                    setForm(prev => ({ ...prev, isSaved: false }));
-                  }}
-                  disabled={isLoading}
-                >
-                  취소
-                </button>
-                <button 
-                  className="save-button" 
-                  onClick={saveMarker}
-                  disabled={isLoading || !form.reason.trim()}
-                >
-                  {isLoading ? '저장 중...' : '✨ 저장'}
-                </button>
-              </div>
-            </>
-          )}
         </div>
       )}
     </div>
