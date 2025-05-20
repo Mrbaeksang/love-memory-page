@@ -42,7 +42,10 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
     const coord = e.coord;
 
     // 기존 임시 마커 제거
-    if (tempMarker) tempMarker.setMap(null);
+    if (tempMarker) {
+      tempMarker.setMap(null);
+      setTempMarker(null);
+    }
 
     // 새 마커 생성
     const marker = new window.naver.maps.Marker({
@@ -50,10 +53,16 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       map: nMap,
       title: "선택한 위치",
       alt: "선택한 위치 마커",
+      clickable: true
     });
 
-    setTempMarker(marker); // 임시 마커 상태 반영
-    setForm({ region: "", reason: "", type: "want" }); // 기본 폼 상태 초기화해서 UI 보이게 함
+    // 마커 클릭 이벤트 추가 (기본 동작 방지)
+    window.naver.maps.Event.addListener(marker, 'click', (e) => {
+      e.vertex = true; // 마커 클릭을 나타내는 플래그
+    });
+
+    setTempMarker(marker);
+    setForm({ region: "", reason: "", type: "want" });
 
     setError(null);
     setIsLoading(true);
