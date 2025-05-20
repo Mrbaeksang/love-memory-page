@@ -37,24 +37,25 @@ export default function TravelMap() {
   const [isSavedMarker, setIsSavedMarker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const tempMarkerRef = useRef(null);
+
 
 const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   const coord = e.coord;
 
-  if (tempMarker) {
-    tempMarker.setMap(null);
-    setTempMarker(null);
+  if (!tempMarkerRef.current) {
+    tempMarkerRef.current = new window.naver.maps.Marker({
+      position: coord,
+      map: nMap,
+      title: "선택한 위치",
+      alt: "선택한 위치 마커",
+      clickable: true
+    });
+  } else {
+    tempMarkerRef.current.setPosition(coord);
   }
 
-  const marker = new window.naver.maps.Marker({
-    position: coord,
-    map: nMap,
-    title: "선택한 위치",
-    alt: "선택한 위치 마커",
-    clickable: true
-  });
-
-  setTempMarker(marker);
+  setTempMarker(tempMarkerRef.current);
   setIsSavedMarker(false);
   setForm({ region: "", reason: "", type: "want" });
 
@@ -91,14 +92,15 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       </div>
     `;
     nInfoWindow.setContent(infoContent);
-    nInfoWindow.open(nMap, marker);
+    nInfoWindow.open(nMap, tempMarkerRef.current);
   } catch (err) {
     setError("주소 조회 실패");
     console.error("Reverse geocode error:", err);
   } finally {
     setIsLoading(false);
   }
-}, [tempMarker]);
+}, []);
+
 
 
 
