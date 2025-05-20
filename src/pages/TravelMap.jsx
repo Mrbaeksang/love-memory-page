@@ -51,26 +51,15 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       : "#e74c3c"; // 아직 선택 안한 경우 빨강
 
   if (!tempMarkerRef.current) {
-    tempMarkerRef.current = new window.naver.maps.Marker({
-      position: coord,
-      map: nMap,
-      icon: {
-        content: `
-          <div style="
-            background: ${typeColor};
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 3px rgba(0,0,0,0.3);
-          "></div>`,
-        size: new window.naver.maps.Size(14, 14),
-        anchor: new window.naver.maps.Point(7, 7)
-      }
-    });
-  } else {
-    tempMarkerRef.current.setPosition(coord);
-  }
+  tempMarkerRef.current = new window.naver.maps.Marker({
+    position: coord,
+    map: nMap,
+    title: "선택한 위치"
+  });
+} else {
+  tempMarkerRef.current.setPosition(coord);
+}
+
 
   setTempMarker(tempMarkerRef.current);
   setIsSavedMarker(false);
@@ -136,24 +125,20 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       if (!m.lat || !m.lng) return;
 
       const pos = new window.naver.maps.LatLng(m.lat, m.lng);
-      const color = m.type === "visited" ? "#2ecc71" : "#3498db";
+
+      const iconUrl = m.type === "visited"
+        ? "/images/marker-green.svg"
+        : "/images/marker-red.svg";
 
       const marker = new window.naver.maps.Marker({
         position: pos,
         map: nMap,
         title: m.region || "이름 없는 장소",
         icon: {
-          content: `
-            <div style="
-              background: ${color};
-              width: 14px;
-              height: 14px;
-              border-radius: 50%;
-              border: 2px solid white;
-              box-shadow: 0 0 3px rgba(0,0,0,0.3);
-            "></div>`,
-          size: new window.naver.maps.Size(14, 14),
-          anchor: new window.naver.maps.Point(7, 7)
+          url: iconUrl,
+          size: new window.naver.maps.Size(22, 33),        // SVG 크기
+          scaledSize: new window.naver.maps.Size(22, 33),   // 스케일된 크기
+          anchor: new window.naver.maps.Point(11, 33)       // 기준점 (아래쪽 중앙)
         }
       });
 
@@ -174,6 +159,7 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
     setIsLoading(false);
   }
 }, []);
+
 
   
   
