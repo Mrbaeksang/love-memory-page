@@ -1,3 +1,4 @@
+/* === 기본 배경 === */
 .gallery-month-bg {
   padding: 24px 8px;
   max-width: 500px;
@@ -6,6 +7,7 @@
   min-height: 100vh;
 }
 
+/* === 상단 타이틀 영역 === */
 .gallery-month-title {
   font-size: 1.4rem;
   font-weight: bold;
@@ -21,13 +23,13 @@
   text-align: center;
 }
 
+/* === 그리드 === */
 .gallery-month-grid {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(3, 1fr);
 }
-@media (max-width: 1024px),
-(max-width: 600px) {
+@media (max-width: 1024px), (max-width: 600px) {
   .gallery-month-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -51,22 +53,21 @@
   border-radius: 10px;
   background: #f7e7e0;
   box-shadow: 0 2px 8px #e86c3d11;
-  display: block;
   cursor: zoom-in;
+  display: block;
 }
 
+/* === 상단 고정 버튼 바 === */
 .gallery-header-bar {
   position: sticky;
   top: 0;
-  left: 0;
-  width: 100%;
   background: rgba(255, 255, 255, 0.95);
   z-index: 50;
   display: flex;
   align-items: center;
   height: 3.5rem;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
   padding-left: 1.3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   margin-bottom: 1.1rem;
 }
 
@@ -78,84 +79,114 @@
   font-size: 1.08em;
   color: #444;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
-  transition: background 0.15s, color 0.15s;
   display: flex;
   align-items: center;
   gap: 0.3em;
+  transition: background 0.15s, color 0.15s;
 }
 .gallery-home-btn:hover {
   background: #f2f2f2;
   color: #000;
 }
 
+/* === 모달 === */
 .gallery-modal-bg {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
   padding: 1rem;
 }
 
 .gallery-modal-img-wrap {
   max-width: 90vw;
   max-height: 90vh;
-  position: relative;
-}
-
-.gallery-modal-img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 10px;
-  display: block;
-  margin: 0 auto;
-}
-
-.gallery-comment-box {
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.7rem;
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.gallery-comment-textarea {
-  width: 100%;
-  height: 60px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  resize: none;
-  padding: 10px;
-  font-size: 15px;
-}
-
-.gallery-comment-submit {
-  margin-top: 0.5rem;
-  background: #e86c3d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
 .gallery-modal-img {
   max-width: 100%;
   max-height: 70vh;
   border-radius: 10px;
+  display: block;
 }
 
+/* === 마커 연결 영역 === */
+.marker-link-section {
+  width: 100%;
+  background: #fff8f3;
+  border: 1px solid #f4d4c9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.marker-link-section label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.marker-select-dropdown {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.link-marker-button,
+.view-marker-photos-button {
+  background-color: #e86c3d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.link-marker-button:disabled {
+  background-color: #f2a98f;
+  cursor: not-allowed;
+}
+
+.link-marker-button:hover:not(:disabled),
+.view-marker-photos-button:hover {
+  background-color: #cc5e32;
+}
+
+.view-marker-photos-button {
+  background-color: #f48fb1;
+}
+.view-marker-photos-button:hover {
+  background-color: #e67c9c;
+}
+
+/* === 댓글 영역 === */
 .gallery-comment-box {
   width: 100%;
   margin-top: 1rem;
-  padding: 0.7rem;
+  padding: 0.75rem;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .gallery-comment-textarea {
@@ -165,7 +196,7 @@
   border-radius: 8px;
   resize: none;
   padding: 10px;
-  font-size: 15px;
+  font-size: 0.95rem;
 }
 
 .gallery-comment-submit {
@@ -177,6 +208,7 @@
   padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
+  width: 100%;
 }
 
 .gallery-comment-list {
@@ -190,20 +222,11 @@
   margin-bottom: 8px;
   font-size: 0.95rem;
   color: #444;
-  animation: fadeIn 0.6s ease-in;
+  animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.gallery-comment-item {
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  margin-top: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  animation: fadeIn 0.4s ease;
+.gallery-comment-item.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
 }
 
 .comment-meta {
@@ -220,18 +243,19 @@
   color: #e86c3d;
   font-size: 1rem;
   cursor: pointer;
-}
-.gallery-comment-item.fade-in {
-  animation: fadeInUp 0.4s ease forwards;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.comment-delete {
   transition: color 0.2s ease;
 }
 .comment-delete:hover {
   color: red;
+}
+
+/* === 애니메이션 === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
