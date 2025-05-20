@@ -2,31 +2,41 @@ import React from "react";
 import "./LoveType.css";
 import RandomImage from "../RandomImage";
 import { useNavigate } from "react-router-dom";
-import usePageLogger from "../hooks/usePageLogger"; // ✅ 추가
+import usePageLogger from "../hooks/usePageLogger";
 
-
-
-
-const QA = ({q, a}) => (
-  <div className="lovetype-qa"><span className="lovetype-q">Q.</span> {q}<br/><span className="lovetype-a"> {a}</span></div>
+// ✅ Q&A 출력용 컴포넌트 (사용 중이면 유지, 사용 안 하면 제거 가능)
+const QA = ({ q, a }) => (
+  <div className="lovetype-qa">
+    <span className="lovetype-q">Q.</span> {q}
+    <br />
+    <span className="lovetype-a">{a}</span>
+  </div>
 );
 
-const Table = ({rows, head}) => (
+// ✅ 테이블형 데이터 표현용
+const Table = ({ rows, head }) => (
   <table className="lovetype-table">
-    {head && <thead><tr>{head.map((h,i)=><th key={i}>{h}</th>)}</tr></thead>}
+    {head && (
+      <thead>
+        <tr>{head.map((h, i) => <th key={i}>{h}</th>)}</tr>
+      </thead>
+    )}
     <tbody>
-      {rows.map((row,i)=>(<tr key={i}>{row.map((cell,j)=><td key={j}>{cell}</td>)}</tr>))}
+      {rows.map((row, i) => (
+        <tr key={i}>{row.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
+      ))}
     </tbody>
   </table>
 );
 
-const SectionBadge = ({icon, label}) => (
+// ✅ 각 섹션 제목 앞에 붙는 뱃지
+const SectionBadge = ({ icon, label }) => (
   <span className="lovetype-section-badge">{icon} {label}</span>
 );
 
+// ✅ 랜덤 이미지 삽입 함수 (2,4,6번째 뒤에 삽입)
 const getSectionsWithImages = (sections) => {
-  // 2~4곳에만 랜덤 이미지 삽입
-  const insertPositions = [1, 3, 5]; // 예시: 2,4,6번째 섹션 뒤
+  const insertPositions = [1, 3, 5];
   let result = [];
   let imgIdx = 0;
   sections.forEach((sec, idx) => {
@@ -37,6 +47,7 @@ const getSectionsWithImages = (sections) => {
   });
   return result;
 };
+
 
 const sanghyunSections = [
   (<section className="lovetype-section" key="sec1">
@@ -372,28 +383,47 @@ const hyeeunSections = [
 ];
 
 const LoveTypeDetail = ({ who }) => {
-  usePageLogger(); 
-  
-  let name, type, sections;
-  if (who === "sanghyun") {
-    name = "상현";
-    type = "ENTP";
-    sections = sanghyunSections;
-  } else {
-    name = "혜은";
-    type = "ENFJ";
-    sections = hyeeunSections;
-  }
+  usePageLogger();
+  const navigate = useNavigate(); // ✅ navigate 선언 누락 방지
+
+  const profileMap = {
+    sanghyun: {
+      name: "상현",
+      type: "ENTP",
+      sections: sanghyunSections,
+    },
+    hyeeun: {
+      name: "혜은",
+      type: "ENFJ",
+      sections: hyeeunSections,
+    },
+  };
+
+  const { name, type, sections } = profileMap[who] || {
+    name: "알 수 없음",
+    type: "-",
+    sections: [],
+  };
+
   return (
     <div className="lovetype-container vertical">
-      {/* ✅ 홈으로 돌아가기 버튼 정상 위치 */}
-      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
-
+      <button className="back-home-btn" onClick={() => navigate("/")}>
+        ← 홈으로
+      </button>
       <h2>{name}의 연애 심리 리포트</h2>
-      <div style={{color:'#6abf7a',fontSize:'1.1rem',marginBottom:'1.2rem'}}>({type})</div>
+      <div
+        style={{
+          color: "#6abf7a",
+          fontSize: "1.1rem",
+          marginBottom: "1.2rem",
+        }}
+      >
+        ({type})
+      </div>
       {getSectionsWithImages(sections)}
     </div>
   );
 };
+
 
 export default LoveTypeDetail;
