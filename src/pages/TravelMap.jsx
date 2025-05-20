@@ -43,13 +43,30 @@ export default function TravelMap() {
 const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   const coord = e.coord;
 
+  // 마커 색상: 선택 전이면 빨강, 선택했으면 타입에 따라
+  const typeColor = form.type === "visited"
+    ? "#2ecc71"
+    : form.type === "want"
+      ? "#3498db"
+      : "#e74c3c"; // 아직 선택 안한 경우 빨강
+
   if (!tempMarkerRef.current) {
     tempMarkerRef.current = new window.naver.maps.Marker({
       position: coord,
       map: nMap,
-      title: "선택한 위치",
-      alt: "선택한 위치 마커",
-      clickable: true
+      icon: {
+        content: `
+          <div style="
+            background: ${typeColor};
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0,0,0,0.3);
+          "></div>`,
+        size: new window.naver.maps.Size(14, 14),
+        anchor: new window.naver.maps.Point(7, 7)
+      }
     });
   } else {
     tempMarkerRef.current.setPosition(coord);
@@ -63,9 +80,7 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   setIsLoading(true);
 
   try {
-    const res = await fetch(
-      `/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`
-    );
+    const res = await fetch(`/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`);
     if (!res.ok) throw new Error("주소를 가져오는데 실패했습니다.");
 
     const data = await res.json();
@@ -76,9 +91,7 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       area?.area2?.name,
       area?.area3?.name,
       land?.name,
-    ]
-      .filter(Boolean)
-      .join(" ") || "주소 정보 없음";
+    ].filter(Boolean).join(" ") || "주소 정보 없음";
 
     setForm((prev) => ({
       ...prev,
@@ -99,56 +112,69 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   } finally {
     setIsLoading(false);
   }
-}, []);
+}, [form.type]);
+
 
 
 
 
   // 저장된 마커 로드
   const loadSavedMarkers = useCallback(async (nMap) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-  
-      const { data, error } = await supabase.from("travel_markers").select("*");
-      if (error) throw error;
-  
-      if (!data || data.length === 0) {
-        console.warn("저장된 마커가 없습니다.");
-        return;
-      }
-  
-      data.forEach((m) => {
-        if (!m.lat || !m.lng) return;
-  
-        const pos = new window.naver.maps.LatLng(m.lat, m.lng);
-        const marker = new window.naver.maps.Marker({
-          position: pos,
-          map: nMap,
-          title: m.region || "이름 없는 장소"
-        });
+  try {
+    setIsLoading(true);
+    setError(null);
 
-        // 마커 클릭 이벤트 추가
-        window.naver.maps.Event.addListener(marker, 'click', () => {
-  setForm({
-    region: m.region || "",
-    reason: m.reason || "",
-    type: m.type || "want"
-  });
-  setTempMarker(marker);
-  setIsSavedMarker(true); // 읽기 전용으로 설정
-});
+    const { data, error } = await supabase.from("travel_markers").select("*");
+    if (error) throw error;
 
-
-      });
-  
-    } catch (err) {
-      console.error("마커 로딩 실패:", err);
-      setError("마커를 불러오는 중 오류가 발생했습니다.");
-    } finally {
-      setIsLoading(false);
+    if (!data || data.length === 0) {
+      console.warn("저장된 마커가 없습니다.");
+      return;
     }
-  }, []);
+
+    data.forEach((m) => {
+      if (!m.lat || !m.lng) return;
+
+      const pos = new window.naver.maps.LatLng(m.lat, m.lng);
+      const color = m.type === "visited" ? "#2ecc71" : "#3498db";
+
+      const marker = new window.naver.maps.Marker({
+        position: pos,
+        map: nMap,
+        title: m.region || "이름 없는 장소",
+        icon: {
+          content: `
+            <div style="
+              background: ${color};
+              width: 14px;
+              height: 14px;
+              border-radius: 50%;
+              border: 2px solid white;
+              box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            "></div>`,
+          size: new window.naver.maps.Size(14, 14),
+          anchor: new window.naver.maps.Point(7, 7)
+        }
+      });
+
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        setForm({
+          region: m.region || "",
+          reason: m.reason || "",
+          type: m.type || "want"
+        });
+        setTempMarker(marker);
+        setIsSavedMarker(true);
+      });
+    });
+  } catch (err) {
+    console.error("마커 로딩 실패:", err);
+    setError("마커를 불러오는 중 오류가 발생했습니다.");
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
+
   
   
 
@@ -204,6 +230,7 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       setMap(nMap);
       const nInfoWindow = new window.naver.maps.InfoWindow({ 
         anchorSkew: true,
+        disableAnchor: true,
         borderWidth: 0,
         backgroundColor: 'transparent',
         pixelOffset: new window.naver.maps.Point(0, -10)
