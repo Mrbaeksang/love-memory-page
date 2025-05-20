@@ -271,15 +271,6 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       map.setCenter(latlng);
       map.setZoom(14);
 
-      if (tempMarker) tempMarker.setMap(null);
-      const marker = new window.naver.maps.Marker({ 
-        position: latlng, 
-        map,
-        title: item.roadAddress || item.jibunAddress,
-        alt: '검색된 위치 마커'
-      });
-      setTempMarker(marker);
-
       setForm(prev => ({
         ...prev,
         region: item.roadAddress || item.jibunAddress || "주소 없음",
