@@ -127,20 +127,21 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       const pos = new window.naver.maps.LatLng(m.lat, m.lng);
 
       const iconUrl = m.type === "visited"
-        ? "/images/marker-green.svg"
-        : "/images/marker-red.svg";
+  ? "/images/marker-green.svg"
+  : "/images/marker-red.svg";
 
-      const marker = new window.naver.maps.Marker({
-        position: pos,
-        map: nMap,
-        title: m.region || "이름 없는 장소",
-        icon: {
-          url: iconUrl,
-          size: new window.naver.maps.Size(22, 33),        // SVG 크기
-          scaledSize: new window.naver.maps.Size(22, 33),   // 스케일된 크기
-          anchor: new window.naver.maps.Point(11, 33)       // 기준점 (아래쪽 중앙)
-        }
-      });
+const marker = new window.naver.maps.Marker({
+  position: pos,
+  map: nMap,
+  title: m.region || "이름 없는 장소",
+  icon: {
+    url: iconUrl,
+    size: new window.naver.maps.Size(13, 20),           // 22x33의 약 3/5
+    scaledSize: new window.naver.maps.Size(13, 20),
+    anchor: new window.naver.maps.Point(6.5, 20)         // 가운데 하단 기준
+  }
+});
+
 
       window.naver.maps.Event.addListener(marker, 'click', () => {
         setForm({
