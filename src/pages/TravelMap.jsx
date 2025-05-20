@@ -192,60 +192,54 @@ const marker = new window.naver.maps.Marker({
     };
   }, []);
 
-  const initMap = useCallback(() => {
-    try {
-      const mapOptions = {
-        center: new window.naver.maps.LatLng(36.5, 127.5),
-        zoom: 7,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          style: window.naver.maps.MapTypeControlStyle.BUTTON,
-          position: window.naver.maps.Position.TOP_RIGHT
-        },
-        zoomControl: true,
-        zoomControlOptions: {
-          style: window.naver.maps.ZoomControlStyle.SMALL,
-          position: window.naver.maps.Position.TOP_RIGHT
-        },
-        scaleControl: false,
-        logoControl: false,
-        mapDataControl: false
-      };
+const initMap = useCallback(() => {
+  try {
+    const mapOptions = {
+      center: new window.naver.maps.LatLng(36.5, 127.5),
+      zoom: 7,
+      mapTypeControl: false, // ❌ 위성 보기 제거
+      zoomControl: true,
+      zoomControlOptions: {
+        style: window.naver.maps.ZoomControlStyle.SMALL,
+        position: window.naver.maps.Position.TOP_LEFT // ✅ 왼쪽 상단으로 이동
+      },
+      scaleControl: false,
+      logoControl: false,
+      mapDataControl: false
+    };
 
-      const nMap = new window.naver.maps.Map("map", mapOptions);
+    const nMap = new window.naver.maps.Map("map", mapOptions);
 
-      setMap(nMap);
-      const nInfoWindow = new window.naver.maps.InfoWindow({ 
-        anchorSkew: true,
-        disableAnchor: true,
-        borderWidth: 0,
-        backgroundColor: 'transparent',
-        pixelOffset: new window.naver.maps.Point(0, -10)
-      });
-      
-      setInfoWindow(nInfoWindow);
+    setMap(nMap);
+    const nInfoWindow = new window.naver.maps.InfoWindow({
+      anchorSkew: true,
+      disableAnchor: true,
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+      pixelOffset: new window.naver.maps.Point(0, -10)
+    });
 
-      // 지도 클릭 이벤트 리스너
-      const clickListener = window.naver.maps.Event.addListener(
-        nMap, 
-        "click", 
-        (e) => handleMapClick(e, nMap, nInfoWindow)
-      );
+    setInfoWindow(nInfoWindow);
 
-      // 저장된 마커 로드
-      loadSavedMarkers(nMap);
+    const clickListener = window.naver.maps.Event.addListener(
+      nMap,
+      "click",
+      (e) => handleMapClick(e, nMap, nInfoWindow)
+    );
 
-      // 클린업 함수
-      return () => {
-        if (clickListener) {
-          window.naver.maps.Event.removeListener(clickListener);
-        }
-      };
-    } catch (err) {
-      setError('지도를 초기화하는 중 오류가 발생했습니다.');
-      console.error('Map initialization error:', err);
-    }
-  }, [handleMapClick, loadSavedMarkers]);
+    loadSavedMarkers(nMap);
+
+    return () => {
+      if (clickListener) {
+        window.naver.maps.Event.removeListener(clickListener);
+      }
+    };
+  } catch (err) {
+    setError("지도를 초기화하는 중 오류가 발생했습니다.");
+    console.error("Map initialization error:", err);
+  }
+}, [handleMapClick, loadSavedMarkers]);
+
 
   const handleSearch = useCallback(async () => {
     if (!searchInput.trim()) {
