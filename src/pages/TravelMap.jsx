@@ -34,83 +34,72 @@ export default function TravelMap() {
   const [infoWindow, setInfoWindow] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [form, setForm] = useState({ region: "", reason: "", type: "want" });
+  const [isSavedMarker, setIsSavedMarker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
 const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
+  const coord = e.coord;
+
+  if (tempMarker) {
+    tempMarker.setMap(null);
+    setTempMarker(null);
+  }
+
+  const marker = new window.naver.maps.Marker({
+    position: coord,
+    map: nMap,
+    title: "선택한 위치",
+    alt: "선택한 위치 마커",
+    clickable: true
+  });
+
+  setTempMarker(marker);
+  setIsSavedMarker(false);
+  setForm({ region: "", reason: "", type: "want" });
+
+  setError(null);
+  setIsLoading(true);
+
   try {
-    const coord = e.coord;
+    const res = await fetch(
+      `/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`
+    );
+    if (!res.ok) throw new Error("주소를 가져오는데 실패했습니다.");
 
-    // 기존 임시 마커 제거
-    if (tempMarker) {
-      tempMarker.setMap(null);
-    }
+    const data = await res.json();
+    const area = data?.results?.[0]?.region;
+    const land = data?.results?.[0]?.land;
+    const address = [
+      area?.area1?.name,
+      area?.area2?.name,
+      area?.area3?.name,
+      land?.name,
+    ]
+      .filter(Boolean)
+      .join(" ") || "주소 정보 없음";
 
-    // 새 마커 생성 또는 기존 마커 위치 업데이트
-    let marker = tempMarker;
-    if (!marker) {
-      marker = new window.naver.maps.Marker({
-        position: coord,
-        map: nMap,
-        title: "선택한 위치",
-        alt: "선택한 위치 마커",
-        clickable: true
-      });
-      setTempMarker(marker);
-    } else {
-      marker.setPosition(coord);
-    }
+    setForm((prev) => ({
+      ...prev,
+      region: address.trim()
+    }));
 
-    // 폼 초기화
-    setForm({ region: "", reason: "", type: "want" });
-
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const res = await fetch(
-        `/api/reverse-geocode?lat=${coord.lat()}&lng=${coord.lng()}`
-      );
-      if (!res.ok) throw new Error("주소를 가져오는데 실패했습니다.");
-
-      const data = await res.json();
-      const area = data?.results?.[0]?.region;
-      const land = data?.results?.[0]?.land;
-      const address = [
-        area?.area1?.name,
-        area?.area2?.name,
-        area?.area3?.name,
-        land?.name,
-      ]
-        .filter(Boolean)
-        .join(" ") || "주소 정보 없음";
-
-      setForm((prev) => ({
-        ...prev,
-        region: address.trim(),
-        // reason은 그대로 비우고 type은 유지
-      }));
-
-      const infoContent = `
-        <div class="info-window" role="dialog" aria-label="선택한 위치 정보">
-          <b>선택된 위치</b><br />
-          ${address}
-        </div>
-      `;
-      nInfoWindow.setContent(infoContent);
-      nInfoWindow.open(nMap, marker);
-    } catch (err) {
-      setError("주소 조회 실패");
-      console.error("Reverse geocode error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    const infoContent = `
+      <div class="info-window" role="dialog" aria-label="선택한 위치 정보">
+        <b>선택된 위치</b><br />
+        ${address}
+      </div>
+    `;
+    nInfoWindow.setContent(infoContent);
+    nInfoWindow.open(nMap, marker);
   } catch (err) {
-    setError("지도 클릭 처리 중 오류 발생");
-    console.error("Map click error:", err);
+    setError("주소 조회 실패");
+    console.error("Reverse geocode error:", err);
+  } finally {
     setIsLoading(false);
   }
 }, [tempMarker]);
+
 
 
   // 저장된 마커 로드
@@ -139,22 +128,16 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
 
         // 마커 클릭 이벤트 추가
         window.naver.maps.Event.addListener(marker, 'click', () => {
-          const infoContent = `
-            <div class="info-window" style="padding: 10px;">
-              <div><strong>${m.region || '이름 없음'}</strong></div>
-              ${m.reason ? `<div>${m.reason}</div>` : ''}
-            </div>
-          `;
-          
-          const infoWindow = new window.naver.maps.InfoWindow({
-            content: infoContent,
-            borderWidth: 0,
-            backgroundColor: 'transparent',
-            disableAnchor: true
-          });
-          
-          infoWindow.open(nMap, marker);
-        });
+  setForm({
+    region: m.region || "",
+    reason: m.reason || "",
+    type: m.type || "want"
+  });
+  setTempMarker(marker);
+  setIsSavedMarker(true); // 읽기 전용으로 설정
+});
+
+
       });
   
     } catch (err) {
@@ -349,107 +332,113 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
   };
 
   return (
-    <div className="travel-map-wrap">
-      {/* 로딩 오버레이 */}
-      {isLoading && <LoadingSpinner />}
-      
-      {/* 검색 영역 */}
-      <div className="search-box">
-        <input 
-          type="text"
-          value={searchInput} 
-          onChange={(e) => setSearchInput(e.target.value)} 
-          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-          placeholder="주소 검색 (예: 부산, 제주도…)" 
-          aria-label="주소 검색"
-          disabled={isLoading}
-        />
-        <button 
-          onClick={handleSearch} 
-          disabled={isLoading || !searchInput.trim()}
-          aria-label="검색"
-        >
-          🔍 검색
-        </button>
-      </div>
-      
-      {/* 에러 메시지 */}
-      {error && (
-        <ErrorMessage 
-          message={error} 
-          onRetry={() => setError(null)} 
-        />
-      )}
-      
-      {/* 네이버 맵 */}
-      <div 
-        id="map" 
-        ref={mapRef} 
-        className="naver-map"
-        aria-label="여행 지도"
-        role="application"
-        tabIndex="-1"
-      ></div>
+  <div className="travel-map-wrap">
+    {/* 로딩 오버레이 */}
+    {isLoading && <LoadingSpinner />}
 
-      {/* 마커 폼 */}
-      {tempMarker && (
-        <div 
-          className="marker-form-box travel-form"
-          role="dialog"
-          aria-labelledby="marker-form-title"
-        >
-          <h3 id="marker-form-title">
-            {form.type === 'want' ? '가보고 싶은 곳' : '다녀온 곳'}
-          </h3>
-          
-          <p>📍 {form.region || "주소 정보 없음"}</p>
-          
-          <textarea
-            placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
-            value={form.reason}
-            onChange={(e) => setForm({ ...form, reason: e.target.value })}
-            disabled={isLoading}
-            aria-label="이유 입력"
-            maxLength={500}
-          />
-          
-          <div className="type-buttons">
-            <button 
-              className={form.type === "want" ? "active" : ""}
-              onClick={() => setForm({ ...form, type: "want" })}
-              disabled={isLoading}
-              aria-pressed={form.type === "want"}
-            >
-              가보고 싶은 곳
-            </button>
-            <button 
-              className={form.type === "visited" ? "active" : ""}
-              onClick={() => setForm({ ...form, type: "visited" })}
-              disabled={isLoading}
-              aria-pressed={form.type === "visited"}
-            >
-              다녀온 곳
-            </button>
-          </div>
-          
-          <div className="form-actions">
-            <button 
-              className="cancel" 
-              onClick={() => setTempMarker(null)}
-              disabled={isLoading}
-            >
-              취소
-            </button>
-            <button 
-              className="save" 
-              onClick={saveMarker}
-              disabled={isLoading || !form.reason.trim()}
-            >
-              {isLoading ? '저장 중...' : '✨ 저장'}
-            </button>
-          </div>
-        </div>
-      )}
+    {/* 검색 영역 */}
+    <div className="search-box">
+      <input
+        type="text"
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+        placeholder="주소 검색 (예: 부산, 제주도…)"
+        aria-label="주소 검색"
+        disabled={isLoading}
+      />
+      <button
+        onClick={handleSearch}
+        disabled={isLoading || !searchInput.trim()}
+        aria-label="검색"
+      >
+        🔍 검색
+      </button>
     </div>
-  );
-}
+
+    {/* 에러 메시지 */}
+    {error && (
+      <ErrorMessage
+        message={error}
+        onRetry={() => setError(null)}
+      />
+    )}
+
+    {/* 네이버 맵 */}
+    <div
+      id="map"
+      ref={mapRef}
+      className="naver-map"
+      aria-label="여행 지도"
+      role="application"
+      tabIndex="-1"
+    ></div>
+
+    {/* 마커 폼 */}
+    {(tempMarker || form.region || form.reason) && (
+      <div className="marker-form-box travel-form" role="dialog" aria-labelledby="marker-form-title">
+        <h3 id="marker-form-title">
+          {form.type === "want" ? "가보고 싶은 곳" : "다녀온 곳"}
+        </h3>
+
+        <p>📍 {form.region || "주소 정보 없음"}</p>
+
+        <textarea
+          placeholder="이 장소에 대한 추억이나 이유를 적어주세요"
+          value={form.reason}
+          onChange={(e) => setForm({ ...form, reason: e.target.value })}
+          disabled={isLoading || isSavedMarker}
+          aria-label="이유 입력"
+          maxLength={500}
+        />
+
+        {!isSavedMarker && (
+          <>
+            <div className="type-buttons">
+              <button
+                className={form.type === "want" ? "active" : ""}
+                onClick={() => setForm({ ...form, type: "want" })}
+                disabled={isLoading}
+                aria-pressed={form.type === "want"}
+              >
+                가보고 싶은 곳
+              </button>
+              <button
+                className={form.type === "visited" ? "active" : ""}
+                onClick={() => setForm({ ...form, type: "visited" })}
+                disabled={isLoading}
+                aria-pressed={form.type === "visited"}
+              >
+                다녀온 곳
+              </button>
+            </div>
+            <div className="form-actions">
+              <button
+                className="cancel"
+                onClick={() => setTempMarker(null)}
+                disabled={isLoading}
+              >
+                취소
+              </button>
+              <button
+                className="save"
+                onClick={saveMarker}
+                disabled={isLoading || !form.reason.trim()}
+              >
+                {isLoading ? "저장 중..." : "✨ 저장"}
+              </button>
+            </div>
+          </>
+        )}
+
+        {isSavedMarker && (
+          <div className="comments">
+            <p style={{ fontSize: "14px", color: "#888" }}>
+              💬 댓글 기능 여기에 들어갑니다 (추후 개발)
+            </p>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+)};
