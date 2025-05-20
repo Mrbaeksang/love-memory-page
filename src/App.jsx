@@ -16,6 +16,8 @@ import CommentGalleryPage from "./pages/CommentGalleryPage";
 import CommentDetailPage from "./pages/CommentDetailPage";
 import AdminThumbnailFill from "./pages/AdminThumbnailFill";
 
+import TravelMapPhotoGalleryPage from "./pages/TravelMapPhotoGalleryPage"; 
+
 // 🧭 공통 컴포넌트
 import BottomNavigation from "./BottomNavigation";
 import ScrollToTop from "./components/ScrollToTop";
@@ -120,6 +122,7 @@ function App() {
             <Route path="/admin-thumbnail-fill" element={<AdminThumbnailFill />} />
             <Route path="/lovetype/sanghyun" element={<LoveTypeDetail who="sanghyun" />} />
             <Route path="/lovetype/hyeeun" element={<LoveTypeDetail who="hyeeun" />} />
+            <Route path="/travel-map/photos/:markerId" element={<TravelMapPhotoGalleryPage />} />
           </Routes>
         </div>
       </div>

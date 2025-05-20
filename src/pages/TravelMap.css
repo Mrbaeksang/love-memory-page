@@ -10,7 +10,7 @@
   box-sizing: border-box;
 }
 
-/* 로딩 상태 스타일 */
+/* �ε� ���� ��Ÿ�� */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -38,7 +38,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* 에러 메시지 스타일 */
+/* ���� �޽��� ��Ÿ�� */
 .error-message {
   color: #d32f2f;
   background-color: #ffebee;
@@ -50,7 +50,7 @@
   box-sizing: border-box;
 }
 
-/* 검색 영역 */
+/* �˻� ���� */
 .search-box {
   display: flex;
   gap: 8px;
@@ -98,7 +98,7 @@
   outline-offset: 2px;
 }
 
-/* 지도 영역 */
+/* ���� ���� */
 .naver-map {
   width: 100%;
   height: 50vh;
@@ -111,7 +111,7 @@
   position: relative;
 }
 
-/* 마커 입력 폼 */
+/* ��Ŀ �Է� �� */
 .travel-form {
   background-color: #fff4f7;
   border: 1px solid #ffcdd2;
@@ -156,7 +156,7 @@
   box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2);
 }
 
-/* 유형 버튼 */
+/* ���� ��ư */
 .travel-form .type-buttons {
   display: flex;
   gap: 8px;
@@ -208,7 +208,7 @@
   color: #666;
 }
 
-/* 댓글 모달 */
+/* ��� ��� */
 .marker-comment-modal {
   margin-top: 16px;
   padding: 12px;

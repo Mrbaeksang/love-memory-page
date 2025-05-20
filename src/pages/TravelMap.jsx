@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { sendPushToAll } from "../utils/sendPushToAll";
 import { getAnonId } from "../utils/getAnonId";
 import "./TravelMap.css";
+import { useNavigate } from "react-router-dom";
 
 // 로딩 스피너 컴포넌트
 const LoadingSpinner = () => (
@@ -33,11 +34,17 @@ export default function TravelMap() {
   const [tempMarker, setTempMarker] = useState(null);
   const [infoWindow, setInfoWindow] = useState(null);
   const [searchInput, setSearchInput] = useState("");
-  const [form, setForm] = useState({ region: "", reason: "", type: "want" });
+  const [form, setForm] = useState({ id: null, region: "", reason: "", type: "want" });
   const [isSavedMarker, setIsSavedMarker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const tempMarkerRef = useRef(null);
+  const [markerImages, setMarkerImages] = useState([]);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+
 
 
 const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
@@ -63,7 +70,13 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
 
   setTempMarker(tempMarkerRef.current);
   setIsSavedMarker(false);
-  setForm({ region: "", reason: "", type: "want" });
+  setForm({
+  id: m.id, // 추가
+  region: m.region || "",
+  reason: m.reason || "",
+  type: m.type || "want"
+});
+
 
   setError(null);
   setIsLoading(true);
@@ -145,10 +158,12 @@ const marker = new window.naver.maps.Marker({
 
       window.naver.maps.Event.addListener(marker, 'click', () => {
         setForm({
-          region: m.region || "",
-          reason: m.reason || "",
-          type: m.type || "want"
-        });
+  id: m.id,
+  region: m.region || "",
+  reason: m.reason || "",
+  type: m.type || "want"
+});
+
         setTempMarker(marker);
         setIsSavedMarker(true);
       });
@@ -163,9 +178,34 @@ const marker = new window.naver.maps.Marker({
 
 
   
-  
+const fetchMarkerImages = async (markerId) => {
+  try {
+    const { data, error } = await supabase
+      .from("travel_marker_images")
+      .select("*")
+      .eq("marker_id", markerId)
+      .order("created_at", { ascending: false });
 
-  // 지도 초기화
+    if (error) {
+      console.error("이미지 로드 실패:", error);
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.error("이미지 불러오는 중 오류:", err);
+    return [];
+  }
+};
+  
+const openGallery = async (markerId) => {
+  const images = await fetchMarkerImages(markerId);
+  setMarkerImages(images);
+  setIsGalleryOpen(true);
+};
+
+  
+// 지도 초기화
   useEffect(() => {
     if (window.naver && window.naver.maps) {
       initMap();
@@ -317,7 +357,13 @@ const initMap = useCallback(() => {
       // 성공 메시지 표시 후 폼 초기화
       alert("✨ 저장 완료!");
       setTempMarker(null);
-      setForm({ region: "", reason: "", type: "want" });
+      setForm({
+  id: m.id,
+  region: m.region || "",
+  reason: m.reason || "",
+  type: m.type || "want"
+});
+
       setSearchInput("");
       
       // 페이지 새로고침 대신 마커만 다시 로드
@@ -439,7 +485,75 @@ const initMap = useCallback(() => {
             </p>
           </div>
         )}
+
+        {isSavedMarker && form.type === "visited" && form.id && (
+  <button
+    onClick={() => navigate(`/travel-map/photos/${form.id}`)}
+    className="view-gallery-button"
+    style={{
+      marginTop: "0.5rem",
+      fontSize: "0.95rem",
+      backgroundColor: "#eef7ff",
+      color: "#337ab7",
+      border: "1px solid #c6e2ff",
+      borderRadius: "6px",
+      padding: "0.4em 1em",
+      cursor: "pointer"
+    }}
+  >
+    📷 사진 보기
+  </button>
+)}
+
+      </div>
+    )}
+
+    {isGalleryOpen && (
+      <div
+        className="gallery-modal"
+        style={{
+          position: "fixed",
+          top: "0",
+          left: "0",
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          zIndex: 9999,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+        onClick={() => setIsGalleryOpen(false)}
+      >
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "10px",
+            padding: "1rem",
+            maxWidth: "90vw",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+            gap: "0.7rem"
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {markerImages.length === 0 ? (
+            <p>등록된 사진이 없어요.</p>
+          ) : (
+            markerImages.map((img) => (
+              <img
+                key={img.id}
+                src={img.thumbnail_url || img.image_url}
+                alt="마커 사진"
+                style={{ width: "100%", borderRadius: "6px", objectFit: "cover" }}
+              />
+            ))
+          )}
+        </div>
       </div>
     )}
   </div>
-)};
+);
+};

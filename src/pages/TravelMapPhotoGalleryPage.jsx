@@ -18,13 +18,22 @@ function TravelMapPhotoGalleryPage() {
   // URL에서 사진 ID 추출 (예: /travel-map/photos/123?photo=456)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const photoId = params.get('photo');
+    const photoUrl = params.get('photo');
     
-    if (photoId && photos.length > 0) {
-      const index = photos.findIndex(p => p.id === photoId);
-      if (index !== -1) {
-        setSelectedPhotoIndex(index);
+    if (photoUrl) {
+      // URL로 직접 사진을 열어야 하는 경우
+      if (photos.length === 0) {
+        // 사진이 로드되지 않은 경우, URL을 기반으로 사진 객체 생성
+        setPhotos([{ id: 'direct-photo', url: photoUrl, isDirect: true }]);
+        setSelectedPhotoIndex(0);
         setIsFullscreen(true);
+      } else {
+        // 이미 로드된 사진 중에서 찾기
+        const index = photos.findIndex(p => p.url === photoUrl || p.id === photoUrl);
+        if (index !== -1) {
+          setSelectedPhotoIndex(index);
+          setIsFullscreen(true);
+        }
       }
     }
   }, [location.search, photos]);
@@ -50,9 +59,7 @@ function TravelMapPhotoGalleryPage() {
       }
     };
 
-    if (markerId) {
-      fetchData();
-    }
+    fetchData();
   }, [markerId]);
 
   // 키보드 이벤트 처리 (이전/다음 사진 전환)
@@ -168,17 +175,24 @@ function TravelMapPhotoGalleryPage() {
     );
   }
 
+  const currentPhoto = photos[selectedPhotoIndex];
+  const isDirectPhoto = currentPhoto?.isDirect;
+
   if (photos.length === 0) {
-    return (
-      <div className="empty-gallery">
-        <h2>아직 등록된 사진이 없습니다.</h2>
-        <p>첫 번째 사진을 업로드해보세요!</p>
-        <button onClick={() => navigate(`/travel-map?markerId=${markerId}`)} className="back-button">
-          지도에서 보기
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="empty-gallery">
+      <h2>등록된 사진이 아직 없습니다.</h2>
+      <p>이 여행지에는 아직 추억이 없어요 🥲</p>
+      <button 
+        onClick={() => navigate('/')} 
+        className="back-button"
+      >
+        홈으로 돌아가기
+      </button>
+    </div>
+  );
+}
+
 
   return (
     <div className={`travel-photo-gallery ${isFullscreen ? 'fullscreen' : ''}`}>
@@ -194,13 +208,7 @@ function TravelMapPhotoGalleryPage() {
         <h1>{marker.region}</h1>
         {marker.reason && <p className="marker-reason">{marker.reason}</p>}
         <div className="spacer"></div>
-        <button 
-          onClick={() => navigate(`/travel-map?markerId=${markerId}`)}
-          className="map-button"
-          aria-label="지도에서 보기"
-        >
-          <FiMapPin size={20} />
-        </button>
+        
       </header>
 
       {/* 사진 그리드 */}
@@ -240,17 +248,38 @@ function TravelMapPhotoGalleryPage() {
               aria-label="닫기"
             >
               <FiX size={24} />
-            </button>
-            <div className="photo-counter">
-              {selectedPhotoIndex + 1} / {photos.length}
-            </div>
-            <button 
-              onClick={() => downloadPhoto(photos[selectedPhotoIndex].url, `travel-${marker.region}-${selectedPhotoIndex + 1}.jpg`)}
-              className="download-button"
-              aria-label="사진 다운로드"
-            >
-              <FiDownload size={20} />
-            </button>
+          </button>
+          {!photos[selectedPhotoIndex]?.isDirect && (
+              <div className="photo-navigation">
+                <button 
+                  onClick={goToPrevious}
+                  className="nav-button prev"
+                  aria-label="이전 사진"
+                >
+                  <FiChevronLeft size={28} />
+                </button>
+                <span className="photo-counter">
+                  {photos[selectedPhotoIndex] ? selectedPhotoIndex + 1 : 0} / {photos.length}
+                </span>
+                <button 
+                  onClick={goToNext}
+                  className="nav-button next"
+                  aria-label="다음 사진"
+                >
+                  <FiChevronRight size={28} />
+                </button>
+              </div>
+            )}
+            <div className="spacer"></div>
+            {!photos[selectedPhotoIndex]?.isDirect && (
+              <button 
+                onClick={() => downloadPhoto(photos[selectedPhotoIndex].url, `travel-${marker.region}-${selectedPhotoIndex + 1}.jpg`)}
+                className="download-button"
+                aria-label="사진 다운로드"
+              >
+                <FiDownload size={20} />
+              </button>
+            )}
           </div>
           
           <div className="photo-viewer-content">
@@ -264,7 +293,7 @@ function TravelMapPhotoGalleryPage() {
             
             <div className="photo-container">
               <img 
-                src={photos[selectedPhotoIndex].url} 
+                src={photos[selectedPhotoIndex]?.url || ''} 
                 alt={`${marker.region} ${selectedPhotoIndex + 1}`}
                 className="full-photo"
               />
@@ -280,7 +309,7 @@ function TravelMapPhotoGalleryPage() {
           </div>
           
           <div className="photo-viewer-footer">
-            <p>{marker.region} - {new Date(photos[selectedPhotoIndex].created_at).toLocaleDateString()}</p>
+            <p>{marker.region} - {photos[selectedPhotoIndex]?.created_at ? new Date(photos[selectedPhotoIndex].created_at).toLocaleDateString() : ''}</p>
           </div>
         </div>
       )}

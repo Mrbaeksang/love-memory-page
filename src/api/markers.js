@@ -109,19 +109,19 @@ export const getMarkerPhotos = async (markerId) => {
       image_url,
       thumbnail_url,
       created_at,
-      uploaded_by,
-      profiles:uploaded_by (id, username, avatar_url)
-    `)
+      uploaded_by
+    `) // ❌ profiles 조인 제거
     .eq('marker_id', markerId)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
   return data.map(photo => ({
     ...photo,
-    url: photo.image_url, // 호환성을 위해 url 필드 추가
-    user: photo.profiles || { id: photo.uploaded_by }
+    url: photo.image_url,
+    user: { id: photo.uploaded_by } // ❗ 있을 경우만
   }));
 };
+
 
 // 마커 정보 가져오기
 export const getMarkerById = async (markerId) => {
