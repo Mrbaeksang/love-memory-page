@@ -44,24 +44,24 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
     // 기존 임시 마커 제거
     if (tempMarker) {
       tempMarker.setMap(null);
-      setTempMarker(null);
     }
 
-    // 새 마커 생성
-    const marker = new window.naver.maps.Marker({
-      position: coord,
-      map: nMap,
-      title: "선택한 위치",
-      alt: "선택한 위치 마커",
-      clickable: true
-    });
+    // 새 마커 생성 또는 기존 마커 위치 업데이트
+    let marker = tempMarker;
+    if (!marker) {
+      marker = new window.naver.maps.Marker({
+        position: coord,
+        map: nMap,
+        title: "선택한 위치",
+        alt: "선택한 위치 마커",
+        clickable: true
+      });
+      setTempMarker(marker);
+    } else {
+      marker.setPosition(coord);
+    }
 
-    // 마커 클릭 이벤트 추가 (기본 동작 방지)
-    window.naver.maps.Event.addListener(marker, 'click', (e) => {
-      e.vertex = true; // 마커 클릭을 나타내는 플래그
-    });
-
-    setTempMarker(marker);
+    // 폼 초기화
     setForm({ region: "", reason: "", type: "want" });
 
     setError(null);
@@ -123,35 +123,42 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
       if (error) throw error;
   
       if (!data || data.length === 0) {
-        console.warn("📭 저장된 마커가 없습니다.");
+        console.warn("저장된 마커가 없습니다.");
         return;
-      }
-  
-      console.log(`📍 ${data.length}개의 마커 로드됨`);
-  
-      // 첫 마커 위치로 지도 이동 (시각 확인용)
-      const first = data[0];
-      if (first?.lat && first?.lng) {
-        const firstPos = new window.naver.maps.LatLng(first.lat, first.lng);
-        nMap.setCenter(firstPos);
-        nMap.setZoom(11);
       }
   
       data.forEach((m) => {
         if (!m.lat || !m.lng) return;
   
         const pos = new window.naver.maps.LatLng(m.lat, m.lng);
-  
-        new window.naver.maps.Marker({
+        const marker = new window.naver.maps.Marker({
           position: pos,
           map: nMap,
           title: m.region || "이름 없는 장소"
-          // icon 제거 → 기본 마커 사용
+        });
+
+        // 마커 클릭 이벤트 추가
+        window.naver.maps.Event.addListener(marker, 'click', () => {
+          const infoContent = `
+            <div class="info-window" style="padding: 10px;">
+              <div><strong>${m.region || '이름 없음'}</strong></div>
+              ${m.reason ? `<div>${m.reason}</div>` : ''}
+            </div>
+          `;
+          
+          const infoWindow = new window.naver.maps.InfoWindow({
+            content: infoContent,
+            borderWidth: 0,
+            backgroundColor: 'transparent',
+            disableAnchor: true
+          });
+          
+          infoWindow.open(nMap, marker);
         });
       });
   
     } catch (err) {
-      console.error("❌ 마커 로딩 실패:", err);
+      console.error("마커 로딩 실패:", err);
       setError("마커를 불러오는 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
@@ -189,15 +196,25 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
 
   const initMap = useCallback(() => {
     try {
-      const nMap = new window.naver.maps.Map("map", {
+      const mapOptions = {
         center: new window.naver.maps.LatLng(36.5, 127.5),
         zoom: 7,
         mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: window.naver.maps.MapTypeControlStyle.BUTTON,
+          position: window.naver.maps.Position.TOP_RIGHT
+        },
         zoomControl: true,
         zoomControlOptions: {
+          style: window.naver.maps.ZoomControlStyle.SMALL,
           position: window.naver.maps.Position.TOP_RIGHT
-        }
-      });
+        },
+        scaleControl: false,
+        logoControl: false,
+        mapDataControl: false
+      };
+
+      const nMap = new window.naver.maps.Map("map", mapOptions);
 
       setMap(nMap);
       const nInfoWindow = new window.naver.maps.InfoWindow({ 
