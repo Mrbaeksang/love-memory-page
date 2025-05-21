@@ -20,7 +20,7 @@ const RandomSelectorPage = () => {
 
   useEffect(() => {
     if (selectedCategory === "custom") {
-      setOptions([]); // 1회용 리스트 초기화
+      setOptions([]); // 커스텀은 항상 초기화
     } else {
       fetchOptions();
     }
@@ -91,7 +91,7 @@ const RandomSelectorPage = () => {
         clearInterval(interval);
         setFinalResult(current.text);
       }
-    }, 80);
+    }, 70 - Math.floor(count / 5));
   };
 
   return (
@@ -124,7 +124,7 @@ const RandomSelectorPage = () => {
 
       <ul className="option-list">
         {options.map((opt, idx) => (
-          <li key={selectedCategory === "custom" ? idx : opt.id}>
+          <li key={selectedCategory === "custom" ? idx : opt.id} className="fade-in-up">
             <span>{opt.text}</span>
             <button onClick={() => deleteOption(selectedCategory === "custom" ? idx : opt.id)}>
               ❌
@@ -136,7 +136,7 @@ const RandomSelectorPage = () => {
       {isRolling && (
         <div className="rolling-modal">
           <div className="rolling-backdrop" onClick={() => setIsRolling(false)} />
-          <div className="rolling-content">
+          <div className="rolling-content bounce-in">
             {!finalResult ? (
               <>
                 <h3 className="rolling-title">✨ 선택 중...</h3>
