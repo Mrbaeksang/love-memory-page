@@ -28,7 +28,7 @@ const LoveType = () => {
 
   return (
     <div className="lovetype-container">
-      <button className="back-home-btn" onClick={() => navigate("/")}>← 홈으로</button>
+      
       <h2>우리의 연애 타입</h2>
       <RandomImage />
       <div className="type-cards-horizontal">

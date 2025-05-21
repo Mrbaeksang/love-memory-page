@@ -4,11 +4,14 @@ import { supabase } from "./lib/supabaseClient";
 import "./RandomImage.css";
 
 const RandomImage = ({ style = {} }) => {
-  const [url, setUrl] = useState(null);
+  const [thumbUrl, setThumbUrl] = useState(null);
+  const [originUrl, setOriginUrl] = useState(null);
   const navigate = useNavigate();
 
+  
+
   useEffect(() => {
-    const fetchAllAndPickRandom = async () => {
+    const fetchRandomThumbnail = async () => {
       try {
         const { data: folders, error: folderErr } = await supabase.storage
           .from("gallery")
@@ -26,26 +29,22 @@ const RandomImage = ({ style = {} }) => {
         let allFiles = [];
 
         for (const year of folderPaths) {
-          const { data: months, error: monthErr } = await supabase.storage
+          const { data: months } = await supabase.storage
             .from("gallery")
             .list(year);
 
-          if (monthErr || !months) continue;
-
-          const monthFolders = months
+          const monthFolders = (months || [])
             .filter(m => m.name && m.metadata === null)
             .map(m => m.name);
 
           for (const month of monthFolders) {
-            const { data: files, error: fileErr } = await supabase.storage
+            const { data: files } = await supabase.storage
               .from("gallery")
               .list(`${year}/${month}`);
 
-            if (fileErr || !files) continue;
-
-            const imageFiles = files
+            const imageFiles = (files || [])
               .filter(file => /\.(jpe?g|png|webp)$/i.test(file.name))
-              .map(f => `${year}/${month}/${f.name}`);
+              .map(f => ({ year, month, name: f.name }));
 
             allFiles.push(...imageFiles);
           }
@@ -56,36 +55,45 @@ const RandomImage = ({ style = {} }) => {
           return;
         }
 
-        const randomPath = allFiles[Math.floor(Math.random() * allFiles.length)];
-        const publicUrl = supabase.storage
-          .from("gallery")
-          .getPublicUrl(randomPath).data?.publicUrl;
+        const random = allFiles[Math.floor(Math.random() * allFiles.length)];
 
-        setUrl(publicUrl);
+        const thumbPath = `thumb/${random.year}/${random.month}/${random.name}`;
+        const originPath = `${random.year}/${random.month}/${random.name}`;
+
+        const thumb = supabase.storage.from("gallery").getPublicUrl(thumbPath).data?.publicUrl;
+        const original = supabase.storage.from("gallery").getPublicUrl(originPath).data?.publicUrl;
+        
+
+        setThumbUrl(thumb || original); // fallback 처리
+        setOriginUrl(original);
       } catch (err) {
-        console.error("전체 이미지 가져오기 중 에러:", err);
+        console.error("썸네일 로딩 에러:", err);
       }
     };
 
-    fetchAllAndPickRandom();
+    fetchRandomThumbnail();
   }, []);
 
   const handleClick = () => {
-    if (url) {
-      navigate(`/comment-detail?img=${encodeURIComponent(url)}`);
+    if (originUrl) {
+      navigate(`/comment-detail?img=${encodeURIComponent(originUrl)}`);
       window.scrollTo(0, 0);
     }
   };
 
-  return url ? (
+  return thumbUrl ? (
     <div className="lovetype-random-image-wrap">
       <img
-        src={url}
-        alt="감성 랜덤 이미지"
+        src={thumbUrl}
+        alt="감성 랜덤 썸네일"
         className="lovetype-random-image clickable"
         style={style}
         loading="lazy"
-        onClick={handleClick} // ✅ 클릭 이벤트 추가
+        onClick={handleClick}
+        onError={(e) => {
+          // 썸네일 에러 시 원본으로 대체
+          if (originUrl) e.target.src = originUrl;
+        }}
       />
     </div>
   ) : null;

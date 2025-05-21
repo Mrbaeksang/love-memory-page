@@ -58,9 +58,7 @@ const Memories = () => {
 
   return (
     <div className="memories-container">
-      <button className="back-home-btn" onClick={() => navigate("/")}>
-        ← 홈으로
-      </button>
+
   
       {/* 버튼 2개 세로 정렬 */}
       <div className="memories-top-button-group">

@@ -97,33 +97,38 @@ const Home = () => {
       {/* ⬇️ 하단 간격 확보 (플레이어와 겹침 방지) */}
       <div style={{ height: "16px" }} />
 
-      {/* 📂 전체 갤러리 이동 버튼 */}
-      <div
-        className="gallery-button-wrap"
+      {false && (
+  <>
+    {/* 📂 전체 갤러리 이동 버튼 */}
+    <div
+      className="gallery-button-wrap"
+      style={{
+        textAlign: "center",
+        marginTop: "1.5rem",
+        marginBottom: "100px", // MusicPlayer와 겹치지 않게 충분한 여백 확보
+      }}
+    >
+      <button
+        onClick={() => navigate("/gallery")}
+        className="full-gallery-button"
         style={{
-          textAlign: "center",
-          marginTop: "1.5rem",
-          marginBottom: "100px", // MusicPlayer와 겹치지 않게 충분한 여백 확보
+          padding: "0.7rem 1.4rem",
+          fontSize: "1rem",
+          background: "#ffe4ec",
+          color: "#444",
+          border: "1px solid #ffafcc",
+          borderRadius: "12px",
+          fontWeight: "600",
+          cursor: "pointer",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         }}
       >
-        <button
-          onClick={() => navigate("/gallery")}
-          className="full-gallery-button"
-          style={{
-            padding: "0.7rem 1.4rem",
-            fontSize: "1rem",
-            background: "#ffe4ec",
-            color: "#444",
-            border: "1px solid #ffafcc",
-            borderRadius: "12px",
-            fontWeight: "600",
-            cursor: "pointer",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          📂 전체 갤러리 보기
-        </button>
-      </div>
+        📂 전체 갤러리 보기
+      </button>
+    </div>
+  </>
+)}
+
     </div>
   );
 };
