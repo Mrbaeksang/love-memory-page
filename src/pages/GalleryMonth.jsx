@@ -108,22 +108,27 @@ const GalleryMonth = () => {
 
   // 이미지 가져오기
   useEffect(() => {
-    const fetchImages = async () => {
-      const { data, error } = await supabase
-        .storage
-        .from("gallery")
-        .list(`${year}/${month}`, { limit: 100 });
+  const fetchImages = async () => {
+    const { data, error } = await supabase
+      .storage
+      .from("gallery")
+      .list(`${year}/${month}`, { limit: 100 });
 
-      if (error) return console.error("❌ 이미지 목록 실패:", error);
+    if (error) return console.error("❌ 이미지 목록 실패:", error);
 
-      const urls = data
-        .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f.name))
-        .map((f) => supabase.storage.from("gallery").getPublicUrl(`${year}/${month}/${f.name}`).data.publicUrl);
+    const urls = data
+      .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f.name))
+      .map((f) =>
+        supabase.storage.from("gallery").getPublicUrl(`${year}/${month}/${f.name}`).data.publicUrl
+      );
 
-      setImages(urls);
-    };
-    fetchImages();
-  }, [year, month]);
+    const shuffled = shuffleArray(urls);
+    setImages(shuffled);
+  };
+
+  fetchImages();
+}, [year, month]);
+
 
   // 댓글 가져오기
   const fetchComments = async (imageUrl) => {
