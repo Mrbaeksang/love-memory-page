@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useSmusictate } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ChevronUp, ChevronDown
