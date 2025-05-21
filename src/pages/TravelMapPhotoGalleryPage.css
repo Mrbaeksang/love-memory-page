@@ -101,12 +101,13 @@
 .photo-grid {
   padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 0.5rem;
   overflow-y: auto;
   flex: 1;
   -webkit-overflow-scrolling: touch;
 }
+
 
 .photo-thumbnail {
   position: relative;
@@ -247,7 +248,6 @@
 /* 반응형 디자인 */
 @media (min-width: 640px) {
   .photo-grid {
-    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     padding: 1.5rem;
   }
@@ -264,7 +264,7 @@
 
 @media (min-width: 1024px) {
   .photo-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* ⬅️ optionally wider */
   }
 
   .photo-thumbnail {
@@ -275,4 +275,3 @@
     padding: 1rem 2rem;
   }
 }
-
