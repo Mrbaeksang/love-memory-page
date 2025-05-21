@@ -1,6 +1,8 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { FaDice } from "react-icons/fa";
+
 import "./Home.css";
 import RandomImage from "../RandomImage";
 import GalleryPreview from "../components/GalleryPreview";
@@ -40,10 +42,20 @@ const Home = () => {
   return (
     <div className="home-bg-section">
       <div className="home-card">
-        {/* 📸 커플 메인 이미지 */}
-        <div className="hero-photo-wrap">
-          <img src="/1.jpg" alt="커플 메인" className="hero-photo" />
-        </div>
+        
+        {/* 📸 커플 메인 이미지 클릭 시 랜덤 페이지 이동 */}
+<div
+  className="hero-photo-wrap"
+  onClick={() => navigate("/random")}
+  style={{ cursor: "pointer" }}
+>
+  <img
+    src="/1.jpg"
+    alt="커플 메인"
+    className="hero-photo"
+  />
+</div>
+
 
         {/* 🌈 랜덤 이미지 */}
         <RandomImage />

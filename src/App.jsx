@@ -15,6 +15,7 @@ import LoveTypeDetail from "./pages/LoveTypeDetail";
 import CommentGalleryPage from "./pages/CommentGalleryPage";
 import CommentDetailPage from "./pages/CommentDetailPage";
 import AdminThumbnailFill from "./pages/AdminThumbnailFill";
+import RandomSelectorPage from "./pages/RandomSelectorPage";
 
 import TravelMapPhotoGalleryPage from "./pages/TravelMapPhotoGalleryPage"; 
 
@@ -123,6 +124,7 @@ function App() {
             <Route path="/lovetype/sanghyun" element={<LoveTypeDetail who="sanghyun" />} />
             <Route path="/lovetype/hyeeun" element={<LoveTypeDetail who="hyeeun" />} />
             <Route path="/travel-map/photos/:markerId" element={<TravelMapPhotoGalleryPage />} />
+            <Route path="/random" element={<RandomSelectorPage />} />
           </Routes>
         </div>
       </div>
