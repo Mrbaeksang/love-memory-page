@@ -127,6 +127,12 @@ const handleMapClick = useCallback(async (e, nMap, nInfoWindow) => {
     setError(null);
 
     const { data, error } = await supabase.from("travel_markers").select("*");
+
+     // 👉 로그 추가
+    console.log("📌 마커 데이터 수:", data?.length);
+    console.log("📌 마커 데이터 내용:", data);
+    console.log("📌 에러:", error);
+
     if (error) throw error;
 
     if (!data || data.length === 0) {
