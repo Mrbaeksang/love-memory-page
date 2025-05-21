@@ -45,9 +45,13 @@ const MusicPlayer = () => {
   };
 
   const playNext = () => {
-    const nextIndex = Math.floor(Math.random() * tracks.length);
-    setCurrentIndex(nextIndex);
-  };
+  let nextIndex;
+  do {
+    nextIndex = Math.floor(Math.random() * tracks.length);
+  } while (tracks.length > 1 && nextIndex === currentIndex); // 같은 곡 제외
+  setCurrentIndex(nextIndex);
+};
+
 
   const playPrev = () => {
     const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;

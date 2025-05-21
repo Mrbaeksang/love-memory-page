@@ -17,6 +17,8 @@ const Guestbook = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [deletePassword, setDeletePassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const authorInputRef = useRef(null); // 작성자 input 연결용
+
 
   const highlightId = new URLSearchParams(window.location.hash.split("?")[1])?.get("highlight");
 
@@ -99,6 +101,8 @@ const Guestbook = () => {
       setPassword("");
       setError("");
       await fetchMessages();
+      document.querySelector(".messages-container")?.scrollIntoView({ behavior: "smooth" });
+      authorInputRef.current?.focus();
     } catch (error) {
       setError("메시지 작성 중 오류가 발생했습니다.");
       console.error("Error submitting message:", error);
@@ -142,6 +146,7 @@ const Guestbook = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
+              ref={authorInputRef}
               type="text"
               placeholder="작성자 이름"
               value={author}
