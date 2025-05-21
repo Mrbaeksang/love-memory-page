@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useSmusictate } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ChevronUp, ChevronDown
 } from "lucide-react";
 import "./MusicPlayer.css";
-import { useState } from "react";
 
-const tracks = Array.from({ length: 25 }, (_, i) => `/music/love${i + 1}.mp3`);
+const tracks = Array.from({ length: 100 }, (_, i) => `/music/love${i + 1}.mp3`);
 
 const MusicPlayer = () => {
   const audioRef = useRef(null);
@@ -83,54 +82,64 @@ const MusicPlayer = () => {
   };
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  const audio = audioRef.current;
+  if (!audio) return;
 
-    audio.src = tracks[currentIndex];
-    audio.load();
-    audio.muted = false;
+  audio.src = tracks[currentIndex];
+  audio.load();
+  audio.muted = false;
 
-    const handleLoaded = () => {
-      setDuration(audio.duration || 0);
-      playAudio();
-    };
+  const handleLoaded = () => {
+    setDuration(audio.duration || 0);
+    playAudio();
+  };
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const handleEnded = () => playNext();
+  const updateTime = () => setCurrentTime(audio.currentTime);
+  const handleEnded = () => playNext();
 
-    audio.addEventListener("loadedmetadata", handleLoaded);
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("ended", handleEnded);
+  const handleError = () => {
+    console.warn(`❌ 트랙이 존재하지 않음: ${tracks[currentIndex]}. 다음 곡으로 넘어갑니다.`);
+    playNext();
+  };
 
-    if (metadataCache.has(tracks[currentIndex])) {
-      setTitle(metadataCache.get(tracks[currentIndex]).title);
-    } else {
-      fetch(tracks[currentIndex])
-        .then(res => res.blob())
-        .then(blob => {
-          if (window.jsmediatags) {
-            window.jsmediatags.read(blob, {
-              onSuccess: ({ tags }) => {
-                const t = tags.title || `Track ${currentIndex + 1}`;
-                setTitle(t);
-                metadataCache.set(tracks[currentIndex], { title: t });
-              },
-              onError: () => {
-                const fallback = `Track ${currentIndex + 1}`;
-                setTitle(fallback);
-                metadataCache.set(tracks[currentIndex], { title: fallback });
-              }
-            });
-          }
-        });
-    }
+  audio.addEventListener("loadedmetadata", handleLoaded);
+  audio.addEventListener("timeupdate", updateTime);
+  audio.addEventListener("ended", handleEnded);
+  audio.addEventListener("error", handleError); // 🔥 에러 핸들링
 
-    return () => {
-      audio.removeEventListener("loadedmetadata", handleLoaded);
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("ended", handleEnded);
-    };
-  }, [currentIndex]);
+  // 제목 처리
+  if (metadataCache.has(tracks[currentIndex])) {
+    setTitle(metadataCache.get(tracks[currentIndex]).title);
+  } else {
+    fetch(tracks[currentIndex])
+      .then(res => res.blob())
+      .then(blob => {
+        if (window.jsmediatags) {
+          window.jsmediatags.read(blob, {
+            onSuccess: ({ tags }) => {
+              const t = tags.title || `Track ${currentIndex + 1}`;
+              setTitle(t);
+              metadataCache.set(tracks[currentIndex], { title: t });
+            },
+            onError: () => {
+              const fallback = `Track ${currentIndex + 1}`;
+              setTitle(fallback);
+              metadataCache.set(tracks[currentIndex], { title: fallback });
+            }
+          });
+        }
+      });
+  }
+
+  // 🧹 정리
+  return () => {
+    audio.removeEventListener("loadedmetadata", handleLoaded);
+    audio.removeEventListener("timeupdate", updateTime);
+    audio.removeEventListener("ended", handleEnded);
+    audio.removeEventListener("error", handleError);
+  };
+}, [currentIndex]);
+
 
   return (
     <div className={`music-player-container ${location.pathname === "/" ? "float" : "dock"} ${isCollapsed ? "collapsed" : ""}`}>

@@ -1,84 +1,155 @@
 import os
 import re
+import threading
 import customtkinter as ctk
 from yt_dlp import YoutubeDL
 from tkinter import messagebox
 
-DOWNLOAD_DIR = os.path.dirname(__file__)  # 현재 파일 위치 기준
+# 💾 다운로드 디렉토리 설정 (현재 파일 기준)
+DOWNLOAD_DIR = os.path.dirname(__file__)
+OUTPUT_FORMAT = os.path.join(DOWNLOAD_DIR, "temp_download.%(ext)s")
 
-def get_next_index():
-    """music 폴더 내 loveN.mp3 형식의 다음 인덱스를 구한다."""
+# ✍️ 전역 UI 참조
+download_log_textbox = None
+url_entry_textbox = None
+
+# 🔢 loveN.mp3용 인덱스 계산
+def get_next_love_index():
+    files = os.listdir(DOWNLOAD_DIR)
+    indices = [int(m.group(1)) for f in files if (m := re.match(r"love(\d+)\.mp3", f))]
+    return max(indices, default=0) + 1
+
+# 🧾 로그 함수
+def log(msg):
+    print(msg)
+    if download_log_textbox:
+        download_log_textbox.configure(state="normal")
+        download_log_textbox.insert("end", msg + "\n")
+        download_log_textbox.see("end")
+        download_log_textbox.configure(state="disabled")
+
+# 🎯 플레이리스트 → 개별 영상 링크 추출
+def extract_video_urls(playlist_url):
+    log(f"🔍 추출 중: {playlist_url}")
+    opts = {
+        "quiet": True,
+        "extract_flat": "in_playlist",
+        "force_generic_extractor": True,
+        "dump_single_json": True,
+        "skip_download": True,
+    }
+
     try:
-        files = os.listdir(DOWNLOAD_DIR)
-        indices = [
-            int(m.group(1)) for f in files
-            if (m := re.match(r"love(\d+)\.mp3", f))
-        ]
-        return max(indices, default=0) + 1
+        with YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(playlist_url, download=False)
+            entries = info.get('entries', [])
+            urls = [f"https://www.youtube.com/watch?v={e['id']}" for e in entries if 'id' in e]
+            log(f"✅ {len(urls)}개 항목 추출 완료")
+            return urls
     except Exception as e:
-        messagebox.showerror("폴더 오류", f"{DOWNLOAD_DIR} 폴더 접근 중 오류:\n{e}")
-        return 1
+        log(f"❌ 추출 실패: {e}")
+        return []
 
-def make_output_template(index):
-    """yt-dlp용 출력 템플릿 반환"""
-    return os.path.join(DOWNLOAD_DIR, f"love{index}.%(ext)s")
+# 🎵 오디오 하나 다운로드 → loveN.mp3로 저장
+def download_audio(url, idx, total, love_index):
+    log(f"▶️ ({idx}/{total}) 다운로드 중: {url} → love{love_index}.mp3")
+    opts = {
+        "format": "bestaudio/best",
+        "outtmpl": OUTPUT_FORMAT,
+        "quiet": True,
+        "addmetadata": True,
+        "postprocessors": [
+            {"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192"},
+            {"key": "FFmpegMetadata"}
+        ],
+        "overwrites": True,
+    }
 
-def download_videos(urls_text):
-    urls = [url.strip() for url in urls_text.strip().splitlines() if url.strip()]
-    if not urls:
-        messagebox.showwarning("입력 없음", "하나 이상의 유튜브 링크를 입력해주세요.")
-        return
+    try:
+        with YoutubeDL(opts) as ydl:
+            ydl.download([url])
 
-    index = get_next_index()
-    errors = []
+        # rename to loveN.mp3
+        final_path = os.path.join(DOWNLOAD_DIR, f"love{love_index}.mp3")
+        if os.path.exists(final_path):
+            os.remove(final_path)  # 혹시라도 중복된 게 있으면 삭제
+
+        # temp file 찾기
+        for f in os.listdir(DOWNLOAD_DIR):
+            if f.startswith("temp_download") and f.endswith(".mp3"):
+                os.rename(os.path.join(DOWNLOAD_DIR, f), final_path)
+                log(f"✅ 저장 완료: {final_path}")
+                return True
+
+        log("❌ 저장 실패: 파일 찾을 수 없음")
+        return False
+    except Exception as e:
+        log(f"❌ 다운로드 실패: {e}")
+        return False
+
+# 🎬 전체 다운로드 프로세스
+def run_download():
+    raw = url_entry_textbox.get("0.0", "end")
+    urls = [line.strip() for line in raw.strip().splitlines() if line.strip()]
+    all_urls = []
 
     for url in urls:
-        output = make_output_template(index)
-        opts = {
-            "format": "bestaudio/best",
-            "outtmpl": output,
-            "quiet": True,
-            "addmetadata": True,  # 🔥 제목 추출하려면 필요
-            "postprocessors": [
-                {
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": "mp3",
-                    "preferredquality": "192",
-                },
-                {
-                    "key": "FFmpegMetadata"  # 🔥 제목, 설명 등 삽입
-                }
-            ],
-        }
+        if "list=" in url:
+            all_urls.extend(extract_video_urls(url))
+        else:
+            all_urls.append(url)
 
-        try:
-            with YoutubeDL(opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                print(f"✅ {info.get('title', '제목 없음')} 다운로드 완료 → love{index}.mp3")
-                index += 1
-        except Exception as e:
-            errors.append(f"❌ {url} 실패: {e}")
+    if not all_urls:
+        messagebox.showwarning("링크 없음", "유효한 유튜브 링크가 없습니다.")
+        return
 
-    if errors:
-        messagebox.showerror("일부 실패", "\n\n".join(errors))
+    log(f"\n🎶 총 {len(all_urls)}개 항목 다운로드 시작")
+    love_index = get_next_love_index()
+    failed = []
+
+    for i, url in enumerate(all_urls, 1):
+        success = download_audio(url, i, len(all_urls), love_index)
+        if success:
+            love_index += 1
+        else:
+            failed.append(url)
+
+    log(f"\n🎉 다운로드 완료: {love_index - 1}개 완료 / {len(failed)}개 실패")
+
+    if failed:
+        messagebox.showerror("실패", f"{len(failed)}개 실패:\n" + "\n".join(failed[:5]))
     else:
-        messagebox.showinfo("완료", "🎉 모든 항목이 성공적으로 다운로드되었습니다!")
+        messagebox.showinfo("완료", "✅ 모든 항목 다운로드 성공!")
 
+# 🧵 스레드 실행
+def start_thread():
+    threading.Thread(target=run_download, daemon=True).start()
+
+# 🖼 GUI 구성
 def run_gui():
+    global download_log_textbox, url_entry_textbox
+
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
 
     app = ctk.CTk()
-    app.title("YouTube → loveN.mp3 변환기")
-    app.geometry("500x420")
+    app.title("YouTube loveN.mp3 다운로더")
+    app.geometry("620x700")
     app.resizable(False, False)
 
-    ctk.CTkLabel(app, text="🎵 YouTube MP3 다운로더", font=ctk.CTkFont(size=20, weight="bold")).pack(pady=15)
+    ctk.CTkLabel(app, text="🎵 YouTube → loveN.mp3", font=ctk.CTkFont(size=22, weight="bold")).pack(pady=20)
+    ctk.CTkLabel(app, text="👇 동영상 or 플레이리스트 링크 붙여넣기", font=ctk.CTkFont(size=14)).pack()
 
-    url_entry = ctk.CTkTextbox(app, width=460, height=220, font=ctk.CTkFont(size=14))
-    url_entry.pack(pady=10)
+    url_entry_textbox = ctk.CTkTextbox(app, width=580, height=160, font=ctk.CTkFont(size=13))
+    url_entry_textbox.pack(pady=10)
+    url_entry_textbox.insert("0.0", "https://www.youtube.com/playlist?list=...")
 
-    ctk.CTkButton(app, text="📥 다운로드 시작", command=lambda: download_videos(url_entry.get("0.0", "end"))).pack(pady=15)
+    ctk.CTkButton(app, text="📥 다운로드 시작", command=start_thread, width=300, height=45).pack(pady=15)
+
+    ctk.CTkLabel(app, text="📄 로그", font=ctk.CTkFont(size=16, weight="bold")).pack()
+    download_log_textbox = ctk.CTkTextbox(app, width=580, height=340, font=ctk.CTkFont(size=13))
+    download_log_textbox.pack(pady=10)
+    download_log_textbox.configure(state="disabled")
 
     app.mainloop()
 
