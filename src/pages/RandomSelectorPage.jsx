@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
-import "./RandomSelectorPage.css"; // 스타일 분리
+import { addEmojiIfMatch } from "../utils/emojiMap";
+import "./RandomSelectorPage.css";
 
 const CATEGORIES = [
   { key: "date", label: "🧡 데이트" },
   { key: "food", label: "🍽 음식" },
   { key: "activity", label: "🎮 활동" },
+  { key: "custom", label: "🪄 커스텀" },
 ];
 
 const RandomSelectorPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("date");
   const [options, setOptions] = useState([]);
   const [newOption, setNewOption] = useState("");
-
   const [isRolling, setIsRolling] = useState(false);
   const [rollingText, setRollingText] = useState("");
   const [finalResult, setFinalResult] = useState(null);
 
   useEffect(() => {
-    fetchOptions();
+    if (selectedCategory === "custom") {
+      setOptions([]); // 1회용 리스트 초기화
+    } else {
+      fetchOptions();
+    }
   }, [selectedCategory]);
 
   const fetchOptions = async () => {
@@ -32,10 +37,19 @@ const RandomSelectorPage = () => {
   };
 
   const addOption = async () => {
-    if (!newOption.trim()) return;
+    const trimmed = newOption.trim();
+    if (!trimmed) return;
+
+    const finalText = addEmojiIfMatch(trimmed);
+    if (selectedCategory === "custom") {
+      setOptions((prev) => [...prev, { text: finalText }]);
+      setNewOption("");
+      return;
+    }
+
     const { error } = await supabase
       .from("random_options")
-      .insert({ text: newOption.trim(), category: selectedCategory });
+      .insert({ text: finalText, category: selectedCategory });
 
     if (!error) {
       setNewOption("");
@@ -43,11 +57,17 @@ const RandomSelectorPage = () => {
     }
   };
 
-  const deleteOption = async (id) => {
+  const deleteOption = async (idOrIndex) => {
+    if (selectedCategory === "custom") {
+      setOptions((prev) => prev.filter((_, i) => i !== idOrIndex));
+      return;
+    }
+
     const { error } = await supabase
       .from("random_options")
       .delete()
-      .eq("id", id);
+      .eq("id", idOrIndex);
+
     if (!error) fetchOptions();
   };
 
@@ -82,9 +102,7 @@ const RandomSelectorPage = () => {
         {CATEGORIES.map((cat) => (
           <button
             key={cat.key}
-            className={`category-btn ${
-              selectedCategory === cat.key ? "active" : ""
-            }`}
+            className={`category-btn ${selectedCategory === cat.key ? "active" : ""}`}
             onClick={() => setSelectedCategory(cat.key)}
           >
             {cat.label}
@@ -93,9 +111,7 @@ const RandomSelectorPage = () => {
       </div>
 
       <div className="random-controls">
-        <button className="roll-btn" onClick={roll}>
-          🎲 돌리기
-        </button>
+        <button className="roll-btn" onClick={roll}>🎲 돌리기</button>
         <div className="add-option">
           <input
             placeholder="새 항목 입력"
@@ -107,20 +123,19 @@ const RandomSelectorPage = () => {
       </div>
 
       <ul className="option-list">
-        {options.map((opt) => (
-          <li key={opt.id}>
+        {options.map((opt, idx) => (
+          <li key={selectedCategory === "custom" ? idx : opt.id}>
             <span>{opt.text}</span>
-            <button onClick={() => deleteOption(opt.id)}>❌</button>
+            <button onClick={() => deleteOption(selectedCategory === "custom" ? idx : opt.id)}>
+              ❌
+            </button>
           </li>
         ))}
       </ul>
 
       {isRolling && (
         <div className="rolling-modal">
-          <div
-            className="rolling-backdrop"
-            onClick={() => setIsRolling(false)}
-          />
+          <div className="rolling-backdrop" onClick={() => setIsRolling(false)} />
           <div className="rolling-content">
             {!finalResult ? (
               <>
@@ -131,9 +146,7 @@ const RandomSelectorPage = () => {
               <>
                 <h3 className="rolling-title">🎉 선택 완료!</h3>
                 <div className="rolling-result">{finalResult}</div>
-                <button className="close-btn" onClick={() => setIsRolling(false)}>
-                  확인
-                </button>
+                <button className="close-btn" onClick={() => setIsRolling(false)}>확인</button>
               </>
             )}
           </div>
