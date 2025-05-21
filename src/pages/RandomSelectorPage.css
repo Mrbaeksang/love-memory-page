@@ -226,3 +226,45 @@
 .bounce-in {
   animation: bounceIn 0.4s ease-in-out;
 }
+.multi-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4rem;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.multi-input input {
+  width: 60px;
+  padding: 0.4rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  background: #fff;
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+}
+
+.multi-input button {
+  background: #ff94b4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.roll-btn.secondary {
+  background: #ffe1eb;
+  color: #d6336c;
+  border: none;
+  margin-left: 0.4rem;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
