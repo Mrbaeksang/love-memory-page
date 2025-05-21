@@ -288,41 +288,57 @@ const initMap = useCallback(() => {
 
 
   const handleSearch = useCallback(async () => {
-    if (!searchInput.trim()) {
-      setError('검색어를 입력해주세요.');
+  if (!searchInput.trim()) {
+    setError('검색어를 입력해주세요.');
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    setError(null);
+
+    const res = await fetch(`/api/geocode?query=${encodeURIComponent(searchInput)}`);
+    if (!res.ok) throw new Error('검색에 실패했습니다.');
+
+    const json = await res.json();
+    const item = json.addresses?.[0];
+
+    if (!item) {
+      setError('검색 결과가 없습니다. 다른 검색어를 시도해주세요.');
       return;
     }
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const res = await fetch(`/api/geocode?query=${encodeURIComponent(searchInput)}`);
-      if (!res.ok) throw new Error('검색에 실패했습니다.');
-      
-      const json = await res.json();
-      const item = json.addresses?.[0];
-      
-      if (!item) {
-        setError('검색 결과가 없습니다. 다른 검색어를 시도해주세요.');
-        return;
-      }
+    const latlng = new window.naver.maps.LatLng(item.y, item.x);
+    map.setCenter(latlng);
+    map.setZoom(14);
 
-      const latlng = new window.naver.maps.LatLng(item.y, item.x);
-      map.setCenter(latlng);
-      map.setZoom(14);
-
-      setForm(prev => ({
-        ...prev,
-        region: item.roadAddress || item.jibunAddress || "주소 없음",
-      }));
-    } catch (err) {
-      setError('검색 중 오류가 발생했습니다.');
-      console.error('Search error:', err);
-    } finally {
-      setIsLoading(false);
+    // ✅ 좌표를 tempMarker에 설정
+    if (tempMarkerRef.current) {
+      tempMarkerRef.current.setPosition(latlng);
+    } else {
+      tempMarkerRef.current = new window.naver.maps.Marker({
+        position: latlng,
+        map,
+        title: "검색된 위치"
+      });
     }
-  }, [searchInput, map, tempMarker]);
+
+    setTempMarker(tempMarkerRef.current);
+    setIsSavedMarker(false);
+
+    // ✅ 주소 설정
+    setForm(prev => ({
+      ...prev,
+      region: item.roadAddress || item.jibunAddress || "주소 없음",
+    }));
+  } catch (err) {
+    setError('검색 중 오류가 발생했습니다.');
+    console.error('Search error:', err);
+  } finally {
+    setIsLoading(false);
+  }
+}, [searchInput, map]);
+
 
   const saveMarker = async () => {
     if (!tempMarker || !form.region || !form.reason) {
