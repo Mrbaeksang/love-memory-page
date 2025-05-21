@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./lib/supabaseClient";
 import "./RandomImage.css";
@@ -6,9 +6,9 @@ import "./RandomImage.css";
 const RandomImage = ({ style = {} }) => {
   const [thumbUrl, setThumbUrl] = useState(null);
   const [originUrl, setOriginUrl] = useState(null);
+  const [useOriginal, setUseOriginal] = useState(false);
+  const imgRef = useRef(null);
   const navigate = useNavigate();
-
-  
 
   useEffect(() => {
     const fetchRandomThumbnail = async () => {
@@ -29,10 +29,7 @@ const RandomImage = ({ style = {} }) => {
         let allFiles = [];
 
         for (const year of folderPaths) {
-          const { data: months } = await supabase.storage
-            .from("gallery")
-            .list(year);
-
+          const { data: months } = await supabase.storage.from("gallery").list(year);
           const monthFolders = (months || [])
             .filter(m => m.name && m.metadata === null)
             .map(m => m.name);
@@ -56,15 +53,13 @@ const RandomImage = ({ style = {} }) => {
         }
 
         const random = allFiles[Math.floor(Math.random() * allFiles.length)];
-
         const thumbPath = `thumb/${random.year}/${random.month}/${random.name}`;
         const originPath = `${random.year}/${random.month}/${random.name}`;
 
         const thumb = supabase.storage.from("gallery").getPublicUrl(thumbPath).data?.publicUrl;
         const original = supabase.storage.from("gallery").getPublicUrl(originPath).data?.publicUrl;
-        
 
-        setThumbUrl(thumb || original); // fallback 처리
+        setThumbUrl(thumb || original);
         setOriginUrl(original);
       } catch (err) {
         console.error("썸네일 로딩 에러:", err);
@@ -73,6 +68,20 @@ const RandomImage = ({ style = {} }) => {
 
     fetchRandomThumbnail();
   }, []);
+
+  useEffect(() => {
+    if (!imgRef.current || !originUrl) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (width >= 300 || height >= 300) {
+        setUseOriginal(true);
+      }
+    });
+
+    observer.observe(imgRef.current);
+    return () => observer.disconnect();
+  }, [originUrl]);
 
   const handleClick = () => {
     if (originUrl) {
@@ -84,14 +93,14 @@ const RandomImage = ({ style = {} }) => {
   return thumbUrl ? (
     <div className="lovetype-random-image-wrap">
       <img
-        src={thumbUrl}
+        ref={imgRef}
+        src={useOriginal ? originUrl : thumbUrl}
         alt="감성 랜덤 썸네일"
         className="lovetype-random-image clickable"
         style={style}
         loading="lazy"
         onClick={handleClick}
         onError={(e) => {
-          // 썸네일 에러 시 원본으로 대체
           if (originUrl) e.target.src = originUrl;
         }}
       />
