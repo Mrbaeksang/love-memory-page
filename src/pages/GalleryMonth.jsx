@@ -7,6 +7,10 @@ import RandomCommentedImageButton from "../components/RandomCommentedImageButton
 import { sendPushToAll } from "../utils/sendPushToAll";
 import { getAnonId } from "../utils/getAnonId";
 
+// 이미지 배열을 랜덤으로 섞는 유틸 함수
+function shuffleArray(array) {
+  return [...array].sort(() => Math.random() - 0.5);
+}
 
 // 새로운 API 함수 추가 (나중에 별도 파일로 분리할 수도 있지만, 일단 여기에 추가)
 // 모든 방문한 마커 가져오기

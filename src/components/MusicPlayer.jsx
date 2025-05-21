@@ -4,6 +4,7 @@ import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ChevronUp, ChevronDown
 } from "lucide-react";
 import "./MusicPlayer.css";
+import { useState } from "react";
 
 const tracks = Array.from({ length: 25 }, (_, i) => `/music/love${i + 1}.mp3`);
 
