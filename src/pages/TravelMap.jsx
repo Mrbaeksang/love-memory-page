@@ -380,11 +380,12 @@ const initMap = useCallback(() => {
       alert("✨ 저장 완료!");
       setTempMarker(null);
       setForm({
-  id: m.id,
-  region: m.region || "",
-  reason: m.reason || "",
-  type: m.type || "want"
+  id: null,
+  region: "",
+  reason: "",
+  type: "want"
 });
+
 
       setSearchInput("");
       
