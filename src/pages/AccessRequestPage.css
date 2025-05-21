@@ -1,0 +1,56 @@
+/* AccessRequestPage.css */
+.request-page {
+  background: #fff6f3;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  max-width: 480px;
+  margin: 0 auto;
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+  color: #444;
+}
+
+.request-title {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #e86c3d;
+  margin-bottom: 2rem;
+}
+
+.request-form label {
+  display: block;
+  margin-bottom: 1.2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #d6336c;
+}
+
+.request-form input,
+.request-form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border-radius: 10px;
+  border: 1px solid #ffc0cb;
+  background: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.request-btn {
+  background: #ff94b4;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+  margin: 2rem auto 0 auto;
+}
+
+.request-complete {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #d6336c;
+}

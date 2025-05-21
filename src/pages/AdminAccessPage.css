@@ -1,0 +1,62 @@
+.admin-access-page {
+  background: #fff4f7;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  max-width: 680px;
+  margin: 0 auto;
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+  color: #444;
+}
+
+.admin-title {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #ff5e89;
+  margin-bottom: 2rem;
+}
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-card {
+  background: #fff;
+  border: 2px solid #ffc6d0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px rgba(255, 193, 204, 0.25);
+}
+
+.admin-card div {
+  margin-bottom: 0.4rem;
+}
+
+.admin-btn-group {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.admin-approve-btn {
+  background: #ff94b4;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.1rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-reject-btn {
+  background: #d1d1d1;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.1rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

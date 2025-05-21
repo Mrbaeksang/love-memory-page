@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { sendPushToAll } from "../utils/sendPushToAll";
 import { getAnonId } from "../utils/getAnonId";
+import { useNavigate } from "react-router-dom";
+
 
 const Guestbook = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [author, setAuthor] = useState("");
@@ -132,7 +135,9 @@ const Guestbook = () => {
 
   return (
     <div className="guestbook-container">
-      <h2 className="section-title">방명록</h2>
+      <h2 className="section-title"style={{ cursor: "pointer" }}
+        onClick={() => navigate("/admin-access")}
+      >방명록</h2>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="form-group">

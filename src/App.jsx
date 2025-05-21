@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useRef, useEffect, useState } from "react";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import usePushNotifications from "./hooks/usePushNotifications";
+import { supabase } from "./lib/supabaseClient";
+import { getAnonId } from "./utils/getAnonId";
 
-// 🧭 페이지 컴포넌트
+// 📄 페이지 컴포넌트
 import Home from "./pages/Home";
 import Memories from "./pages/Memories";
 import LoveType from "./pages/LoveType";
@@ -16,10 +18,11 @@ import CommentGalleryPage from "./pages/CommentGalleryPage";
 import CommentDetailPage from "./pages/CommentDetailPage";
 import AdminThumbnailFill from "./pages/AdminThumbnailFill";
 import RandomSelectorPage from "./pages/RandomSelectorPage";
+import TravelMapPhotoGalleryPage from "./pages/TravelMapPhotoGalleryPage";
+import AccessRequestPage from "./pages/AccessRequestPage";
+import AdminAccessPage from "./pages/AdminAccessPage";
 
-import TravelMapPhotoGalleryPage from "./pages/TravelMapPhotoGalleryPage"; 
-
-// 🧭 공통 컴포넌트
+// 📦 공통 UI
 import BottomNavigation from "./BottomNavigation";
 import ScrollToTop from "./components/ScrollToTop";
 import MusicPlayer from "./components/MusicPlayer";
@@ -29,43 +32,64 @@ import "./App.css";
 import "./fadein.css";
 import "./components/Guestbook.css";
 
-// ✅ 고유 유저 ID 생성 함수
-function getOrCreateUserId() {
-  let userId = localStorage.getItem("local_user_id");
-  if (!userId) {
-    userId = "user_" + Math.random().toString(36).substring(2, 12);
-    localStorage.setItem("local_user_id", userId);
-  }
-  return userId;
-}
+// ✅ 관리자 user_id 목록
+const adminIds = [
+  "user_e8qi23kz90",
+  "user_urwlrjw5gf",
+  "user_4js94343ce",
+];
 
 // ✅ 방문자 추적 훅
 function useLogPageView() {
   const location = useLocation();
-
-  React.useEffect(() => {
+  useEffect(() => {
     const page = location.pathname;
     const referer = document.referrer || "";
-    const userId = getOrCreateUserId();
+    const userId = getAnonId();
 
     fetch("/api/log-visit", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        page,
-        referer,
-        anon_user_id: userId,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page, referer, anon_user_id: userId }),
     }).catch((err) => console.error("방문자 기록 실패:", err));
   }, [location.pathname]);
 }
 
+// ✅ 접근 제어 훅
+function useAccessControl() {
+  const navigate = useNavigate();
+  const [isAllowed, setIsAllowed] = useState(null);
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      const userId = getAnonId();
+      console.log("🧾 현재 기기의 user_id:", userId);
+
+      const { data } = await supabase
+        .from("allowed_users")
+        .select("user_id")
+        .eq("user_id", userId)
+        .single();
+
+      if (data) {
+        setIsAllowed(true);
+      } else {
+        setIsAllowed(false);
+        navigate("/access-request");
+      }
+    };
+
+    checkAccess();
+  }, [navigate]);
+
+  return isAllowed;
+}
+
 function App() {
-  const userId = getOrCreateUserId(); // 푸시 알림용
+  const userId = getAnonId();
+  const isAllowed = useAccessControl();
   usePushNotifications(userId);
-  useLogPageView(); // ✅ 라우트 방문 기록
+  useLogPageView();
 
   const homeRef = useRef(null);
   const memoriesRef = useRef(null);
@@ -78,6 +102,8 @@ function App() {
       ref.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  if (isAllowed === null) return <div>접근 확인 중...</div>;
 
   return (
     <div className="app-root">
@@ -125,6 +151,19 @@ function App() {
             <Route path="/lovetype/hyeeun" element={<LoveTypeDetail who="hyeeun" />} />
             <Route path="/travel-map/photos/:markerId" element={<TravelMapPhotoGalleryPage />} />
             <Route path="/random" element={<RandomSelectorPage />} />
+            <Route path="/access-request" element={<AccessRequestPage />} />
+            <Route
+              path="/admin-access"
+              element={
+                adminIds.includes(userId) ? (
+                  <AdminAccessPage />
+                ) : (
+                  <div style={{ padding: "2rem", textAlign: "center" }}>
+                    ⛔ 접근 권한이 없습니다.
+                  </div>
+                )
+              }
+            />
           </Routes>
         </div>
       </div>
