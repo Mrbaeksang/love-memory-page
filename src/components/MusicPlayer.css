@@ -1,39 +1,44 @@
+/* 🎧 음악 플레이어 전체 컨테이너 */
 .music-player-container {
-  position: fixed;
+  position: fixed;              /* 항상 화면에 고정 */
   left: 0;
-  width: 100%;
-  z-index: 999;
+  width: 100%;                  /* 가로 전체 */
+  z-index: 999;                 /* 항상 위에 보이도록 */
   display: flex;
-  justify-content: center;
-  pointer-events: none;
+  justify-content: center;      /* 가운데 정렬 */
+  pointer-events: none;         /* 기본 클릭 차단 (내부 요소에만 클릭 허용) */
 }
 
+/* 홈 화면일 경우 위로 float (ex: 하단 네비게이션 위) */
 .music-player-container.float {
   bottom: 84px;
 }
 
+/* 다른 페이지에서는 화면 맨 아래 dock */
 .music-player-container.dock {
   bottom: 0;
-  padding-bottom: env(safe-area-inset-bottom, 8px);
+  padding-bottom: env(safe-area-inset-bottom, 8px); /* 모바일 안전 영역 대응 */
 }
 
+/* 🧱 플레이어 내부 컨텐츠 영역 */
 .music-player-inner {
-  background: rgba(255, 240, 245, 0.9);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 240, 245, 0.9);             /* 연핑크 투명 배경 */
+  backdrop-filter: blur(8px);                       /* 배경 흐림 효과 */
   border-radius: 16px;
   padding: 10px 14px;
-  box-shadow: 0 3px 12px rgba(255, 180, 200, 0.25);
+  box-shadow: 0 3px 12px rgba(255, 180, 200, 0.25); /* 부드러운 그림자 */
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 6px;
   max-width: 90%;
   width: 400px;
-  pointer-events: auto;
+  pointer-events: auto;                             /* 내부는 클릭 가능 */
 }
 
+/* 🔽 접힌 상태에서 내부 레이아웃 */
 .music-player-container.collapsed .music-player-inner {
-  flex-direction: row;
+  flex-direction: row;              /* 가로 정렬 */
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
@@ -41,18 +46,21 @@
   min-height: 42px;
 }
 
+/* 🎛 접힌 상태의 컨트롤 영역 */
 .collapsed-controls {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
+/* 🎵 접힌 상태에서 좌측 버튼 묶음 */
 .collapsed-left {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+/* 🖲 모든 컨트롤 버튼 스타일 (재생, 음소거, 접기 등) */
 .music-btn,
 .collapse-btn {
   background: white;
@@ -67,12 +75,14 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
+/* 버튼 호버 효과 */
 .music-btn:hover,
 .collapse-btn:hover {
   background: #ffeaf3;
   transform: scale(1.05);
 }
 
+/* 버튼 내부 아이콘 색상 및 크기 */
 .music-btn svg,
 .collapse-btn svg {
   color: #e2668d;
@@ -80,15 +90,16 @@
   height: 16px;
 }
 
+/* 🧭 메인 컨트롤 버튼들 (접히지 않은 상태) */
 .main-controls {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* ✅ 왼쪽 정렬 */
-  gap: 6px; /* ✅ 간격을 좁게 */
-  padding: 0; /* ✅ 여백 제거 */
+  justify-content: flex-start;  /* 왼쪽 정렬 (디폴트) */
+  gap: 6px;
+  padding: 0;
 }
 
-
+/* 🎶 현재 재생중인 트랙 제목 */
 .track-title {
   font-weight: 600;
   font-size: 0.75rem;
@@ -96,9 +107,10 @@
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis;     /* 너무 길면 ... 처리 */
 }
 
+/* 🎚 재생 위치 슬라이더 */
 .progress-bar {
   -webkit-appearance: none;
   width: 100%;
@@ -109,6 +121,7 @@
   pointer-events: auto;
 }
 
+/* 🎚 슬라이더 핸들 (동그란 점) */
 .progress-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 14px;
@@ -119,16 +132,20 @@
   margin-top: -5px;
 }
 
+/* ⏱ 재생 시간 정보 (현재 / 총시간) */
 .time-info {
   font-size: 0.7rem;
   color: #a28b94;
   text-align: center;
 }
+
+/* 접히지 않았을 때 버튼 가운데 정렬 */
 .music-player-container:not(.collapsed) .main-controls {
   justify-content: center;
   gap: 8px;
 }
 
+/* 접힌 컨트롤의 좌측 버튼 묶음 정렬 */
 .music-player-container.collapsed .collapsed-controls {
   justify-content: flex-start;
   gap: 6px;
