@@ -1,11 +1,11 @@
-// ✅ 이 파일은 Vercel Cron이 직접 호출하는 HTTP 엔드포인트입니다.
-// ESM (import) 사용 가능하게 작성됨
-
-import { sendDailyDDayPush } from '../src/utils/sendDailyDDayPush.js'; // 경로 주의
-
 export default async function handler(req, res) {
+  const userAgent = req.headers['user-agent'] || "";
+
+  const isCronJob = userAgent.includes("vercel-cron");
   const secret = req.query.key;
-  if (secret !== process.env.CRON_SECRET) {
+
+  // ✅ Vercel Cron이 아닌 경우에만 보안 키 확인
+  if (!isCronJob && secret !== process.env.CRON_SECRET) {
     return res.status(401).end('Unauthorized');
   }
 
