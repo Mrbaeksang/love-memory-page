@@ -6,14 +6,15 @@ const DEPLOY_URL =
     : import.meta.env?.VITE_DEPLOY_URL || "";
 
 /**
- * 등록된 허용 사용자에게 푸시 알림을 전송
+ * 등록된 사용자에게 푸시 알림 전송
  *
  * @param {Object} params
- * @param {string} params.title
- * @param {string} params.body
- * @param {string} params.click_action
- * @param {string} [params.excludeUserId] - 자신을 제외하고 싶을 때 사용
- * @param {boolean} [params.deduplicatePerUser=false]
+ * @param {string} params.title - 알림 제목
+ * @param {string} params.body - 알림 내용
+ * @param {string} params.click_action - 클릭 시 이동 링크
+ * @param {string} [params.excludeUserId] - 제외할 사용자 ID
+ * @param {boolean} [params.deduplicatePerUser=false] - 유저당 하나만 보낼지
+ * @param {boolean} [params.onlyAllowedUsers=false] - allowed_users 기준만 보낼지 여부
  */
 export async function sendPushToAll({
   title,
@@ -21,21 +22,26 @@ export async function sendPushToAll({
   click_action,
   excludeUserId,
   deduplicatePerUser = false,
+  onlyAllowedUsers = false,
 }) {
   try {
-    // ✅ 1. 허용된 유저 조회
-    const { data: allowedUsers, error: allowedError } = await supabase
-      .from("allowed_users")
-      .select("user_id");
+    let allowedUserSet = null;
 
-    if (allowedError) {
-      console.error("❌ allowed_users 불러오기 실패:", allowedError);
-      return;
+    // ✅ 1. allowed_users 기준만 보낼 경우
+    if (onlyAllowedUsers) {
+      const { data: allowedUsers, error: allowedError } = await supabase
+        .from("allowed_users")
+        .select("user_id");
+
+      if (allowedError) {
+        console.error("❌ allowed_users 불러오기 실패:", allowedError);
+        return;
+      }
+
+      allowedUserSet = new Set(allowedUsers.map((u) => u.user_id));
     }
 
-    const allowedIds = new Set(allowedUsers.map((u) => u.user_id));
-
-    // ✅ 2. 토큰 조회
+    // ✅ 2. 전체 토큰 목록 조회
     const { data: tokens, error } = await supabase
       .from("notification_tokens")
       .select("token, user_id");
@@ -45,15 +51,13 @@ export async function sendPushToAll({
       return;
     }
 
+    // ✅ 3. 필터링 및 deduplication
     let filteredTokens;
-
     if (deduplicatePerUser) {
       const userMap = new Map();
       for (const { token, user_id } of tokens) {
-        if (
-          allowedIds.has(user_id) &&
-          (!excludeUserId || user_id !== excludeUserId)
-        ) {
+        const isAllowed = !onlyAllowedUsers || allowedUserSet.has(user_id);
+        if (isAllowed && (!excludeUserId || user_id !== excludeUserId)) {
           if (!userMap.has(user_id)) {
             userMap.set(user_id, token);
           }
@@ -62,19 +66,19 @@ export async function sendPushToAll({
       filteredTokens = [...userMap.values()];
     } else {
       filteredTokens = tokens
-        .filter(
-          ({ user_id }) =>
-            allowedIds.has(user_id) &&
-            (!excludeUserId || user_id !== excludeUserId)
-        )
+        .filter(({ user_id }) => {
+          const isAllowed = !onlyAllowedUsers || allowedUserSet.has(user_id);
+          return isAllowed && (!excludeUserId || user_id !== excludeUserId);
+        })
         .map((t) => t.token);
     }
 
     if (filteredTokens.length === 0) {
-      console.warn("📭 보낼 수 있는 토큰 없음");
+      console.warn("📭 보낼 토큰 없음");
       return;
     }
 
+    // ✅ 4. 푸시 요청 전송
     const response = await fetch(`${DEPLOY_URL}/api/send-push-v1`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -90,6 +94,6 @@ export async function sendPushToAll({
     const result = await response.json();
     console.log("📣 푸시 전송 결과:", result);
   } catch (err) {
-    console.error("💥 푸시 전송 중 오류 발생:", err);
+    console.error("💥 푸시 전송 실패:", err);
   }
 }
