@@ -1,12 +1,11 @@
-// /api/send-dday-push.js
 import { sendDailyDDayPush } from '@/utils/sendDailyDDayPush';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();
 
-  // ✅ 보호: CRON_SECRET 헤더 검증
-  const authHeader = req.headers.authorization || '';
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  // ✅ 쿼리 키 인증 방식
+  const secret = req.query.key;
+  if (secret !== process.env.CRON_SECRET) {
     return res.status(401).end('Unauthorized');
   }
 
