@@ -1,5 +1,5 @@
 import { sendPushToAll } from './sendPushToAll.js';
-import { getAnonId } from './getAnonId.js';
+//import { getAnonId } from './getAnonId.js';
 
 /**
  * 매일 D-Day 푸시 알림을 전송하는 함수입니다.
@@ -19,7 +19,7 @@ export async function sendDailyDDayPush() {
     title: '💘 오늘의 D-Day 알림',
     body: message,
     click_action: 'https://love-memory-page.vercel.app/#home',
-    excludeUserId: getAnonId(),
+    // excludeUserId: getAnonId(),
     deduplicatePerUser: true,
   });
 
