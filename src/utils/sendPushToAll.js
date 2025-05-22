@@ -1,4 +1,4 @@
-import { supabase } from "../../lib/supabaseClient.js";
+import { supabase } from "../lib/supabaseClient";
 
 const DEPLOY_URL = import.meta.env.VITE_DEPLOY_URL || "";
 
