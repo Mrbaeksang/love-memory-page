@@ -1,272 +1,301 @@
+/* 기본 HTML, Body, Root 요소 스타일 */
 html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
-  background: #fdf6e3;
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
+  height: 100%; /* 뷰포트 높이 100%를 차지 */
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif; /* 폰트 우선순위 설정 */
+  background: #fdf6e3; /* 연한 노란색 배경 */
+  -webkit-tap-highlight-color: transparent; /* 모바일에서 탭 시 발생하는 하이라이트 효과 제거 */
+  overscroll-behavior: none; /* 스크롤 오버 시 브라우저 기본 동작 방지 (예: 새로고침) */
 }
 
+/* 앱 배경 컨테이너 스타일 */
 .app-bg {
-  width: 100vw;
-  min-height: 100vh;
-  background: linear-gradient(90deg, #fdf6e3 0%, #fff 40%, #fff 60%, #fdf6e3 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100vw; /* 뷰포트 너비 100% */
+  min-height: 100vh; /* 뷰포트 높이의 최소 100% */
+  background: linear-gradient(90deg, #fdf6e3 0%, #fff 40%, #fff 60%, #fdf6e3 100%); /* 좌우로 연한 노란색에서 흰색으로 변하는 그라데이션 배경 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
 }
 
+/* 앱 메인 콘텐츠 컨테이너 스타일 */
 .app-main-container {
-  width: 100vw;
-  max-width: 430px;
-  background: transparent;
-  min-height: 100vh;
-  margin: 0 auto;
-  position: relative;
-  box-sizing: border-box;
-  padding-bottom: 140px; /* ✅ 하단 MusicPlayer + Navigation 높이 확보 */
+  width: 100vw; /* 뷰포트 너비 100% */
+  max-width: 430px; /* 최대 너비 430px로 제한 */
+  background: transparent; /* 배경 투명 */
+  min-height: 100vh; /* 뷰포트 높이의 최소 100% */
+  margin: 0 auto; /* 좌우 마진 자동 설정으로 중앙 정렬 */
+  position: relative; /* 자식 요소의 절대 위치 지정을 위한 기준점 */
+  box-sizing: border-box; /* 패딩과 보더를 너비와 높이에 포함 */
+  padding-bottom: 140px; /* 하단 MusicPlayer와 Navigation 바 높이만큼 패딩 확보 */
 }
 
+/* 앱의 전체 루트 컨테이너 스타일 */
 .app-root {
-  width: 100vw;
-  min-height: 100vh;
-  background: #fdf6e3;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 140px;
+  width: 100vw; /* 뷰포트 너비 100% */
+  min-height: 100vh; /* 뷰포트 높이의 최소 100% */
+  background: #fdf6e3; /* 연한 노란색 배경 */
+  overflow-x: hidden; /* 가로 스크롤 숨김 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  padding-bottom: 140px; /* 하단 MusicPlayer와 Navigation 바 높이만큼 패딩 확보 */
 }
 
+/* 앱 배경의 열(column) 부분 스타일 (데스크탑에서 주로 사용) */
 .app-bg-col {
-  flex: 1 1 0;
-  width: 100vw;
-  background: #fdf6e3;
+  flex: 1 1 0; /* Flexbox 아이템: 공간을 채우도록 확장, 기본 크기 0 */
+  width: 100vw; /* 뷰포트 너비 100% */
+  background: #fdf6e3; /* 연한 노란색 배경 */
 }
 
+/* 앱 배경의 행(row) 부분 스타일 (데스크탑에서 주로 사용) */
 .app-bg-row {
-  flex: 0 0 420px;
-  width: 100vw;
-  background: #fff;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 0 24px 0 #e0e0e022;
-  position: relative;
+  flex: 0 0 420px; /* Flexbox 아이템: 확장/축소되지 않고 420px의 고정 높이 */
+  width: 100vw; /* 뷰포트 너비 100% */
+  background: #fff; /* 흰색 배경 */
+  min-height: 300px; /* 최소 높이 300px */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  box-shadow: 0 0 24px 0 #e0e0e022; /* 연한 그림자 효과 */
+  position: relative; /* 자식 요소의 절대 위치 지정을 위한 기준점 */
 }
 
+/* 모든 섹션의 기본 스타일 (뷰포트 높이를 가득 채우는 섹션) */
 .section-fullvh {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  padding-bottom: 70px;
+  min-height: 100vh; /* 뷰포트 높이의 최소 100% */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  justify-content: center; /* 세로축 중앙 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  box-sizing: border-box; /* 패딩과 보더를 너비와 높이에 포함 */
+  padding-bottom: 70px; /* 하단 여백 */
 }
 
+/* 특정 섹션들의 배경색 및 그림자 스타일 */
 .section-home {
-  background: #fff;
+  background: #fff; /* 흰색 배경 */
 }
 
 .section-memories {
-  background: #f5f6fa;
+  background: #f5f6fa; /* 연한 회색/파란색 배경 */
 }
 
 .section-lovetype {
-  background: #ffe6ef;
+  background: #ffe6ef; /* 연한 핑크색 배경 */
 }
 
 .section-comment {
-  background: #e3f1ff;
+  background: #e3f1ff; /* 연한 하늘색 배경 */
 }
 
+/* 일반 섹션 스타일 */
 section {
-  width: 100%;
-  padding: 2.7rem 0;
-  margin: 0 auto;
-  box-sizing: border-box;
-  min-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  width: 100%; /* 너비 100% */
+  padding: 2.7rem 0; /* 상하 2.7rem, 좌우 0 패딩 */
+  margin: 0 auto; /* 좌우 마진 자동 설정으로 중앙 정렬 */
+  box-sizing: border-box; /* 패딩과 보더를 너비와 높이에 포함 */
+  min-height: 90vh; /* 뷰포트 높이의 최소 90% */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
 }
 
+/* 특정 ID를 가진 섹션의 배경, 테두리, 그림자 스타일 */
 #home {
-  background: #fff8f3;
-  border-radius: 32px 32px 0 0;
-  box-shadow: 0 2px 16px 0 #f3e6d5aa;
+  background: #fff8f3; /* 연한 오렌지-핑크 배경 */
+  border-radius: 32px 32px 0 0; /* 상단 좌우 둥근 모서리 */
+  box-shadow: 0 2px 16px 0 #f3e6d5aa; /* 연한 그림자 효과 */
 }
 
 #memories {
-  background: #f7faff;
-  border-radius: 0;
-  box-shadow: 0 2px 16px 0 #c9e0f8aa;
+  background: #f7faff; /* 매우 연한 파란색 배경 */
+  border-radius: 0; /* 모서리 둥글게 하지 않음 */
+  box-shadow: 0 2px 16px 0 #c9e0f8aa; /* 연한 그림자 효과 */
 }
 
 #lovetype {
-  background: #f8fff6;
-  border-radius: 0 0 32px 32px;
-  box-shadow: 0 2px 16px 0 #d5f3e6aa;
+  background: #f8fff6; /* 매우 연한 초록색 배경 */
+  border-radius: 0 0 32px 32px; /* 하단 좌우 둥근 모서리 */
+  box-shadow: 0 2px 16px 0 #d5f3e6aa; /* 연한 그림자 효과 */
 }
 
+/* 제목 (h1, h2, h3) 폰트 스타일 */
 h1, h2, h3 {
-  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
-  font-weight: 700;
-  color: #232323;
-  letter-spacing: 0.03em;
-  line-height: 1.3;
+  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif; /* 폰트 우선순위 설정 */
+  font-weight: 700; /* 굵게 */
+  color: #232323; /* 어두운 회색 */
+  letter-spacing: 0.03em; /* 자간 조절 */
+  line-height: 1.3; /* 줄 높이 */
 }
 
+/* 본문 텍스트 (p, button, li, span, div) 폰트 스타일 */
 p, button, li, span, div {
-  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.7;
-  color: #232323;
+  font-family: 'Pretendard', 'SUIT', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif; /* 폰트 우선순위 설정 */
+  font-weight: 400; /* 보통 굵기 */
+  letter-spacing: 0.01em; /* 자간 조절 */
+  line-height: 1.7; /* 줄 높이 */
+  color: #232323; /* 어두운 회색 */
 }
 
+/* 로고 이미지 스타일 */
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+  height: 6em; /* 높이 */
+  padding: 1.5em; /* 패딩 */
+  will-change: filter; /* 필터 속성 변경 최적화 */
+  transition: filter 300ms; /* 필터 변화에 300ms 트랜지션 적용 */
 }
 
+/* 로고 호버 효과 */
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #646cffaa); /* 그림자 효과 */
 }
 
+/* React 로고 호버 효과 */
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #61dafbaa); /* 다른 색상의 그림자 효과 */
 }
 
+/* 로고 스핀 애니메이션 키프레임 */
 @keyframes logo-spin {
   from {
-    transform: rotate(0deg);
+    transform: rotate(0deg); /* 0도에서 시작 */
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(360deg); /* 360도 회전까지 */
   }
 }
 
+/* 애니메이션 미디어 쿼리 (움직임 감소 옵션이 아닐 때만 적용) */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+    animation: logo-spin infinite 20s linear; /* 로고 스핀 애니메이션 무한 반복, 20초, 등속 */
   }
 }
 
+/* 카드 스타일 (일반적인 카드 컴포넌트) */
 .card {
-  padding: 2em;
+  padding: 2em; /* 내부 패딩 */
 }
 
+/* 'read-the-docs' 클래스 스타일 */
 .read-the-docs {
-  color: #888;
+  color: #888; /* 회색 글자 */
 }
 
+/* 내비게이션 바 스타일 */
 .navigation-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: space-around; /* ✅ gap 없이 균등 정렬 */
-  padding: 10px 0; /* ✅ 위아래 여백 확보 */
-  box-sizing: border-box;
-  overflow: visible; /* ✅ 아이콘 짤림 방지 */
+  position: fixed; /* 뷰포트에 고정 */
+  bottom: 0; /* 하단에 위치 */
+  left: 0; /* 좌측에 정렬 */
+  width: 100vw; /* 뷰포트 너비 100% */
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  background: rgba(255, 255, 255, 0.96); /* 반투명 흰색 배경 */
+  border-top: 1px solid #eee; /* 상단 옅은 회색 테두리 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  justify-content: space-around; /* 아이템들을 균등하게 분배 (간격 없이) */
+  padding: 10px 0; /* 상하 10px, 좌우 0 패딩 */
+  box-sizing: border-box; /* 패딩과 보더를 너비와 높이에 포함 */
+  overflow: visible; /* 내용이 넘쳐도 잘리지 않도록 (아이콘 등) */
 }
 
+/* 미디어 쿼리: 최대 너비 700px 이하일 때 내비게이션 바 표시 */
 @media (max-width: 700px) {
   .navigation-bar {
-    display: flex;
+    display: flex; /* Flexbox로 표시 (기존에도 flex였으나 명시적으로) */
   }
 }
 
+/* 특정 섹션 내부의 컨테이너 스타일 (공통) */
 .home-bg-section, .memories-container, .lovetype-section, .comment-section-content {
-  width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-  padding: 32px 0;
+  width: 100%; /* 너비 100% */
+  max-width: 430px; /* 최대 너비 430px로 제한 */
+  margin: 0 auto; /* 좌우 마진 자동 설정으로 중앙 정렬 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  justify-content: center; /* 세로축 중앙 정렬 */
+  background: #fff; /* 흰색 배경 */
+  border-radius: 18px; /* 둥근 모서리 */
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04); /* 연한 그림자 효과 */
+  padding: 32px 0; /* 상하 32px, 좌우 0 패딩 */
 }
 
+/* Memories 섹션 내 컨테이너의 배경색 재정의 */
 .section-memories .memories-container {
-  background: #f5f6fa;
+  background: #f5f6fa; /* 연한 회색/파란색 배경 */
 }
 
+/* LoveType 섹션 내 컨테이너의 배경색 재정의 */
 .section-lovetype .lovetype-section {
-  background: #ffe6ef;
+  background: #ffe6ef; /* 연한 핑크색 배경 */
 }
 
+/* Comment 섹션 내 컨테이너의 배경색 재정의 */
 .section-comment .comment-section-content {
-  background: #e3f1ff;
+  background: #e3f1ff; /* 연한 하늘색 배경 */
 }
 
+/* 미디어 쿼리: 최대 너비 600px 이하일 때 */
 @media (max-width: 600px) {
   .app-main-container {
-    max-width: 100vw;
+    max-width: 100vw; /* 메인 컨테이너 최대 너비를 뷰포트 너비 100%로 설정 */
   }
   .section-fullvh {
-    padding: 0 2vw;
+    padding: 0 2vw; /* 상하 0, 좌우 2vw 패딩 */
   }
 }
 
+/* 미디어 쿼리: 최대 너비 700px 이하일 때 (모바일 환경에 최적화) */
 @media (max-width: 700px) {
   .app-bg {
-    background: #ececec;
+    background: #ececec; /* 회색 계열 배경 */
   }
   .app-main-container {
-    width: 100vw;
+    width: 100vw; /* 메인 컨테이너 너비를 뷰포트 너비 100%로 설정 */
   }
   .section-fullvh {
-    padding: 0;
+    padding: 0; /* 패딩 제거 */
   }
   .home-bg-section, .memories-container, .lovetype-section, .comment-section-content {
-    max-width: 98vw;
-    border-radius: 8px;
-    padding: 18px 0;
+    max-width: 98vw; /* 컨테이너 최대 너비를 뷰포트 너비의 98%로 설정 */
+    border-radius: 8px; /* 둥근 모서리 */
+    padding: 18px 0; /* 상하 18px, 좌우 0 패딩 */
   }
   .app-root {
-    background: #ececec;
-    padding-bottom: 140px;
+    background: #ececec; /* 회색 계열 배경 */
+    padding-bottom: 140px; /* 하단 패딩 유지 */
   }
   .app-bg-col {
-    min-height: 0;
-    display: none;
+    min-height: 0; /* 최소 높이 0 */
+    display: none; /* 화면에서 숨김 */
   }
   .app-bg-row {
-    max-width: 100vw;
-    min-width: 0;
-    box-shadow: none;
-    min-height: 200px;
+    max-width: 100vw; /* 최대 너비 뷰포트 너비 100% */
+    min-width: 0; /* 최소 너비 0 */
+    box-shadow: none; /* 그림자 효과 제거 */
+    min-height: 200px; /* 최소 높이 200px */
   }
   section {
-    padding: 1.2rem 0;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+    padding: 1.2rem 0; /* 상하 1.2rem, 좌우 0 패딩 */
+    border-radius: 0 !important; /* 모서리 둥글기 제거 (important로 강제) */
+    box-shadow: none !important; /* 그림자 제거 (important로 강제) */
   }
 }
+
+/* 음악 플레이어 컨테이너 스타일 */
 .music-player-container {
-  position: fixed;
-  bottom: 56px; /* ✅ 네비게이션 바 위에 띄우기 */
-  left: 0;
-  width: 100vw;
-  max-width: 430px;
-  margin: 0 auto;
-  z-index: 999;
-  background: #fff;
-  border-top: 1px solid #eee;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
-  padding: 8px 0;
+  position: fixed; /* 뷰포트에 고정 */
+  bottom: 56px; /* 하단 내비게이션 바(높이 56px 예상) 바로 위에 위치 */
+  left: 0; /* 좌측 정렬 */
+  width: 100vw; /* 뷰포트 너비 100% */
+  max-width: 430px; /* 최대 너비 430px로 제한 */
+  margin: 0 auto; /* 좌우 마진 자동 설정으로 중앙 정렬 */
+  z-index: 999; /* 다른 요소 위에 표시 */
+  background: #fff; /* 흰색 배경 */
+  border-top: 1px solid #eee; /* 상단 옅은 회색 테두리 */
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04); /* 상단으로 옅은 그림자 효과 */
+  padding: 8px 0; /* 상하 8px, 좌우 0 패딩 */
 }

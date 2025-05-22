@@ -1,140 +1,166 @@
+/* 댓글 갤러리 페이지 전체 컨테이너 스타일 */
 .comment-gallery-container {
-  padding: 1.5rem 1rem 5rem;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 1.5rem 1rem 5rem; /* 위 1.5rem, 좌우 1rem, 아래 5rem의 내부 여백 */
+  max-width: 800px; /* 최대 너비를 800px로 제한 */
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
 }
 
+/* 댓글 갤러리 페이지 제목 스타일 */
 .comment-gallery-title {
-  text-align: center;
-  font-size: 1.5rem;
-  color: #e86c3d;
-  font-weight: bold;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  font-size: 1.5rem; /* 글자 크기 1.5rem */
+  color: #e86c3d; /* 주황색 계열의 글자색 */
+  font-weight: bold; /* 글자를 굵게 */
 }
 
+/* 댓글 갤러리 그리드 레이아웃 (이미지 목록) */
 .comment-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* ✅ 모바일 3줄 고정 */
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  display: grid; /* CSS Grid 레이아웃 사용 */
+  grid-template-columns: repeat(3, 1fr); /* ✅ 모바일에서는 3개의 열을 균등하게 분할 */
+  gap: 0.75rem; /* 그리드 항목 사이의 간격 */
+  margin-top: 1.5rem; /* 위쪽 외부 여백 */
 }
 
+/* 768px 이상 화면에 적용되는 미디어 쿼리 */
 @media (min-width: 768px) {
   .comment-gallery-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr); /* 4개의 열로 변경 */
+    gap: 1rem; /* 그리드 항목 사이의 간격 조정 */
   }
 }
 
+/* 1024px 이상 화면에 적용되는 미디어 쿼리 */
 @media (min-width: 1024px) {
   .comment-gallery-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.2rem;
+    grid-template-columns: repeat(5, 1fr); /* 5개의 열로 변경 */
+    gap: 1.2rem; /* 그리드 항목 사이의 간격 조정 */
   }
 }
 
+/* 각 댓글 갤러리 카드 (이미지 컨테이너) 스타일 */
 .comment-gallery-card {
-  position: relative;
-  aspect-ratio: 1 / 1; /* ✅ 정사각형 카드 */
-  background: #f0f0f0;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative; /* 자식 요소의 절대 위치 지정을 위한 기준점 */
+  aspect-ratio: 1 / 1; /* ✅ 가로세로 비율을 1:1로 설정하여 정사각형 카드 유지 */
+  background: #f0f0f0; /* 기본 배경색 */
+  border-radius: 10px; /* 테두리 모서리를 둥글게 */
+  overflow: hidden; /* 내용이 카드 밖으로 넘칠 경우 숨김 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* 그림자 효과 */
+  transition: transform 0.2s ease; /* transform 속성 변경 시 0.2초 애니메이션 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
 }
 
+/* 댓글 갤러리 카드에 마우스 오버 시 효과 */
 .comment-gallery-card:hover {
-  transform: scale(1.03);
+  transform: scale(1.03); /* 카드를 1.03배 확대 */
 }
 
+/* 댓글 갤러리 이미지 스타일 */
 .comment-gallery-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  width: 100%; /* 너비를 부모 요소의 100%로 설정 */
+  height: 100%; /* 높이를 부모 요소의 100%로 설정 */
+  object-fit: cover; /* 이미지를 잘라내어 지정된 공간을 채움 */
+  display: block; /* 블록 레벨 요소로 표시 */
 }
 
+/* 댓글 배지 스타일 (댓글 수 표시) */
 .comment-gallery-badge {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  border-top-left-radius: 10px;
-  font-weight: bold;
+  position: absolute; /* 절대 위치 지정 */
+  bottom: 0; /* 카드 하단에 위치 */
+  right: 0; /* 카드 오른쪽에 위치 */
+  background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+  color: #fff; /* 흰색 글자색 */
+  font-size: 0.8rem; /* 글자 크기 */
+  padding: 4px 8px; /* 내부 여백 */
+  border-top-left-radius: 10px; /* 왼쪽 위 모서리만 둥글게 */
+  font-weight: bold; /* 글자를 굵게 */
 }
 
+/* 홈으로 돌아가기 버튼 스타일 */
 .back-home-button {
-  background: transparent;
-  border: none;
-  color: #e86c3d;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  padding-left: 0.2rem;
+  background: transparent; /* 투명한 배경 */
+  border: none; /* 테두리 없음 */
+  color: #e86c3d; /* 주황색 계열의 글자색 */
+  font-weight: bold; /* 글자를 굵게 */
+  font-size: 1rem; /* 글자 크기 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서 */
+  margin-bottom: 1rem; /* 아래쪽 외부 여백 */
+  padding-left: 0.2rem; /* 왼쪽 내부 여백 */
 }
+
+/* 홈으로 돌아가기 버튼에 마우스 오버 시 효과 */
 .back-home-button:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* 텍스트에 밑줄 표시 */
 }
+
+/* 정렬 버튼 그룹 스타일 */
 .sort-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: center; /* 가로 방향으로 가운데 정렬 */
+  gap: 0.6rem; /* 버튼 사이의 간격 */
+  margin-bottom: 1rem; /* 아래쪽 외부 여백 */
+  flex-wrap: wrap; /* 버튼이 넘칠 경우 다음 줄로 넘어가도록 설정 */
 }
 
+/* 개별 정렬 버튼 스타일 */
 .sort-buttons button {
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  border: 1px solid #ffc6d0;
-  background-color: white;
-  border-radius: 16px;
-  cursor: pointer;
-  color: #ff5e89;
-  transition: all 0.2s ease;
+  padding: 6px 12px; /* 내부 여백 */
+  font-size: 0.9rem; /* 글자 크기 */
+  border: 1px solid #ffc6d0; /* 연한 핑크색 테두리 */
+  background-color: white; /* 흰색 배경 */
+  border-radius: 16px; /* 테두리 모서리를 둥글게 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서 */
+  color: #ff5e89; /* 핑크색 계열의 글자색 */
+  transition: all 0.2s ease; /* 모든 속성 변경에 0.2초 애니메이션 */
 }
 
+/* 정렬 버튼에 마우스 오버 시 효과 */
 .sort-buttons button:hover {
-  background-color: #ffeef2;
-  border: 1px solid #ff5e89;
+  background-color: #ffeef2; /* 호버 시 연한 핑크색 배경 */
+  border: 1px solid #ff5e89; /* 호버 시 핑크색 테두리 */
 }
 
+/* 활성화된 정렬 버튼 스타일 */
 .sort-buttons .active {
-  background-color: #ffeef2; /* 더 연한 핑크 */
-  color: #ff5e89;            /* 선명한 코랄색 글씨 */
-  font-weight: bold;
-  border: 2px solid #ff5e89;
+  background-color: #ffeef2; /* 더 연한 핑크색 배경 */
+  color: #ff5e89; /* 선명한 핑크색 글씨 */
+  font-weight: bold; /* 글자를 굵게 */
+  border: 2px solid #ff5e89; /* 더 굵은 핑크색 테두리 */
 }
 
-
-/* 스피너 스타일 */
+/* 로딩 컨테이너 스타일 */
 .loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 3rem;
-  gap: 0.8rem;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 가로 방향으로 가운데 정렬 */
+  justify-content: center; /* 세로 방향으로 가운데 정렬 */
+  margin-top: 3rem; /* 위쪽 외부 여백 */
+  gap: 0.8rem; /* 자식 요소 사이의 간격 */
 }
 
+/* 로딩 스피너 스타일 */
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #ff94b4;
-  animation: spin 1s linear infinite;
+  width: 40px; /* 너비 */
+  height: 40px; /* 높이 */
+  border: 4px solid rgba(0, 0, 0, 0.1); /* 회색의 반투명 테두리 */
+  border-radius: 50%; /* 원형으로 만듦 */
+  border-top-color: #ff94b4; /* 위쪽 테두리 색상 (애니메이션 효과) */
+  animation: spin 1s linear infinite; /* spin 애니메이션을 1초 동안 선형적으로 무한 반복 */
 }
 
+/* 스피너 회전 애니메이션 */
 @keyframes spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate(360deg); /* 360도 회전 */
   }
+}
+
+/* 이미지가 없을 때 메시지 스타일 (추가) */
+.no-images-message {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  color: #888; /* 회색 글자색 */
+  font-size: 1.1rem; /* 글자 크기 */
+  margin-top: 2rem; /* 위쪽 외부 여백 */
 }

@@ -1,90 +1,103 @@
-@import url("./main.css");
+@import url("./main.css"); /* main.css 파일을 가져옵니다. */
 
-/* ?? ��Ʈ�� ��ü ��� �� */
+/*
+ * ':root' 의사 클래스는 문서의 최상위 요소(<html>)를 나타냅니다.
+ * 이 섹션에서는 전체 문서의 기본 글꼴, 줄 높이, 글꼴 두께, 색상 및 배경색 등을 정의합니다.
+ */
 :root {
-  font-family: "Pretendard", system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
-  color: #2c2c2c;
-  background-color: #fdf6e3;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Pretendard", system-ui, Avenir, Helvetica, Arial, sans-serif; /* 기본 글꼴 패밀리 설정 */
+  line-height: 1.6; /* 기본 줄 높이 설정 */
+  font-weight: 400; /* 기본 글꼴 두께 설정 */
+  color: #2c2c2c; /* 기본 텍스트 색상 (어두운 회색) */
+  background-color: #fdf6e3; /* 기본 배경색 (연한 노란색) */
+  font-synthesis: none; /* 글꼴 합성(예: 굵게 또는 기울임꼴)을 비활성화하여 웹 글꼴의 모양을 유지 */
+  text-rendering: optimizeLegibility; /* 텍스트 렌더링을 최적화하여 가독성을 높입니다. */
+  -webkit-font-smoothing: antialiased; /* 웹킷 기반 브라우저에서 글꼴 안티앨리어싱을 적용하여 글자를 부드럽게 합니다. */
+  -moz-osx-font-smoothing: grayscale; /* Firefox에서 글꼴 안티앨리어싱을 적용하여 글자를 부드럽게 합니다. */
 }
 
-/* ?? ��ũ */
+/* 링크(<a>) 스타일 */
 a {
-  font-weight: 500;
-  color: #e07a5f;
-  text-decoration: none;
+  font-weight: 500; /* 링크 텍스트를 중간 굵기로 설정 */
+  color: #e07a5f; /* 링크 색상 (주황색 계열) */
+  text-decoration: none; /* 링크 밑줄 제거 */
 }
+
+/* 링크에 마우스를 올렸을 때의 스타일 */
 a:hover {
-  color: #d65f4f;
+  color: #d65f4f; /* 호버 시 링크 색상 변경 (약간 더 진한 주황색) */
 }
 
-/* ?? �⺻ ���� */
+/* 바디(<body>) 요소의 기본 스타일 */
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #fdf6e3;
+  margin: 0; /* 기본 마진 제거 */
+  min-width: 320px; /* 최소 너비 320px */
+  min-height: 100vh; /* 뷰포트 높이의 최소 100% */
+  background-color: #fdf6e3; /* 배경색 (연한 노란색) */
 }
 
-/* ?? ���� */
+/* 제목 (<h1>) 스타일 */
 h1 {
-  font-size: 2.5rem;
-  color: #222;
+  font-size: 2.5rem; /* 글자 크기 */
+  color: #222; /* 글자 색상 (짙은 회색) */
 }
 
-/* ?? ��ư */
+/* 버튼(<button>) 스타일 */
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #fae1dd;
-  color: #222;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  border-radius: 8px; /* 둥근 모서리 */
+  border: 1px solid transparent; /* 투명한 1px 테두리 */
+  padding: 0.6em 1.2em; /* 내부 패딩 */
+  font-size: 1em; /* 글자 크기 */
+  font-weight: 500; /* 글꼴 두께 */
+  font-family: inherit; /* 부모 요소의 글꼴 패밀리 상속 */
+  background-color: #fae1dd; /* 배경색 (연한 분홍색) */
+  color: #222; /* 글자 색상 (짙은 회색) */
+  cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+  transition: all 0.2s ease-in-out; /* 모든 속성 변화에 0.2초 동안 부드러운 전환 효과 적용 */
 }
+
+/* 버튼에 마우스를 올렸을 때의 스타일 */
 button:hover {
-  background-color: #f7d4cc;
+  background-color: #f7d4cc; /* 호버 시 배경색 변경 (약간 더 연한 분홍색) */
 }
+
+/* 버튼이 포커스를 받았을 때의 스타일 */
 button:focus {
-  outline: 2px solid #ffb4a2;
+  outline: 2px solid #ffb4a2; /* 포커스 시 2px 두께의 주황색 테두리 아웃라인 추가 */
 }
 
-/* ?? Ȩ��ư */
+/* '뒤로 가기/홈' 버튼 스타일 */
 .back-home-btn {
-  font-size: 1rem;
-  background: none;
-  border: none;
-  color: #ff8888;
-  margin: 1rem;
-  font-weight: bold;
-  cursor: pointer;
+  font-size: 1rem; /* 글자 크기 */
+  background: none; /* 배경색 없음 */
+  border: none; /* 테두리 없음 */
+  color: #ff8888; /* 핑크색 글자 */
+  margin: 1rem; /* 마진 */
+  font-weight: bold; /* 글자 굵게 */
+  cursor: pointer; /* 마우스 오버 시 포인터 변경 */
 }
 
-/* ?? ��ũ��� ���� */
+/* 다크 모드 미디어 쿼리: 사용자의 시스템 설정이 다크 모드일 때 적용되는 스타일 */
 @media (prefers-color-scheme: dark) {
+  /* 다크 모드 시 루트 요소 스타일 */
   :root {
-    color: #ffffff;
-    background-color: #1f1f1f;
+    color: #ffffff; /* 텍스트 색상 흰색 */
+    background-color: #1f1f1f; /* 배경색 매우 어두운 회색 */
   }
 
+  /* 다크 모드 시 링크 스타일 */
   a {
-    color: #ffb4a2;
+    color: #ffb4a2; /* 링크 색상 (연한 주황색) */
   }
 
+  /* 다크 모드 시 버튼 스타일 */
   button {
-    background-color: #333;
-    color: #eee;
+    background-color: #333; /* 버튼 배경색 어두운 회색 */
+    color: #eee; /* 버튼 글자 색상 연한 회색 */
   }
 
+  /* 다크 모드 시 '뒤로 가기/홈' 버튼 스타일 */
   .back-home-btn {
-    color: #ffb4a2;
+    color: #ffb4a2; /* 버튼 글자 색상 (연한 주황색) */
   }
 }

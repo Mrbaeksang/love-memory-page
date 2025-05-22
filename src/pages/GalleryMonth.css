@@ -1,272 +1,276 @@
 /* === 기본 배경 === */
 .gallery-month-bg {
-  padding: 24px 8px;
-  max-width: 500px;
-  margin: 0 auto;
-  background: #fff6f3;
-  min-height: 100vh;
+  padding: 24px 8px; /* 상하 24px, 좌우 8px의 내부 여백 */
+  max-width: 500px; /* 최대 너비를 500px로 제한 */
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  background: #fff6f3; /* 배경색을 밝은 주황색 계열로 설정 */
+  min-height: 100vh; /* 최소 높이를 뷰포트 높이의 100%로 설정 (화면 전체를 차지하도록) */
 }
 
 /* === 상단 타이틀 영역 === */
 .gallery-month-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #e86c3d;
-  margin-bottom: 8px;
-  text-align: center;
+  font-size: 1.4rem; /* 글자 크기 설정 */
+  font-weight: bold; /* 글자를 굵게 */
+  color: #e86c3d; /* 글자색을 주황색 계열로 설정 */
+  margin-bottom: 8px; /* 아래쪽 외부 여백 설정 */
+  text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
 .gallery-month-emotion {
-  font-size: 1.05rem;
-  color: #a97e6f;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 1.05rem; /* 글자 크기 설정 */
+  color: #a97e6f; /* 글자색을 갈색 계열로 설정 */
+  margin-bottom: 20px; /* 아래쪽 외부 여백 설정 */
+  text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
 /* === 그리드 (반응형) === */
 .gallery-month-grid {
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  padding-bottom: 2rem;
+  display: grid; /* CSS Grid 레이아웃 사용 */
+  gap: 0.75rem; /* 그리드 항목 사이의 간격 설정 */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 최소 100px, 최대 1fr로 자동 조정되는 열 반복 */
+  padding-bottom: 2rem; /* 아래쪽 내부 여백 설정 */
 }
 
+/* 640px 이상 화면에 적용되는 미디어 쿼리 */
 @media (min-width: 640px) {
   .gallery-month-grid {
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem; /* 그리드 항목 사이의 간격 조정 */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* 최소 120px로 열 너비 조정 */
   }
 }
 
+/* 1024px 이상 화면에 적용되는 미디어 쿼리 */
 @media (min-width: 1024px) {
   .gallery-month-grid {
-    gap: 1.2rem;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.2rem; /* 그리드 항목 사이의 간격 조정 */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 최소 140px로 열 너비 조정 */
   }
 }
 
-
 .gallery-photo-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(232, 108, 61, 0.04);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
+  background: #fff; /* 배경색을 흰색으로 설정 */
+  border-radius: 12px; /* 테두리 모서리를 둥글게 */
+  box-shadow: 0 2px 8px rgba(232, 108, 61, 0.04); /* 그림자 효과 추가 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
+  padding: 6px; /* 내부 여백 설정 */
 }
 
 .gallery-photo-img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border-radius: 10px;
-  background: #f7e7e0;
-  box-shadow: 0 2px 8px #e86c3d11;
-  cursor: zoom-in;
-  display: block;
+  width: 100%; /* 부모 요소 너비의 100%를 차지 */
+  aspect-ratio: 3 / 4; /* 가로:세로 비율을 3:4로 설정 */
+  object-fit: cover; /* 이미지를 잘라내어 컨테이너를 채움 */
+  border-radius: 10px; /* 테두리 모서리를 둥글게 */
+  background: #f7e7e0; /* 배경색을 밝은 주황색 계열로 설정 */
+  box-shadow: 0 2px 8px #e86c3d11; /* 그림자 효과 추가 */
+  cursor: zoom-in; /* 마우스 오버 시 돋보기 커서로 변경 */
+  display: block; /* 블록 레벨 요소로 표시 */
 }
 
 /* === 상단 고정 버튼 바 === */
 .gallery-header-bar {
-  position: sticky;
-  top: 0;
-  background: rgba(255, 255, 255, 0.95);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  height: 3.5rem;
-  padding-left: 1.3rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  margin-bottom: 1.1rem;
+  position: sticky; /* 스크롤 시 상단에 고정 */
+  top: 0; /* 상단에 고정될 위치 */
+  background: rgba(255, 255, 255, 0.95); /* 흰색 배경에 95% 투명도 적용 */
+  z-index: 50; /* 다른 요소 위에 표시되도록 z-index 설정 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  height: 3.5rem; /* 높이 설정 */
+  padding-left: 1.3rem; /* 왼쪽 내부 여백 설정 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* 그림자 효과 추가 */
+  margin-bottom: 1.1rem; /* 아래쪽 외부 여백 설정 */
 }
 
 .gallery-home-btn {
-  background: #fff;
-  border: 1.5px solid #bbb;
-  border-radius: 24px;
-  padding: 0.45em 1.2em;
-  font-size: 1.08em;
-  color: #444;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-  transition: background 0.15s, color 0.15s;
+  background: #fff; /* 배경색을 흰색으로 설정 */
+  border: 1.5px solid #bbb; /* 1.5px 두께의 회색 테두리 */
+  border-radius: 24px; /* 테두리 모서리를 둥글게 (버튼 모양) */
+  padding: 0.45em 1.2em; /* 상하좌우 내부 여백 설정 */
+  font-size: 1.08em; /* 글자 크기 설정 */
+  color: #444; /* 글자색을 진한 회색으로 설정 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서로 변경 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  gap: 0.3em; /* 자식 요소 사이의 간격 설정 */
+  transition: background 0.15s, color 0.15s; /* 배경색과 글자색 변경 시 0.15초 동안 애니메이션 효과 */
 }
+
 .gallery-home-btn:hover {
-  background: #f2f2f2;
-  color: #000;
+  background: #f2f2f2; /* 마우스 오버 시 배경색 변경 */
+  color: #000; /* 마우스 오버 시 글자색 변경 */
 }
 
 /* === 모달 === */
 .gallery-modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  position: fixed; /* 뷰포트에 고정 */
+  inset: 0; /* 상하좌우 모든 방향으로 0으로 설정하여 전체 화면을 덮음 */
+  background: rgba(0, 0, 0, 0.75); /* 검은색 배경에 75% 투명도 적용 */
+  z-index: 999; /* 다른 요소 위에 표시되도록 z-index 설정 (가장 높게) */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
+  padding: 1rem; /* 내부 여백 설정 */
 }
 
 .gallery-modal-img-wrap {
-  max-width: 90vw;
-  max-height: 90vh;
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 90vw; /* 최대 너비를 뷰포트 너비의 90%로 제한 */
+  max-height: 90vh; /* 최대 높이를 뷰포트 높이의 90%로 제한 */
+  background: #fff; /* 배경색을 흰색으로 설정 */
+  border-radius: 12px; /* 테두리 모서리를 둥글게 */
+  padding: 1rem; /* 내부 여백 설정 */
+  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤바 표시 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 자식 요소들을 세로 방향으로 정렬 */
+  align-items: center; /* 교차축(수평)에서 가운데 정렬 */
 }
 
 .gallery-modal-img {
-  max-width: 100%;
-  max-height: 70vh;
-  border-radius: 10px;
-  display: block;
+  max-width: 100%; /* 최대 너비를 부모 요소의 100%로 제한 */
+  max-height: 70vh; /* 최대 높이를 뷰포트 높이의 70%로 제한 */
+  border-radius: 10px; /* 테두리 모서리를 둥글게 */
+  display: block; /* 블록 레벨 요소로 표시 */
 }
 
 /* === 마커 연결 영역 === */
 .marker-link-section {
-  width: 100%;
-  background: #fff8f3;
-  border: 1px solid #f4d4c9;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  width: 100%; /* 너비를 100%로 설정 */
+  background: #fff8f3; /* 배경색을 밝은 주황색 계열로 설정 */
+  border: 1px solid #f4d4c9; /* 1px 두께의 연한 주황색 테두리 */
+  border-radius: 8px; /* 테두리 모서리를 둥글게 */
+  padding: 1rem; /* 내부 여백 설정 */
+  margin-top: 1rem; /* 위쪽 외부 여백 설정 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); /* 그림자 효과 추가 */
 }
 
 .marker-link-section label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #444;
+  font-weight: 600; /* 글자를 굵게 */
+  display: block; /* 블록 레벨 요소로 표시 */
+  margin-bottom: 0.5rem; /* 아래쪽 외부 여백 설정 */
+  color: #444; /* 글자색을 진한 회색으로 설정 */
 }
 
 .marker-select-dropdown {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background: #fff;
+  width: 100%; /* 너비를 100%로 설정 */
+  padding: 10px; /* 내부 여백 설정 */
+  margin-bottom: 12px; /* 아래쪽 외부 여백 설정 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 테두리 */
+  border-radius: 6px; /* 테두리 모서리를 둥글게 */
+  font-size: 0.95rem; /* 글자 크기 설정 */
+  background: #fff; /* 배경색을 흰색으로 설정 */
 }
 
-.link-marker-button,
-.view-marker-photos-button {
-  background-color: #e86c3d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 6px;
-  transition: background-color 0.2s ease;
+.link-marker-button, /* 마커 연결 버튼 */
+.view-marker-photos-button { /* 마커 사진 보기 버튼 */
+  background-color: #e86c3d; /* 배경색을 주황색 계열로 설정 */
+  color: white; /* 글자색을 흰색으로 설정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 6px; /* 테두리 모서리를 둥글게 */
+  padding: 10px; /* 내부 여백 설정 */
+  font-weight: 600; /* 글자를 굵게 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서로 변경 */
+  width: 100%; /* 너비를 100%로 설정 */
+  margin-top: 6px; /* 위쪽 외부 여백 설정 */
+  transition: background-color 0.2s ease; /* 배경색 변경 시 0.2초 동안 부드러운 애니메이션 효과 */
 }
 
 .link-marker-button:disabled {
-  background-color: #f2a98f;
-  cursor: not-allowed;
+  background-color: #f2a98f; /* 비활성화 시 배경색 변경 */
+  cursor: not-allowed; /* 비활성화 시 커서 변경 */
 }
 
-.link-marker-button:hover:not(:disabled),
+.link-marker-button:hover:not(:disabled), /* 비활성화되지 않은 버튼에 마우스 오버 시 */
 .view-marker-photos-button:hover {
-  background-color: #cc5e32;
+  background-color: #cc5e32; /* 배경색 변경 */
 }
 
 .view-marker-photos-button {
-  background-color: #f48fb1;
+  background-color: #f48fb1; /* 배경색을 핑크색 계열로 설정 */
 }
+
 .view-marker-photos-button:hover {
-  background-color: #e67c9c;
+  background-color: #e67c9c; /* 마우스 오버 시 배경색 변경 */
 }
 
 /* === 댓글 영역 === */
 .gallery-comment-box {
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  width: 100%; /* 너비를 100%로 설정 */
+  margin-top: 1rem; /* 위쪽 외부 여백 설정 */
+  padding: 0.75rem; /* 내부 여백 설정 */
+  background: #fff; /* 배경색을 흰색으로 설정 */
+  border-radius: 10px; /* 테두리 모서리를 둥글게 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* 그림자 효과 추가 */
 }
 
 .gallery-comment-textarea {
-  width: 100%;
-  height: 60px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  resize: none;
-  padding: 10px;
-  font-size: 0.95rem;
+  width: 100%; /* 너비를 100%로 설정 */
+  height: 60px; /* 높이 설정 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 테두리 */
+  border-radius: 8px; /* 테두리 모서리를 둥글게 */
+  resize: none; /* 크기 조절 비활성화 */
+  padding: 10px; /* 내부 여백 설정 */
+  font-size: 0.95rem; /* 글자 크기 설정 */
 }
 
 .gallery-comment-submit {
-  margin-top: 0.5rem;
-  background: #e86c3d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
+  margin-top: 0.5rem; /* 위쪽 외부 여백 설정 */
+  background: #e86c3d; /* 배경색을 주황색 계열로 설정 */
+  color: white; /* 글자색을 흰색으로 설정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 6px; /* 테두리 모서리를 둥글게 */
+  padding: 8px 14px; /* 내부 여백 설정 */
+  font-weight: 600; /* 글자를 굵게 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서로 변경 */
+  width: 100%; /* 너비를 100%로 설정 */
 }
 
 .gallery-comment-list {
-  margin-top: 1rem;
+  margin-top: 1rem; /* 위쪽 외부 여백 설정 */
 }
 
 .gallery-comment-item {
-  background: #fff5f0;
-  border-radius: 8px;
-  padding: 0.6em 0.9em;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  color: #444;
-  animation: fadeIn 0.4s ease;
+  background: #fff5f0; /* 배경색을 밝은 주황색 계열로 설정 */
+  border-radius: 8px; /* 테두리 모서리를 둥글게 */
+  padding: 0.6em 0.9em; /* 상하좌우 내부 여백 설정 */
+  margin-bottom: 8px; /* 아래쪽 외부 여백 설정 */
+  font-size: 0.95rem; /* 글자 크기 설정 */
+  color: #444; /* 글자색을 진한 회색으로 설정 */
+  animation: fadeIn 0.4s ease; /* fadeIn 애니메이션 적용 */
 }
 
 .gallery-comment-item.fade-in {
-  animation: fadeInUp 0.4s ease forwards;
+  animation: fadeInUp 0.4s ease forwards; /* fadeInUp 애니메이션 적용 (애니메이션 완료 후 상태 유지) */
 }
 
 .comment-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  margin-top: 6px;
-  color: #999;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: space-between; /* 양쪽 끝 정렬 */
+  font-size: 0.8rem; /* 글자 크기 설정 */
+  margin-top: 6px; /* 위쪽 외부 여백 설정 */
+  color: #999; /* 글자색을 회색으로 설정 */
 }
 
 .comment-delete {
-  background: none;
-  border: none;
-  color: #e86c3d;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: color 0.2s ease;
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  color: #e86c3d; /* 글자색을 주황색 계열로 설정 */
+  font-size: 1rem; /* 글자 크기 설정 */
+  cursor: pointer; /* 마우스 오버 시 포인터 커서로 변경 */
+  transition: color 0.2s ease; /* 글자색 변경 시 0.2초 동안 부드러운 애니메이션 효과 */
 }
+
 .comment-delete:hover {
-  color: red;
+  color: red; /* 마우스 오버 시 글자색을 빨간색으로 변경 */
 }
 
 /* === 애니메이션 === */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); } /* 시작: 투명하고 아래로 10px 이동 */
+  to { opacity: 1; transform: translateY(0); } /* 끝: 완전히 불투명하고 원래 위치로 이동 */
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); } /* 시작: 투명하고 아래로 8px 이동 */
+  to { opacity: 1; transform: translateY(0); } /* 끝: 완전히 불투명하고 원래 위치로 이동 */
 }

@@ -113,6 +113,7 @@
 /* 🎚 재생 위치 슬라이더 */
 .progress-bar {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 4px;
   border-radius: 3px;

@@ -1,253 +1,276 @@
+/* travel-map-wrap 스타일 */
 .travel-map-wrap {
-  padding: 16px;
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  box-sizing: border-box;
+  padding: 16px; /* 내부 여백 */
+  max-width: 100%; /* 최대 너비 100% */
+  width: 100%; /* 너비 100% */
+  margin: 0 auto; /* 좌우 중앙 정렬 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 배치 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  min-height: 100vh; /* 최소 높이 뷰포트 높이의 100% */
+  box-sizing: border-box; /* 패딩과 보더를 너비에 포함 */
 }
 
-/* �ε� ���� ��Ÿ�� */
+/* 로딩 스피너 오버레이 스타일 */
 .loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  position: fixed; /* 고정 위치 */
+  top: 0; /* 상단에서 0 */
+  left: 0; /* 왼쪽에서 0 */
+  right: 0; /* 오른쪽에서 0 */
+  bottom: 0; /* 하단에서 0 */
+  background: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
 }
 
+/* 로딩 스피너 아이콘 스타일 */
 .loading-spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #f48fb1;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+  border: 4px solid #f3f3f3; /* 회색 테두리 */
+  border-top: 4px solid #f48fb1; /* 상단 테두리 분홍색 */
+  border-radius: 50%; /* 원형 */
+  width: 40px; /* 너비 */
+  height: 40px; /* 높이 */
+  animation: spin 1s linear infinite; /* spin 애니메이션 1초 동안 무한 반복 */
 }
 
+/* 스피너 회전 애니메이션 키프레임 */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); } /* 0%에서 0도 회전 */
+  100% { transform: rotate(360deg); } /* 100%에서 360도 회전 */
 }
 
-/* ���� �޽��� ��Ÿ�� */
+/* 에러 메시지 스타일 */
 .error-message {
-  color: #d32f2f;
-  background-color: #ffebee;
-  padding: 10px;
-  border-radius: 4px;
-  margin: 10px 0;
-  text-align: center;
-  width: 100%;
-  box-sizing: border-box;
+  color: #d32f2f; /* 글자색 진한 빨강 */
+  background-color: #ffebee; /* 배경색 연한 빨강 */
+  padding: 10px; /* 내부 여백 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  margin: 10px 0; /* 상하 외부 여백 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  width: 100%; /* 너비 100% */
+  box-sizing: border-box; /* 패딩과 보더를 너비에 포함 */
 }
 
-/* �˻� ���� */
+/* 검색 상자 스타일 */
 .search-box {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-  width: 100%;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  gap: 8px; /* 아이템 간 간격 */
+  margin-bottom: 12px; /* 하단 외부 여백 */
+  width: 100%; /* 너비 100% */
 }
 
+/* 검색 입력 필드 스타일 */
 .search-box input {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  flex: 1; /* 남은 공간을 모두 차지 */
+  padding: 10px 12px; /* 내부 여백 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  border: 1px solid #ccc; /* 테두리 */
+  font-size: 16px; /* 글자 크기 */
+  transition: border-color 0.3s; /* 테두리 색상 변화에 0.3초 트랜지션 적용 */
 }
 
+/* 검색 입력 필드 포커스 시 스타일 */
 .search-box input:focus {
-  outline: none;
-  border-color: #f48fb1;
-  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2);
+  outline: none; /* 아웃라인 제거 */
+  border-color: #f48fb1; /* 테두리 색상 변경 */
+  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2); /* 그림자 효과 */
 }
 
+/* 검색 버튼 스타일 */
 .search-box button {
-  padding: 8px 16px;
-  background-color: #f48fb1;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s, transform 0.1s;
-  min-width: 80px;
+  padding: 8px 16px; /* 내부 여백 */
+  background-color: #f48fb1; /* 배경색 분홍 */
+  border: none; /* 테두리 없음 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  color: white; /* 글자색 흰색 */
+  cursor: pointer; /* 커서 포인터 */
+  font-weight: bold; /* 글자 굵게 */
+  transition: background-color 0.3s, transform 0.1s; /* 배경색 및 변형에 트랜지션 적용 */
+  min-width: 80px; /* 최소 너비 */
 }
 
+/* 검색 버튼 호버 시 스타일 */
 .search-box button:hover {
-  background-color: #f06292;
+  background-color: #f06292; /* 배경색 진한 분홍으로 변경 */
 }
 
+/* 검색 버튼 클릭 시 스타일 */
 .search-box button:active {
-  transform: translateY(1px);
+  transform: translateY(1px); /* 아래로 1px 이동 */
 }
 
+/* 검색 버튼 포커스 시 스타일 */
 .search-box button:focus {
-  outline: 2px solid #f48fb1;
-  outline-offset: 2px;
+  outline: 2px solid #f48fb1; /* 2px 분홍색 아웃라인 */
+  outline-offset: 2px; /* 아웃라인 오프셋 */
 }
 
-/* ���� ���� */
+/* 네이버 지도 스타일 */
 .naver-map {
-  width: 100%;
-  height: 50vh;
-  min-height: 300px;
-  max-height: 600px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
+  width: 100%; /* 너비 100% */
+  height: 50vh; /* 높이 뷰포트 높이의 50% */
+  min-height: 300px; /* 최소 높이 */
+  max-height: 600px; /* 최대 높이 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  margin-bottom: 20px; /* 하단 외부 여백 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  position: relative; /* 상대 위치 지정 */
 }
 
-/* ��Ŀ �Է� �� */
+/* 마커 입력 폼 스타일 */
 .travel-form {
-  background-color: #fff4f7;
-  border: 1px solid #ffcdd2;
-  padding: 12px 16px;
-  border-radius: 16px;
-  width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 80px;
+  background-color: #fff4f7; /* 배경색 연한 분홍 */
+  border: 1px solid #ffcdd2; /* 테두리 연한 빨강 */
+  padding: 12px 16px; /* 내부 여백 */
+  border-radius: 16px; /* 모서리 둥글게 */
+  width: 100%; /* 너비 100% */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 배치 */
+  gap: 6px; /* 아이템 간 간격 */
+  margin-bottom: 80px; /* 하단 외부 여백 */
 }
 
+/* 폼 제목 스타일 */
 .travel-form h3 {
-  font-size: 16px;
-  margin-bottom: 2px;
-  font-weight: bold;
-  color: #c2185b;
+  font-size: 16px; /* 글자 크기 */
+  margin-bottom: 2px; /* 하단 외부 여백 */
+  font-weight: bold; /* 글자 굵게 */
+  color: #c2185b; /* 글자색 진한 분홍 */
 }
 
+/* 폼 단락 스타일 */
 .travel-form p {
-  margin: 0 0 6px;
-  font-size: 14px;
-  color: #444;
+  margin: 0 0 6px; /* 하단 외부 여백 */
+  font-size: 14px; /* 글자 크기 */
+  color: #444; /* 글자색 */
 }
 
+/* 폼 텍스트 영역 스타일 */
 .travel-form textarea {
-  width: 100%;
-  min-height: 60px;
-  resize: vertical;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-  line-height: 1.4;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%; /* 너비 100% */
+  min-height: 60px; /* 최소 높이 */
+  resize: vertical; /* 세로로만 크기 조절 가능 */
+  padding: 10px; /* 내부 여백 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  border: 1px solid #ddd; /* 테두리 */
+  font-size: 14px; /* 글자 크기 */
+  line-height: 1.4; /* 줄 간격 */
+  transition: border-color 0.3s, box-shadow 0.3s; /* 테두리 색상 및 그림자 효과에 트랜지션 적용 */
 }
 
+/* 폼 텍스트 영역 포커스 시 스타일 */
 .travel-form textarea:focus {
-  outline: none;
-  border-color: #f48fb1;
-  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2);
+  outline: none; /* 아웃라인 제거 */
+  border-color: #f48fb1; /* 테두리 색상 변경 */
+  box-shadow: 0 0 0 2px rgba(244, 143, 177, 0.2); /* 그림자 효과 */
 }
 
-/* ���� ��ư */
+/* 타입 선택 버튼 그룹 스타일 */
 .travel-form .type-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 4px;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  gap: 8px; /* 버튼 간 간격 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  margin-top: 4px; /* 상단 외부 여백 */
 }
 
+/* 타입 선택 버튼 스타일 */
 .travel-form .type-buttons button {
-  flex: 1;
-  padding: 6px 10px;
-  border: 2px solid #f48fb1;
-  background-color: white;
-  color: #f48fb1;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 20px;
-  transition: all 0.2s ease-in-out;
-  font-size: 14px;
+  flex: 1; /* 남은 공간을 모두 차지 */
+  padding: 6px 10px; /* 내부 여백 */
+  border: 2px solid #f48fb1; /* 테두리 분홍색 */
+  background-color: white; /* 배경색 흰색 */
+  color: #f48fb1; /* 글자색 분홍색 */
+  font-weight: bold; /* 글자 굵게 */
+  cursor: pointer; /* 커서 포인터 */
+  border-radius: 20px; /* 모서리 둥글게 */
+  transition: all 0.2s ease-in-out; /* 모든 속성 변화에 트랜지션 적용 */
+  font-size: 14px; /* 글자 크기 */
 }
 
+/* 활성화된 타입 선택 버튼 스타일 */
 .travel-form .type-buttons button.active {
-  background-color: #f48fb1;
-  color: white;
+  background-color: #f48fb1; /* 배경색 분홍색 */
+  color: white; /* 글자색 흰색 */
 }
 
+/* 폼 액션 버튼 그룹 스타일 */
 .travel-form .form-actions {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-  margin-top: 6px;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  gap: 6px; /* 버튼 간 간격 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  margin-top: 6px; /* 상단 외부 여백 */
 }
 
+/* 폼 액션 버튼 스타일 */
 .travel-form .form-actions button {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 14px;
+  padding: 6px 14px; /* 내부 여백 */
+  border: none; /* 테두리 없음 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  font-weight: bold; /* 글자 굵게 */
+  cursor: pointer; /* 커서 포인터 */
+  font-size: 14px; /* 글자 크기 */
 }
 
+/* 저장 버튼 스타일 */
 .travel-form .form-actions .save {
-  background-color: #f48fb1;
-  color: white;
+  background-color: #f48fb1; /* 배경색 분홍색 */
+  color: white; /* 글자색 흰색 */
 }
 
+/* 취소 버튼 스타일 */
 .travel-form .form-actions .cancel {
-  background-color: #f0f0f0;
-  color: #666;
+  background-color: #f0f0f0; /* 배경색 연한 회색 */
+  color: #666; /* 글자색 */
 }
 
-/* ��� ��� */
+/* 마커 댓글 모달 스타일 (현재는 사용되지 않음 - 추후 개발 예정) */
 .marker-comment-modal {
-  margin-top: 16px;
-  padding: 12px;
-  background-color: #fff9fa;
-  border: 1px solid #f8bbd0;
-  border-radius: 12px;
-  width: 100%;
+  margin-top: 16px; /* 상단 외부 여백 */
+  padding: 12px; /* 내부 여백 */
+  background-color: #fff9fa; /* 배경색 연한 분홍 */
+  border: 1px solid #f8bbd0; /* 테두리 연한 빨강 */
+  border-radius: 12px; /* 모서리 둥글게 */
+  width: 100%; /* 너비 100% */
 }
 
+/* 마커 댓글 모달 제목 스타일 */
 .marker-comment-modal h3 {
-  margin-bottom: 4px;
-  font-size: 15px;
-  color: #d81b60;
+  margin-bottom: 4px; /* 하단 외부 여백 */
+  font-size: 15px; /* 글자 크기 */
+  color: #d81b60; /* 글자색 진한 분홍 */
 }
 
+/* 마커 댓글 목록 스타일 */
 .marker-comment-modal .comment-list {
-  margin: 8px 0;
-  padding: 8px;
-  background-color: #fce4ec;
-  border-radius: 8px;
-  max-height: 150px;
-  overflow-y: auto;
+  margin: 8px 0; /* 상하 외부 여백 */
+  padding: 8px; /* 내부 여백 */
+  background-color: #fce4ec; /* 배경색 연한 분홍 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  max-height: 150px; /* 최대 높이 */
+  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 */
 }
 
+/* 마커 댓글 입력 필드 스타일 */
 .marker-comment-modal input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 6px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  width: 100%; /* 너비 100% */
+  padding: 8px; /* 내부 여백 */
+  margin-bottom: 6px; /* 하단 외부 여백 */
+  border: 1px solid #ddd; /* 테두리 */
+  border-radius: 8px; /* 모서리 둥글게 */
 }
 
+/* 마커 댓글 버튼 스타일 */
 .marker-comment-modal button {
-  padding: 6px 12px;
-  margin-right: 6px;
-  background-color: #f06292;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
+  padding: 6px 12px; /* 내부 여백 */
+  margin-right: 6px; /* 오른쪽 외부 여백 */
+  background-color: #f06292; /* 배경색 진한 분홍 */
+  color: white; /* 글자색 흰색 */
+  border: none; /* 테두리 없음 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  font-weight: bold; /* 글자 굵게 */
+  cursor: pointer; /* 커서 포인터 */
 }

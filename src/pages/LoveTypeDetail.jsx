@@ -4,7 +4,7 @@ import RandomImage from "../RandomImage";
 import { useNavigate } from "react-router-dom";
 import usePageLogger from "../hooks/usePageLogger";
 
-// ✅ Q&A 출력용 컴포넌트 (사용 중이면 유지, 사용 안 하면 제거 가능)
+// Helper component for displaying Q&A pairs
 const QA = ({ q, a }) => (
   <div className="lovetype-qa">
     <span className="lovetype-q">Q.</span> {q}
@@ -13,7 +13,7 @@ const QA = ({ q, a }) => (
   </div>
 );
 
-// ✅ 테이블형 데이터 표현용
+// Helper component for displaying tabular data
 const Table = ({ rows, head }) => (
   <table className="lovetype-table">
     {head && (
@@ -29,26 +29,27 @@ const Table = ({ rows, head }) => (
   </table>
 );
 
-// ✅ 각 섹션 제목 앞에 붙는 뱃지
+// Helper component for displaying section badges
 const SectionBadge = ({ icon, label }) => (
   <span className="lovetype-section-badge">{icon} {label}</span>
 );
 
-// ✅ 랜덤 이미지 삽입 함수 (2,4,6번째 뒤에 삽입)
+// Function to insert RandomImage components into sections at specific positions
 const getSectionsWithImages = (sections) => {
-  const insertPositions = [1, 3, 5];
+  const insertPositions = [1, 3, 5]; // Positions (0-indexed) after which to insert images
   let result = [];
   let imgIdx = 0;
   sections.forEach((sec, idx) => {
-    result.push(sec);
+    result.push(sec); // Add the current section
     if (insertPositions.includes(idx)) {
+      // If the current index is in the insertPositions, add a RandomImage
       result.push(<RandomImage key={`img-${imgIdx++}`} />);
     }
   });
   return result;
 };
 
-
+// Sections for Sanghyun's love type profile
 const sanghyunSections = [
   (<section className="lovetype-section" key="sec1">
     <SectionBadge icon="☕" label="선호" />
@@ -59,8 +60,7 @@ const sanghyunSections = [
     <p>한식, 중식, 일식, 양식, 고기, 회, 향신료, 매운 음식, 면, 국/탕, 소주, 맥주, 칵테일, 막걸리, 분식, 치킨, 빵, 커피, 차</p>
   </section>),
 
-  (<RandomImage key="img-1" />),
-
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec2">
     <SectionBadge icon="🧠" label="사고방식" />
     <h3>2. 개방성과 신뢰</h3>
@@ -78,13 +78,13 @@ const sanghyunSections = [
     <b>◼ 개인적인 문제, 생활패턴, 직장 학교 등 바꿀 수 없는 환경 떄문에 연인이 나에 대해 배려해 주었으면 하는 것은 무엇인가요?</b>
     <p>나의 사고방식, 신념</p>
     <b>◼ 내가 생각하는 배려란 무엇인가요?</b>
-    <p>상대방이 원하는걸 해주는 것<br/>
+    <p>상대방이 원하는걸 해주는 것<br />
     ps.내 생각에는 배려라도 상대방이 원하지 않으면 싫을수 있기에</p>
     <b>◼ 내가 생각하는 연애에서 리드란 무엇인가요?</b>
     <p>데이트든 뭐든 먼저 방향을 잡는 것</p>
   </section>),
-    (<RandomImage key="img-2" />),
 
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec4">
     <SectionBadge icon="📱" label="SNS & 첫인상" />
     <h3>4. SNS 표현과 고민, 첫인상</h3>
@@ -116,12 +116,12 @@ const sanghyunSections = [
     <p>직설적으로 말해줬으면 함 그게 너무 힘들면 간접적으로라도</p>
     <b>◼ 나는 바라거나 원하는 것이 있을 때, 어떻게 상대방에게 이야기하나요?</b>
     <p>직접 말함 대신 고민후에...</p>
-    <b>◼ 나는 주로 ( 불안해질 ) 때 힘들어,<br/>
-    그래서 나는 힘이 들 때 주로 ( 불안하다고 말하는 ) 식으로 행동을 하는 편이야,<br/>
+    <b>◼ 나는 주로 ( 불안해질 ) 때 힘들어,<br />
+    그래서 나는 힘이 들 때 주로 ( 불안하다고 말하는 ) 식으로 행동을 하는 편이야,<br />
     그럴 때는 네가 ( 내가 우선이라는걸 말이나 행동으로 ) 해주면 내가 좀 더 마음이 편안해질 것 같아.</b>
   </section>),
-    (<RandomImage key="img-3" />),
 
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec7">
     <SectionBadge icon="📞" label="연락과 질투" />
     <h3>7. 연락과 감정 표현</h3>
@@ -152,14 +152,14 @@ const sanghyunSections = [
     <SectionBadge icon="💢" label="질투 & 개인 활동" />
     <h3>9. 질투와 혼자/함께의 행복</h3>
     <b>◼ 연인이 다른 사람들에게 하는 행동을 보고 질투심을 느껴본 적이 있다면 이유가 무엇인가요?</b>
-    <p>나말고 모두에게 친절하고 착할 때<br/>그래도 타인에게는 선이 있었으면 좋겠고 나한테 좀 더 친절하고 착하게 대해주면 좋겠다.</p>
+    <p>나말고 모두에게 친절하고 착할 때<br />그래도 타인에게는 선이 있었으면 좋겠고 나한테 좀 더 친절하고 착하게 대해주면 좋겠다.</p>
     <b>◼ 연인과 같이 하는 활동이 아닌 혼자서 어떤 활동을 할 때 행복감을 느끼나요?</b>
     <p>시사나 경제 관련 뉴스나 영상보기, 역사지식이나 상식을 증진시켜 줄 수 있는 영상보기, 노래부르기</p>
     <b>◼ 나는 연인과 같이 어떤 활동을 할 때, 행복감을 느끼나요?</b>
     <p>같이 어떠한 주제로 얘기를 나누며 서로의 '생각'을 공유하기, 땡기는 안주 정해서 같이 술먹기, 같이 장보러가기, 산책하기, 트래킹가기, 사진 스팟 보이면 사진 찍기, 같이 꼭 안고 누워있기</p>
   </section>),
-    (<RandomImage key="img-4" />),
 
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec10">
     <SectionBadge icon="💖" label="사랑과 행복" />
     <h3>10. 사랑과 행복의 의미</h3>
@@ -178,9 +178,9 @@ const sanghyunSections = [
       특히나 이들은 당신에게 말로써 인정받고 싶어 하기 때문에 식당에서 먼저 물을 따라주는 것 등 항상 사소한 것들의 표현을 꼭 해주세요.
       그러면 그것에 더 기분이 좋아지고 마치 어린아이처럼 당신을 위해 더 많은 노력과 배려를 할 것입니다. "고마워. 네가 최고야" 이란 표현들을 더 적극적으로 많이 해주세요.
       상대를 칭찬하는 것이 아니라 그 사람이 노력한 부분을 짚어서 이야기해준다면 효과는 더더욱 배가 됩니다.
-      <br/><br/>
-      "오늘 데이트 정말 즐거웠어 (X)"<br/>
-      "오늘 네가 짜온 데이트 정말 즐거웠어 (O)"<br/><br/>
+      <br /><br />
+      "오늘 데이트 정말 즐거웠어 (X)"<br />
+      "오늘 네가 짜온 데이트 정말 즐거웠어 (O)"<br /><br />
       '사랑해'라는 말도 좋지만 이들에게는 '고마워'라는 말이 더 효과적입니다.
     </p>
 
@@ -217,6 +217,7 @@ const sanghyunSections = [
   </section>),
 ];
 
+// Sections for Hyeeun's love type profile
 const hyeeunSections = [
   (<section className="lovetype-section" key="sec1">
     <SectionBadge icon="☕" label="선호" />
@@ -227,8 +228,7 @@ const hyeeunSections = [
     <p>한식, 중식, 일식🤔, 양식🤔, 고기, 회, 매운 음식🤔, 국/탕, 소주, 맥주, 칵테일, 막걸리, 치킨, 빵, 커피, 차</p>
   </section>),
 
-  (<RandomImage key="img-1" />),
-
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec2">
     <SectionBadge icon="🧠" label="사고방식" />
     <h3>2. 개방성과 신뢰</h3>
@@ -251,8 +251,7 @@ const hyeeunSections = [
     <p>주도권을 가지고 이끌어 가는 것</p>
   </section>),
 
-  (<RandomImage key="img-2" />),
-
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec4">
     <SectionBadge icon="📱" label="SNS & 고민" />
     <h3>4. SNS 표현과 고민, 첫인상</h3>
@@ -284,12 +283,12 @@ const hyeeunSections = [
     <p>말로 해줘도 되고 눈치 주면 내가 찰떡같이 알아들을게</p>
     <b>◼ 나는 바라거나 원하는 것이 있을 때, 어떻게 상대방에게 이야기하나요?</b>
     <p>말하지 않음</p>
-    <b>◼ 나는 주로 ( 내 주변 가까운 사람이 힘든 상황이 오거나 아플 ) 때 힘들어,<br/>
-    그래서 나는 힘이 들 때 주로 ( 혼자 있는 시간을 갖는 ) 식으로 행동을 하는 편이야,<br/>
+    <b>◼ 나는 주로 ( 내 주변 가까운 사람이 힘든 상황이 오거나 아플 ) 때 힘들어,<br />
+    그래서 나는 힘이 들 때 주로 ( 혼자 있는 시간을 갖는 ) 식으로 행동을 하는 편이야,<br />
     그럴 때는 네가 ( 나를 가만히 내버려두게 ) 해주면 내가 좀 더 마음이 편안해질 것 같아.</b>
   </section>),
-    (<RandomImage key="img-3" />),
 
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec7">
     <SectionBadge icon="📞" label="연락과 배려" />
     <h3>7. 감정 표현과 로망</h3>
@@ -326,8 +325,8 @@ const hyeeunSections = [
     <b>◼ 나는 연인과 같이 어떤 활동을 할 때, 행복감을 느끼나요?</b>
     <p>즉흥으로 여행가는 거, 조용한 곳 산책하기, 누가 더 잘 찍었나 사진 대결하기, 커피 사서 피크닉하기, 끌리는 음식에 술 마시기, 포즈 정해서 인생네컷 찍기, 같이 누워서 오빠가 좋아하는 영화 보기</p>
   </section>),
-    (<RandomImage key="img-4" />),
 
+  // RandomImage will be inserted here by getSectionsWithImages
   (<section className="lovetype-section" key="sec10">
     <SectionBadge icon="💖" label="사랑과 행복" />
     <h3>10. 사랑과 행복의 의미</h3>
@@ -382,10 +381,12 @@ const hyeeunSections = [
   </section>),
 ];
 
+// Main LoveTypeDetail component
 const LoveTypeDetail = ({ who }) => {
-  usePageLogger();
-  const navigate = useNavigate(); // ✅ navigate 선언 누락 방지
+  usePageLogger(); // Log page visits
+  const navigate = useNavigate(); // Hook for navigation
 
+  // Map to store profiles for Sanghyun and Hyeeun
   const profileMap = {
     sanghyun: {
       name: "상현",
@@ -399,6 +400,7 @@ const LoveTypeDetail = ({ who }) => {
     },
   };
 
+  // Get the current profile based on the 'who' prop, or a default if not found
   const { name, type, sections } = profileMap[who] || {
     name: "알 수 없음",
     type: "-",
@@ -408,9 +410,9 @@ const LoveTypeDetail = ({ who }) => {
   return (
     <div className="lovetype-container vertical">
       <button className="back-home-btn" onClick={() => navigate("/")}>
-        ← 홈으로
+        ← 홈으로 {/* Button to navigate back to the home page */}
       </button>
-      <h2>{name}의 연애 심리 리포트</h2>
+      <h2>{name}의 연애 심리 리포트</h2> {/* Display the name */}
       <div
         style={{
           color: "#6abf7a",
@@ -418,12 +420,11 @@ const LoveTypeDetail = ({ who }) => {
           marginBottom: "1.2rem",
         }}
       >
-        ({type})
+        ({type}) {/* Display the love type */}
       </div>
-      {getSectionsWithImages(sections)}
+      {getSectionsWithImages(sections)} {/* Render sections with inserted images */}
     </div>
   );
 };
 
-
-export default LoveTypeDetail;
+export default LoveTypeDetail; // Export the component

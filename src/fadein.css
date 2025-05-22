@@ -1,9 +1,19 @@
+/* 요소가 처음 로드될 때의 상태 */
 .fadein-up-section {
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 0; /* 초기 투명도를 0으로 설정하여 보이지 않게 합니다. */
+  transform: translateY(40px); /* 요소를 Y축으로 40px 아래로 이동시킵니다. */
+  /*
+   * transition 속성: opacity와 transform 속성 변화에 애니메이션을 적용합니다.
+   * - opacity 0.9s cubic-bezier(.23,1.01,.32,1): 투명도 변화에 0.9초 동안 지정된 큐빅-베지어 이징 함수를 사용합니다.
+   * (cubic-bezier(.23,1.01,.32,1)는 시작은 느리게, 중간에 빠르게, 끝에 약간 튕기는 듯한 효과를 줍니다.)
+   * - transform 0.9s cubic-bezier(.23,1.01,.32,1): 변형(이동) 변화에도 동일하게 0.9초 동안 지정된 큐빅-베지어 이징 함수를 사용합니다.
+   */
   transition: opacity 0.9s cubic-bezier(.23,1.01,.32,1), transform 0.9s cubic-bezier(.23,1.01,.32,1);
 }
+
+/* 요소가 'is-visible' 클래스를 가질 때의 상태 (페이드인 애니메이션 완료) */
 .fadein-up-section.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1; /* 투명도를 1로 설정하여 완전히 보이게 합니다. */
+  transform: translateY(0); /* 요소를 원래 위치(Y축 0px)로 이동시킵니다. */
+  /* transition은 .fadein-up-section에 이미 정의되어 있어, 이 클래스가 추가될 때 해당 트랜지션이 발동됩니다. */
 }

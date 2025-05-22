@@ -2,264 +2,287 @@
 
 /* 기본 레이아웃 */
 .travel-photo-gallery {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: #ffffff;
-  position: relative;
-  overflow: hidden;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 정렬 */
+  height: 100vh; /* 뷰포트 높이에 맞춤 */
+  background-color: #ffffff; /* 흰색 배경 */
+  position: relative; /* 자식 요소의 절대 위치 기준 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
 }
 
-/* 로딩 상태 */
+/* 로딩 상태 컨테이너 */
 .loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 1rem;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  justify-content: center; /* 세로축 중앙 정렬 */
+  height: 100%; /* 부모 높이에 맞춤 */
+  gap: 1rem; /* 아이템 간 간격 */
 }
 
+/* 로딩 스피너 */
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #f48fb1;
-  animation: spin 1s ease-in-out infinite;
+  width: 40px; /* 너비 */
+  height: 40px; /* 높이 */
+  border: 4px solid rgba(0, 0, 0, 0.1); /* 옅은 회색 테두리 */
+  border-radius: 50%; /* 원형 */
+  border-top-color: #f48fb1; /* 상단 테두리 색상 (분홍색) */
+  animation: spin 1s ease-in-out infinite; /* spin 애니메이션 적용 */
 }
 
+/* 스피너 회전 애니메이션 키프레임 */
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to { transform: rotate(360deg); } /* 360도 회전 */
 }
 
-/* 에러 / 빈 상태 */
+/* 에러 및 빈 갤러리 상태 컨테이너 */
 .error-container,
 .empty-gallery {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  text-align: center;
-  padding: 1rem;
-  gap: 1rem;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 정렬 */
+  align-items: center; /* 가로축 중앙 정렬 */
+  justify-content: center; /* 세로축 중앙 정렬 */
+  height: 100%; /* 부모 높이에 맞춤 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  padding: 1rem; /* 내부 여백 */
+  gap: 1rem; /* 아이템 간 간격 */
 }
 
 /* 뒤로가기 버튼 */
 .back-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #f48fb1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.2s;
+  padding: 0.75rem 1.5rem; /* 내부 여백 */
+  background-color: #f48fb1; /* 분홍색 배경 */
+  color: white; /* 흰색 글자 */
+  border: none; /* 테두리 없음 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  font-size: 1rem; /* 글자 크기 */
+  font-weight: 600; /* 글자 굵기 */
+  cursor: pointer; /* 커서 포인터 */
+  display: inline-flex; /* 인라인 Flexbox 사용 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  gap: 0.5rem; /* 아이템 간 간격 */
+  transition: background-color 0.2s; /* 배경색 변화 시 부드러운 전환 */
 }
 
+/* 뒤로가기 버튼 호버 효과 */
 .back-button:hover {
-  background-color: #f06292;
+  background-color: #f06292; /* 호버 시 더 진한 분홍색 */
 }
 
-/* 헤더 */
+/* 갤러리 헤더 */
 .gallery-header {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  position: relative;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  padding: 1rem; /* 내부 여백 */
+  background-color: white; /* 흰색 배경 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  z-index: 10; /* 다른 요소 위에 표시 */
+  position: relative; /* 자식 요소의 절대 위치 기준 */
 }
 
+/* 갤러리 헤더 제목 */
 .gallery-header h1 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  margin: 0; /* 외부 여백 없음 */
+  font-size: 1.25rem; /* 글자 크기 */
+  font-weight: 600; /* 글자 굵기 */
+  color: #333; /* 글자색 */
 }
 
+/* 마커 사유 텍스트 */
 .marker-reason {
-  margin-left: 1rem;
-  color: #666;
-  font-size: 0.9rem;
-  word-break: keep-all;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  max-width: 300px;
+  margin-left: 1rem; /* 왼쪽 외부 여백 */
+  color: #666; /* 글자색 */
+  font-size: 0.9rem; /* 글자 크기 */
+  word-break: keep-all; /* 단어 단위로 줄바꿈 */
+  white-space: normal; /* 일반적인 줄바꿈 허용 */
+  overflow: visible; /* 내용이 넘쳐도 숨기지 않음 */
+  text-overflow: unset; /* 텍스트 오버플로우 처리 안 함 */
+  max-width: 300px; /* 최대 너비 */
 }
 
+/* 미디어 쿼리: 화면 너비 640px 이상 */
 @media (min-width: 640px) {
   .marker-reason {
-    font-size: 1rem;
-    max-width: 360px;
+    font-size: 1rem; /* 글자 크기 */
+    max-width: 360px; /* 최대 너비 */
   }
 }
 
+/* 공간 채우기용 스페이서 */
 .spacer {
-  flex: 1;
+  flex: 1; /* 남은 공간을 모두 차지 */
 }
 
 /* 📸 사진 그리드 */
 .photo-grid {
-  padding: 1rem 1rem 5rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* ✅ 모바일 기준 3줄 강제 */
-  gap: 0.75rem;
+  padding: 1rem 1rem 5rem; /* 상하좌우 내부 여백 */
+  display: grid; /* Grid 레이아웃 사용 */
+  grid-template-columns: repeat(3, 1fr); /* ✅ 모바일 기준 3줄 강제 (각 컬럼이 동일한 너비) */
+  gap: 0.75rem; /* 그리드 아이템 간 간격 */
 }
 
+/* 미디어 쿼리: 화면 너비 768px 이상 */
 @media (min-width: 768px) {
   .photo-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr); /* 4줄로 변경 */
+    gap: 1rem; /* 간격 증가 */
   }
 }
 
+/* 미디어 쿼리: 화면 너비 1024px 이상 */
 @media (min-width: 1024px) {
   .photo-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.2rem;
+    grid-template-columns: repeat(5, 1fr); /* 5줄로 변경 */
+    gap: 1.2rem; /* 간격 증가 */
   }
 }
 
+/* 사진 썸네일 */
 .photo-thumbnail {
-  width: 100%;
-  aspect-ratio: 1 / 1; /* ✅ 정사각형 유지 */
-  background-color: #f0f0f0;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%; /* 너비 100% */
+  aspect-ratio: 1 / 1; /* ✅ 가로세로 비율 1:1 (정사각형 유지) */
+  background-color: #f0f0f0; /* 배경색 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  cursor: pointer; /* 커서 포인터 */
+  transition: transform 0.2s, box-shadow 0.2s; /* 변형 및 그림자 변화 시 부드러운 전환 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
 }
 
+/* 썸네일 이미지 */
 .photo-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; /* 너비 100% */
+  height: 100%; /* 높이 100% */
+  object-fit: cover; /* 이미지가 잘리더라도 공간을 채우도록 */
 }
 
-
+/* 썸네일 호버 효과 */
 .photo-thumbnail:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.03); /* 호버 시 1.03배 확대 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강화 */
 }
 
-/* 전체 화면 뷰어 */
+/* 전체 화면 뷰어 컨테이너 */
 .photo-viewer-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #000;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  touch-action: pan-y;
+  position: fixed; /* 고정 위치 */
+  top: 0; /* 상단에서 0 */
+  left: 0; /* 왼쪽에서 0 */
+  right: 0; /* 오른쪽에서 0 */
+  bottom: 0; /* 하단에서 0 */
+  background-color: #000; /* 검은색 배경 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향으로 아이템 정렬 */
+  touch-action: pan-y; /* 터치 스크롤 동작 (세로 스크롤만 허용) */
 }
 
+/* 전체 화면 뷰어 헤더 */
 .photo-viewer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  z-index: 2;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: space-between; /* 양 끝 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  padding: 1rem; /* 내부 여백 */
+  background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은색 배경 */
+  color: white; /* 흰색 글자 */
+  z-index: 2; /* 다른 요소 위에 표시 */
 }
 
+/* 사진 카운터 */
 .photo-counter {
-  font-size: 0.9rem;
-  opacity: 0.8;
+  font-size: 0.9rem; /* 글자 크기 */
+  opacity: 0.8; /* 투명도 */
 }
 
+/* 닫기 및 다운로드 버튼 */
 .close-button,
 .download-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  opacity: 0.8;
-  transition: opacity 0.2s;
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  color: white; /* 흰색 글자 */
+  font-size: 1.5rem; /* 글자 크기 */
+  cursor: pointer; /* 커서 포인터 */
+  padding: 0.5rem; /* 내부 여백 */
+  opacity: 0.8; /* 투명도 */
+  transition: opacity 0.2s; /* 투명도 변화 시 부드러운 전환 */
 }
 
+/* 닫기 및 다운로드 버튼 호버 효과 */
 .close-button:hover,
 .download-button:hover {
-  opacity: 1;
+  opacity: 1; /* 호버 시 투명도 증가 */
 }
 
+/* 전체 화면 뷰어 내용 컨테이너 */
 .photo-viewer-content {
-  flex: 1;
-  display: flex;
-  position: relative;
-  overflow: hidden;
+  flex: 1; /* 남은 공간을 모두 차지 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  position: relative; /* 자식 요소의 절대 위치 기준 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
 }
 
+/* 네비게이션 버튼 (이전/다음) */
 .nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.3);
-  border: none;
-  color: white;
-  width: 50px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
-  transition: background-color 0.2s;
+  position: absolute; /* 절대 위치 */
+  top: 50%; /* 상단에서 50% */
+  transform: translateY(-50%); /* 세로축 중앙 정렬 */
+  background: rgba(0, 0, 0, 0.3); /* 반투명 검은색 배경 */
+  border: none; /* 테두리 없음 */
+  color: white; /* 흰색 글자 */
+  width: 50px; /* 너비 */
+  height: 100px; /* 높이 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  cursor: pointer; /* 커서 포인터 */
+  z-index: 2; /* 다른 요소 위에 표시 */
+  transition: background-color 0.2s; /* 배경색 변화 시 부드러운 전환 */
 }
 
+/* 네비게이션 버튼 호버 효과 */
 .nav-button:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5); /* 호버 시 배경색 진하게 */
 }
 
+/* 이전 버튼 */
 .prev-button {
-  left: 0;
-  border-radius: 0 8px 8px 0;
+  left: 0; /* 왼쪽에서 0 */
+  border-radius: 0 8px 8px 0; /* 오른쪽만 둥글게 */
 }
 
+/* 다음 버튼 */
 .next-button {
-  right: 0;
-  border-radius: 8px 0 0 8px;
+  right: 0; /* 오른쪽에서 0 */
+  border-radius: 8px 0 0 8px; /* 왼쪽만 둥글게 */
 }
 
+/* 사진 컨테이너 */
 .photo-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
+  flex: 1; /* 남은 공간을 모두 차지 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  justify-content: center; /* 가로축 중앙 정렬 */
+  position: relative; /* 자식 요소의 절대 위치 기준 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
 }
 
+/* 전체 화면 사진 */
 .full-photo {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  touch-action: pan-x pan-y;
-  user-select: none;
-  -webkit-user-drag: none;
+  max-width: 100%; /* 최대 너비 100% */
+  max-height: 100%; /* 최대 높이 100% */
+  object-fit: contain; /* 이미지가 잘리지 않고 전체 보이도록 */
+  touch-action: pan-x pan-y; /* 터치 스크롤 동작 (가로/세로 스크롤 모두 허용) */
+  user-select: none; /* 텍스트 선택 방지 */
+  -webkit-user-drag: none; /* 이미지 드래그 방지 (Webkit 브라우저) */
 }
 
+/* 전체 화면 뷰어 푸터 */
 .photo-viewer-footer {
-  padding: 1rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 2;
+  padding: 1rem; /* 내부 여백 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  color: rgba(255, 255, 255, 0.8); /* 흰색 글자 (투명도 적용) */
+  font-size: 0.9rem; /* 글자 크기 */
+  background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은색 배경 */
+  z-index: 2; /* 다른 요소 위에 표시 */
 }

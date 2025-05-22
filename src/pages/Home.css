@@ -1,204 +1,220 @@
 /* 💖 공통 배경 섹션 */
-.home-container,
-.home-bg-section {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  min-height: 100vh;
+.home-container, /* 홈 컨테이너 (주로 배경을 담당) */
+.home-bg-section { /* 홈 배경 섹션 */
+  width: 100vw; /* 뷰포트 너비의 100%를 차지 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 자식 요소들을 세로 방향으로 정렬 */
+  align-items: center; /* 교차축(수평)에서 가운데 정렬 */
+  justify-content: center; /* 주축(수직)에서 가운데 정렬 */
+  background: transparent; /* 배경을 투명하게 설정 */
+  min-height: 100vh; /* 최소 높이를 뷰포트 높이의 100%로 설정 (스크롤 없어도 전체 화면 차지) */
 }
 
 /* 📦 카드 레이아웃 */
 .home-card {
-  width: 90vw;
-  max-width: 370px;
-  min-width: 320px;
-  margin: 0 auto;
-  padding: 32px 18px 22px;
-  background: rgba(255, 255, 255, 0.93);
-  border-radius: 22px;
-  box-shadow:
-    0 4px 32px rgba(255, 183, 197, 0.13),
-    0 1.5px 12px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
+  width: 90vw; /* 뷰포트 너비의 90%를 차지 */
+  max-width: 370px; /* 최대 너비를 370px로 제한 */
+  min-width: 320px; /* 최소 너비를 320px로 설정 */
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  padding: 32px 18px 22px; /* 상하좌우 내부 여백 설정 */
+  background: rgba(255, 255, 255, 0.93); /* 흰색 배경에 93% 투명도 적용 */
+  border-radius: 22px; /* 테두리 모서리를 둥글게 */
+  box-shadow: /* 그림자 효과 추가 (두 개의 그림자) */
+    0 4px 32px rgba(255, 183, 197, 0.13), /* 첫 번째 그림자 (핑크색 계열) */
+    0 1.5px 12px rgba(0, 0, 0, 0.06); /* 두 번째 그림자 (검은색 계열) */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-direction: column; /* 자식 요소들을 세로 방향으로 정렬 */
+  align-items: center; /* 교차축(수평)에서 가운데 정렬 */
+  position: relative; /* 자식 요소의 절대 위치 지정을 위한 기준점 설정 */
+}
+
+/* 📸 커플 메인 사진 래퍼 */
+.hero-photo-wrap {
+  width: 120px; /* 너비 설정 */
+  height: 120px; /* 높이 설정 */
+  border-radius: 50%; /* 원형으로 만듦 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 (원형 마스크 효과) */
+  box-shadow: 0 2px 14px #ffe6ef88; /* 그림자 효과 추가 */
+  margin-bottom: 18px; /* 아래쪽 외부 여백 설정 */
 }
 
 /* 📸 커플 메인 사진 */
-.hero-photo-wrap {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 2px 14px #ffe6ef88;
-  margin-bottom: 18px;
-}
-
 .hero-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 100%; /* 부모 요소 너비의 100% */
+  height: 100%; /* 부모 요소 높이의 100% */
+  object-fit: cover; /* 이미지를 잘라내어 컨테이너를 채움 */
+  border-radius: 50%; /* 원형으로 만듦 */
 }
 
-/* 💕 커플 이름 + 하트 */
+/* 💕 커플 이름 + 하트가 있는 행 */
 .hero-title-row {
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: #e2668d;
-  margin-bottom: 8px;
-  letter-spacing: -1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.45rem; /* 글자 크기 설정 */
+  font-weight: 700; /* 글자 굵기 설정 (볼드) */
+  color: #e2668d; /* 글자색 설정 (핑크 계열) */
+  margin-bottom: 8px; /* 아래쪽 외부 여백 설정 */
+  letter-spacing: -1px; /* 글자 간격 설정 (약간 좁게) */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
 }
 
+/* 💕 하트 아이콘 */
 .hero-heart {
-  color: #ffb6c1;
-  font-size: 1.1em;
-  margin: 0 2px;
+  color: #ffb6c1; /* 하트 색상 설정 (연한 핑크) */
+  font-size: 1.1em; /* 글자 크기 설정 (부모 글자 크기의 1.1배) */
+  margin: 0 2px; /* 좌우 외부 여백 설정 */
 }
 
-/* ✍️ 문구 */
-.hero-date,
-.home-calligraphy,
-.home-date-caption {
-  color: #b48b6c;
-  text-align: center;
+/* ✍️ 문구 공통 스타일 */
+.hero-date, /* D-Day 날짜 */
+.home-calligraphy, /* 캘리그라피 문구 */
+.home-date-caption { /* 날짜 캡션 */
+  color: #b48b6c; /* 글자색 설정 (갈색 계열) */
+  text-align: center; /* 텍스트 가운데 정렬 */
 }
 
+/* ✍️ D-Day 날짜 (현재 코드에서는 사용되지 않음) */
 .hero-date {
-  font-size: 1.05rem;
-  margin-bottom: 15px;
+  font-size: 1.05rem; /* 글자 크기 설정 */
+  margin-bottom: 15px; /* 아래쪽 외부 여백 설정 */
 }
 
+/* ✍️ 캘리그라피 문구 */
 .home-calligraphy {
-  font-family: 'Nanum Brush Script', 'Noto Sans KR', cursive;
-  font-size: 1.22rem;
-  margin-bottom: 7px;
+  font-family: 'Nanum Brush Script', 'Noto Sans KR', cursive; /* 글꼴 설정 (나눔 브러쉬 스크립트, 노토 산스 KR, 대체 폰트) */
+  font-size: 1.22rem; /* 글자 크기 설정 */
+  margin-bottom: 7px; /* 아래쪽 외부 여백 설정 */
 }
 
+/* ✍️ 날짜 캡션 */
 .home-date-caption {
-  font-size: 0.97rem;
-  color: #a7a7a7;
-  margin-bottom: 22px;
+  font-size: 0.97rem; /* 글자 크기 설정 */
+  color: #a7a7a7; /* 글자색 설정 (회색 계열) */
+  margin-bottom: 22px; /* 아래쪽 외부 여백 설정 */
 }
 
 /* 🕰️ D-Day 정보 */
 .home-d-day-info {
-  display: flex;
-  gap: 1.2rem;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.18rem;
-  margin: 2.2rem 0 1.2rem;
-  color: #2e4b7d;
+  display: flex; /* Flexbox 레이아웃 사용 */
+  gap: 1.2rem; /* 자식 요소들 사이의 간격 설정 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  font-size: 1.18rem; /* 글자 크기 설정 */
+  margin: 2.2rem 0 1.2rem; /* 상하 외부 여백 설정 */
+  color: #2e4b7d; /* 글자색 설정 (남색 계열) */
 }
 
+/* 🕰️ D-Day 시작 날짜 */
 .home-d-date {
-  font-weight: 500;
-  color: #7b8bb7;
+  font-weight: 500; /* 글자 굵기 설정 */
+  color: #7b8bb7; /* 글자색 설정 (회색-파랑 계열) */
 }
 
+/* 🕰️ D-Day 카운트 */
 .home-d-count {
-  font-weight: 600;
+  font-weight: 600; /* 글자 굵기 설정 */
 }
 
+/* 🕰️ D-Day 카운트의 굵은 숫자 부분 */
 .home-d-count b {
-  color: #d13b67;
-  font-size: 1.21em;
+  color: #d13b67; /* 글자색 설정 (진한 핑크 계열) */
+  font-size: 1.21em; /* 글자 크기 설정 (부모 글자 크기의 1.21배) */
 }
 
-/* 🎉 기념일 목록 */
-.home-anniversary-list,
-.home-anniversary-list-plain {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.3rem 2.2rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.7rem;
-  flex-direction: column;
+/* 🎉 기념일 목록 공통 */
+.home-anniversary-list, /* 기념일 목록 (주로 카드 스타일) */
+.home-anniversary-list-plain { /* 기념일 목록 (플레인 스타일) */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  justify-content: center; /* 주축(수평)에서 가운데 정렬 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  gap: 1.3rem 2.2rem; /* 행 간격 1.3rem, 열 간격 2.2rem */
+  flex-wrap: wrap; /* 컨테이너를 벗어나는 경우 다음 줄로 넘어가도록 설정 */
+  margin-bottom: 1.7rem; /* 아래쪽 외부 여백 설정 */
+  flex-direction: column; /* 자식 요소들을 세로 방향으로 정렬 */
 }
 
-.home-anniv-row,
-.home-anniv-row-plain {
-  font-size: 1.07rem;
-  display: flex;
-  gap: 0.5em;
-  align-items: center;
-  letter-spacing: -0.2px;
+/* 🎉 기념일 개별 행 공통 */
+.home-anniv-row, /* 기념일 개별 행 (카드 스타일) */
+.home-anniv-row-plain { /* 기념일 개별 행 (플레인 스타일) */
+  font-size: 1.07rem; /* 글자 크기 설정 */
+  display: flex; /* Flexbox 레이아웃 사용 */
+  gap: 0.5em; /* 자식 요소들 사이의 간격 설정 */
+  align-items: center; /* 교차축(수직)에서 가운데 정렬 */
+  letter-spacing: -0.2px; /* 글자 간격 설정 (약간 좁게) */
 }
 
+/* 🎉 기념일 개별 행 (카드 스타일) */
 .home-anniv-row {
-  background: #f8fafd;
-  border: 1.2px solid #e0e9f7;
-  border-radius: 14px;
-  padding: 0.58em 1.25em 0.52em;
-  color: #2e4b7d;
-  min-width: 110px;
-  box-shadow: 0 2px 8px rgba(46, 75, 125, 0.04);
+  background: #f8fafd; /* 배경색 설정 */
+  border: 1.2px solid #e0e9f7; /* 테두리 설정 */
+  border-radius: 14px; /* 테두리 모서리를 둥글게 */
+  padding: 0.58em 1.25em 0.52em; /* 상하좌우 내부 여백 설정 */
+  color: #2e4b7d; /* 글자색 설정 */
+  min-width: 110px; /* 최소 너비 설정 */
+  box-shadow: 0 2px 8px rgba(46, 75, 125, 0.04); /* 그림자 효과 추가 */
 }
 
+/* 🎉 기념일 개별 행 (플레인 스타일) */
 .home-anniv-row-plain {
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
+  padding: 0; /* 내부 여백 제거 */
 }
 
+/* 🎉 기념일 라벨 (예: 100일, 200일) */
 .home-anniv-label {
-  font-weight: 600;
-  color: #d13b67;
+  font-weight: 600; /* 글자 굵기 설정 */
+  color: #d13b67; /* 글자색 설정 (진한 핑크 계열) */
 }
 
+/* 🎉 기념일 날짜 */
 .home-anniv-date {
-  font-weight: 500;
-  color: #365699;
+  font-weight: 500; /* 글자 굵기 설정 */
+  color: #365699; /* 글자색 설정 (파랑 계열) */
 }
 
+/* 🎉 기념일 요일 */
 .home-anniv-day {
-  font-size: 0.99em;
-  color: #8a9bb7;
+  font-size: 0.99em; /* 글자 크기 설정 */
+  color: #8a9bb7; /* 글자색 설정 (회색-파랑 계열) */
+}
+
+/* 📂 전체 갤러리 버튼 래퍼 */
+.gallery-button-wrap {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  margin-top: 1.5rem; /* 위쪽 외부 여백 설정 */
+  margin-bottom: 80px; /* 아래쪽 외부 여백 설정 (MusicPlayer와 겹치지 않게) */
 }
 
 /* 📂 전체 갤러리 버튼 */
-.gallery-button-wrap {
-  text-align: center;
-  margin-top: 1.5rem;
-  margin-bottom: 80px; /* ⬇️ MusicPlayer와 겹치지 않게 */
-}
-
 .full-gallery-button {
-  background-color: #ff875e;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  background-color: #ff875e; /* 배경색 설정 */
+  color: white; /* 글자색 설정 */
+  border: none; /* 테두리 제거 */
+  padding: 10px 16px; /* 상하좌우 내부 여백 설정 */
+  border-radius: 12px; /* 테두리 모서리를 둥글게 */
+  font-size: 1rem; /* 글자 크기 설정 */
+  font-weight: bold; /* 글자 굵기 설정 */
+  cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
+  transition: background-color 0.3s ease; /* 배경색 변경 시 0.3초 동안 부드러운 애니메이션 효과 */
 }
 
+/* 📂 전체 갤러리 버튼 호버 효과 */
 .full-gallery-button:hover {
-  background-color: #ff6b3d;
+  background-color: #ff6b3d; /* 마우스 오버 시 배경색 변경 */
 }
 
-/* 📱 모바일 반응형 */
+/* 📱 모바일 반응형 (화면 너비가 600px 이하일 때 적용) */
 @media (max-width: 600px) {
   .home-card {
-    max-width: 98vw;
-    min-width: 0;
-    padding: 18px 4px 14px;
+    max-width: 98vw; /* 최대 너비를 뷰포트 너비의 98%로 설정 */
+    min-width: 0; /* 최소 너비 제한 해제 */
+    padding: 18px 4px 14px; /* 내부 여백 조정 */
   }
 
   .hero-photo-wrap {
-    width: 90px;
-    height: 90px;
+    width: 90px; /* 너비 조정 */
+    height: 90px; /* 높이 조정 */
   }
 }

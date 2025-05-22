@@ -1,55 +1,57 @@
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  background: rgba(255, 240, 245, 0.95); /* 은은한 분홍 배경 */
-  border-top: 1px solid #fcdde8;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 6px 0;
-  z-index: 1000;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(6px);
+  position: fixed; /* 뷰포트에 고정되어 스크롤해도 위치가 변하지 않습니다. */
+  bottom: 0; /* 화면 하단에 위치합니다. */
+  left: 0; /* 화면 좌측에 정렬됩니다. */
+  width: 100vw; /* 뷰포트의 전체 너비를 차지합니다. */
+  background: rgba(255, 240, 245, 0.95); /* 은은한 분홍색 배경에 95%의 투명도를 줍니다. */
+  border-top: 1px solid #fcdde8; /* 상단에 얇은 연분홍색 테두리를 추가합니다. */
+  display: flex; /* 내부 아이템들을 Flexbox를 사용하여 정렬합니다. */
+  justify-content: space-around; /* 아이템들 주위에 균등한 공간을 배분하여 정렬합니다. */
+  align-items: center; /* 아이템들을 세로축(교차축) 중앙에 정렬합니다. */
+  padding: 6px 0; /* 상하 6px의 패딩을 주고, 좌우 패딩은 없습니다. */
+  z-index: 1000; /* 다른 요소들 위에 표시되도록 높은 z-index를 설정합니다. */
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05); /* 하단에서 위로 올라오는 그림자 효과를 추가합니다. */
+  backdrop-filter: blur(6px); /* 배경에 블러(흐림) 효과를 줍니다. (하위 브라우저 호환성 주의) */
 }
 
 .bottom-nav-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: none;
-  border: none;
-  font-size: 0.73rem;
-  color: #a06d7d; /* 부드러운 진분홍톤 */
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 56px;
+  display: flex; /* 버튼 내부의 아이콘과 텍스트를 Flexbox로 정렬합니다. */
+  flex-direction: column; /* 아이콘과 텍스트를 세로로 정렬합니다. */
+  align-items: center; /* 아이템들을 가로축(교차축) 중앙에 정렬합니다. */
+  background: none; /* 배경색을 없앱니다. */
+  border: none; /* 테두리를 없앱니다. */
+  font-size: 0.73rem; /* 텍스트 글자 크기를 설정합니다. */
+  color: #a06d7d; /* 부드러운 진분홍톤의 글자 색상을 설정합니다. */
+  cursor: pointer; /* 마우스 오버 시 커서 모양을 포인터로 변경하여 클릭 가능함을 나타냅니다. */
+  transition: all 0.2s ease; /* 모든 속성 변화에 0.2초 동안 부드러운 전환 효과를 적용합니다. */
+  min-width: 56px; /* 버튼의 최소 너비를 설정합니다. */
 }
 
 .bottom-nav-btn span {
-  margin-top: 3px;
-  font-weight: 500;
+  margin-top: 3px; /* 텍스트 상단에 3px의 여백을 줍니다. */
+  font-weight: 500; /* 텍스트 글자를 중간 굵기로 설정합니다. */
 }
 
 .bottom-nav-btn svg {
-  transition: transform 0.2s ease, color 0.2s ease;
-  color: #a06d7d;
+  transition: transform 0.2s ease, color 0.2s ease; /* 아이콘의 변형과 색상 변화에 부드러운 전환 효과를 적용합니다. */
+  color: #a06d7d; /* 아이콘 색상을 부드러운 진분홍톤으로 설정합니다. */
 }
 
 .bottom-nav-btn.active {
-  color: #e2668d;
-  font-weight: 600;
-  transform: scale(1.05);
+  color: #e2668d; /* 활성화된 버튼의 텍스트 색상을 더 진한 핑크로 변경합니다. */
+  font-weight: 600; /* 활성화된 버튼의 텍스트를 더 굵게 만듭니다. */
+  transform: scale(1.05); /* 활성화된 버튼을 약간 확대하여 시각적 강조를 줍니다. */
 }
 
 .bottom-nav-btn.active svg {
-  transform: scale(1.1);
-  color: #ff6b8b;
+  transform: scale(1.1); /* 활성화된 버튼의 아이콘을 더 크게 확대합니다. */
+  color: #ff6b8b; /* 활성화된 버튼의 아이콘 색상을 밝은 핑크로 변경합니다. */
 }
 
+/* 미디어 쿼리: 최대 너비 600px 이하의 화면 (주로 모바일 환경) */
 @media (max-width: 600px) {
   .bottom-nav {
+    /* iOS 기기에서 하단 노치(safe area)를 고려하여 패딩을 추가합니다. */
     padding-bottom: env(safe-area-inset-bottom, 8px);
   }
 }
